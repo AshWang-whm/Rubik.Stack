@@ -5,17 +5,13 @@ VisualStudioVersion = 17.10.34707.107
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3A3AF48F-66CF-4234-9737-7E075AC97854}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "share", "share", "{510A9AD3-3201-4571-932F-2B445C57F93D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Share.Entity", "src\share\Rubik.Share.Entity\Rubik.Share.Entity.csproj", "{FB1E5121-4083-4C92-AA83-55097582E8B7}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "identity", "identity", "{32F38690-C6FF-4D33-9C7A-84963065240C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Identity.Share.Entity", "src\identity\Rubik.Identity.Share.Entity\Rubik.Identity.Share.Entity.csproj", "{EEE985FD-7463-4115-9DEF-90529F6BCDC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Identity.Share.Entity", "src\identity\Rubik.Identity.Share.Entity\Rubik.Identity.Share.Entity.csproj", "{EEE985FD-7463-4115-9DEF-90529F6BCDC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Identity.Admin", "src\identity\Rubik.Identity.Admin\Rubik.Identity.Admin.csproj", "{5B1E0205-A685-402D-A9C5-52E51193D870}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Identity.Admin", "src\identity\Rubik.Identity.Admin\Rubik.Identity.Admin.csproj", "{5B1E0205-A685-402D-A9C5-52E51193D870}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Identity.AuthServer", "src\identity\Rubik.Identity.AuthServer\Rubik.Identity.AuthServer.csproj", "{600364DC-399C-4BBA-B354-34F623F856BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Identity.AuthServer", "src\identity\Rubik.Identity.AuthServer\Rubik.Identity.AuthServer.csproj", "{600364DC-399C-4BBA-B354-34F623F856BC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "portal", "portal", "{C7B7A5DE-28B4-44F3-A949-1DD271979E61}"
 EndProject
@@ -25,10 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FB1E5121-4083-4C92-AA83-55097582E8B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FB1E5121-4083-4C92-AA83-55097582E8B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FB1E5121-4083-4C92-AA83-55097582E8B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FB1E5121-4083-4C92-AA83-55097582E8B7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EEE985FD-7463-4115-9DEF-90529F6BCDC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EEE985FD-7463-4115-9DEF-90529F6BCDC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEE985FD-7463-4115-9DEF-90529F6BCDC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -46,8 +38,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{510A9AD3-3201-4571-932F-2B445C57F93D} = {3A3AF48F-66CF-4234-9737-7E075AC97854}
-		{FB1E5121-4083-4C92-AA83-55097582E8B7} = {510A9AD3-3201-4571-932F-2B445C57F93D}
 		{32F38690-C6FF-4D33-9C7A-84963065240C} = {3A3AF48F-66CF-4234-9737-7E075AC97854}
 		{EEE985FD-7463-4115-9DEF-90529F6BCDC5} = {32F38690-C6FF-4D33-9C7A-84963065240C}
 		{5B1E0205-A685-402D-A9C5-52E51193D870} = {32F38690-C6FF-4D33-9C7A-84963065240C}
