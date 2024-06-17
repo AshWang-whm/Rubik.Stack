@@ -1,5 +1,5 @@
 ﻿
-namespace Rubik.Identity.Share.Entity.BaseEntities
+namespace Rubik.Identity.Share.Entity.BaseEntity
 {
     public interface IIdEntity<TId>
     {

@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Identity.AuthServer",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "portal", "portal", "{C7B7A5DE-28B4-44F3-A949-1DD271979E61}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Identity.Share.Extension", "src\identity\Rubik.Identity.Share.Extension\Rubik.Identity.Share.Extension.csproj", "{5C99FD40-844E-4BD0-B1C0-88FFDDC65961}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{600364DC-399C-4BBA-B354-34F623F856BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{600364DC-399C-4BBA-B354-34F623F856BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{600364DC-399C-4BBA-B354-34F623F856BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C99FD40-844E-4BD0-B1C0-88FFDDC65961}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C99FD40-844E-4BD0-B1C0-88FFDDC65961}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C99FD40-844E-4BD0-B1C0-88FFDDC65961}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C99FD40-844E-4BD0-B1C0-88FFDDC65961}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +49,7 @@ Global
 		{5B1E0205-A685-402D-A9C5-52E51193D870} = {32F38690-C6FF-4D33-9C7A-84963065240C}
 		{600364DC-399C-4BBA-B354-34F623F856BC} = {32F38690-C6FF-4D33-9C7A-84963065240C}
 		{C7B7A5DE-28B4-44F3-A949-1DD271979E61} = {3A3AF48F-66CF-4234-9737-7E075AC97854}
+		{5C99FD40-844E-4BD0-B1C0-88FFDDC65961} = {32F38690-C6FF-4D33-9C7A-84963065240C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {013ABA53-F0DF-4706-8106-0FA069C82488}
