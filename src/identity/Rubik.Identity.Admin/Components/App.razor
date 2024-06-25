@@ -5,14 +5,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
-    <link rel="stylesheet" href="app.css" />
-    <link rel="stylesheet" href="Rubik.Identity.Admin.styles.css" />
-    <HeadOutlet @rendermode="InteractiveServer" />
+    <link href="app.css"  rel="stylesheet"/>
+    <!--这个css 动态生成？-->
+    <link href="Rubik.Identity.Admin.styles.css" rel="stylesheet"/>
+    <HeadOutlet />
 </head>
 
 <body>
-    <Routes @rendermode="InteractiveServer" />
+    <Routes />
     <script src="_framework/blazor.web.js"></script>
+    @*<script src="_content/Microsoft.FluentUI.AspNetCore.Components/Microsoft.FluentUI.AspNetCore.Components.lib.module.js" type="module" async></script>*@
+
 </body>
 
 </html>

@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Identity.AuthServer",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "portal", "portal", "{C7B7A5DE-28B4-44F3-A949-1DD271979E61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Identity.Share.Extension", "src\identity\Rubik.Identity.Share.Extension\Rubik.Identity.Share.Extension.csproj", "{5C99FD40-844E-4BD0-B1C0-88FFDDC65961}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Identity.Share.Extension", "src\identity\Rubik.Identity.Share.Extension\Rubik.Identity.Share.Extension.csproj", "{5C99FD40-844E-4BD0-B1C0-88FFDDC65961}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

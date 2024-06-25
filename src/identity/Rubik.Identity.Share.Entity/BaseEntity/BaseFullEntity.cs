@@ -43,19 +43,22 @@ namespace Rubik.Identity.Share.Entity.BaseEntity
 
 
 
-        [Column(Position = -1, IsNullable = true)]
+        [Column(Position =-1)]
+        public int Sort { get; set; }
+
+        [Column(Position = -2, IsNullable = true)]
         public string? AddUser { get; set; }
 
-        [Column(Position = -2, IsNullable = false, DbType = "timestamp")]
+        [Column(Position = -3, IsNullable = false, DbType = "timestamp")]
         public DateTime? AddDate { get; set; }
 
-        [Column(Position = -3)]
+        [Column(Position = -4)]
         public bool IsDelete { get; set; } = false;
 
-        [Column(Position = -4, IsNullable = true)]
+        [Column(Position = -5, IsNullable = true)]
         public string? ModifyUser { get; set; }
 
-        [Column(Position = -5, IsNullable = false, DbType = "timestamp")]
+        [Column(Position = -6, IsNullable = false, DbType = "timestamp")]
         public DateTime? ModifyDate { get; set; }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,10 +17,14 @@ namespace Rubik.Identity.Share.Entity
                 return;
             }
 
-            List<Type> types = new List<Type>()
-            {
-                typeof(TbApplication), typeof(TbAppRole)
-            };
+            List<Type> types =
+            [
+                typeof(TbApplication), typeof(TbApplicationPermission),typeof(TbApplicationRole),
+                typeof(TbDepartment),typeof(TbDepartmentPost),
+                typeof(TbRelationPostUser),typeof(TbRelationRolePermission),typeof(TbRelationRoleUser),
+                typeof(TbUser)
+                
+            ];
             foreach (var type in types)
             {
                 if (!freeSql.DbFirst.ExistsTable(nameof(type)))
@@ -28,15 +33,20 @@ namespace Rubik.Identity.Share.Entity
                 }
             }
 
-            await freeSql.Insert(new TbAppRole
-            {
-                AddDate = DateTime.Now,
-                ModifyDate = DateTime.Now,
-                Code="test",
-                AppID=1,
-                Name="name",
+
+            // test
+            //var a = freeSql.Select<TbDepartment,TbDepartmentPost>()
+            //    .LeftJoin((a,b)=>a.ID==b.DepartmentID)
+
+            //await freeSql.Insert(new TbAppRole
+            //{
+            //    AddDate = DateTime.Now,
+            //    ModifyDate = DateTime.Now,
+            //    Code="test",
+            //    AppID=1,
+            //    Name="name",
                 
-            }).ExecuteAffrowsAsync();
+            //}).ExecuteAffrowsAsync();
 
 
             //// 初始化管理员账号

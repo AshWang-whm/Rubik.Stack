@@ -7,19 +7,20 @@ using System.Threading.Tasks;
 
 namespace Rubik.Identity.Share.Entity
 {
-    [Table(Name ="tb_department")]
-    public class TbDepartment:BaseFullEntity
+    /// <summary>
+    /// 部门岗位
+    /// </summary>
+    [Table(Name ="tb_department_post")]
+    public class TbDepartmentPost:BaseFullEntity
     {
         [Column(IsNullable =false,Position =2)]
         public string? Name { get; set; }
 
-        [Column(IsNullable = true,Position =3)]
-        public int? ParentID { get; set; }
+        public int DepartmentID { get; set; }
 
         [Column(IsNullable =true)]
-        public string? Description { get; set; }
+        public int? ParentID { get; set; }
 
-
-        public List<TbDepartmentPost>? Posts { get; set; }
+        public TbDepartment? Department { get; set; }
     }
 }
