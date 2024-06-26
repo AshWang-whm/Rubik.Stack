@@ -5,10 +5,12 @@
     <label for="navmenu-toggle" class="navmenu-icon"><FluentIcon Value="@(new Icons.Regular.Size20.Navigation())" Color="Color.Fill" /></label>
     <nav class="sitenav" aria-labelledby="main-menu">
         <FluentNavMenu Id="main-menu" Collapsible="true" Width="250" Title="Navigation menu" @bind-Expanded="expanded" CustomToggle="true">
-            <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())" IconColor="Color.Accent">Home</FluentNavLink>
-            <FluentNavLink Href="counter" Icon="@(new Icons.Regular.Size20.NumberSymbolSquare())" IconColor="Color.Accent">Counter</FluentNavLink>
-            <FluentNavLink Href="weather" Icon="@(new Icons.Regular.Size20.WeatherPartlyCloudyDay())" IconColor="Color.Accent">Weather</FluentNavLink>
+            <FluentNavLink Href="/" Match="NavLinkMatch.All" Icon="@(new Icons.Regular.Size20.Home())" IconColor="Color.Accent">主页</FluentNavLink>
+            <FluentNavLink Href="/department" Icon="@(new Icons.Regular.Size20.HomePerson())" IconColor="Color.Accent">部门管理</FluentNavLink>
+            <FluentNavLink Href="/user" Icon="@(new Icons.Regular.Size20.PeopleAudience())" IconColor="Color.Accent">用户管理</FluentNavLink>
+            <FluentNavLink Href="/application" Icon="@(new Icons.Regular.Size20.AppsAddIn())" IconColor="Color.Accent">应用管理</FluentNavLink>
         </FluentNavMenu>
+
     </nav>
 </div>
 
