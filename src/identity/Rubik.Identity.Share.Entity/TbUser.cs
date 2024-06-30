@@ -5,14 +5,12 @@ namespace Rubik.Identity.Share.Entity
     [Table(Name ="tb_user")]
     public class TbUser:BaseFullEntity
     {
-        [Column(IsNullable =false)]
+        [Column(IsNullable =false,Position =3)]
         public string? Account { get; set; }
 
-        [Column(IsNullable =false)]
+        [Column(IsNullable =false,Position =4)]
         public string? Password { get; set; }
 
-        [Column(IsNullable =false)]
-        public string? UserName { get; set; }
 
         [Column(IsNullable =true)]
         public string? Email { get; set; }

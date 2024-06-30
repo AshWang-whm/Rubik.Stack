@@ -41,6 +41,8 @@ namespace Rubik.Identity.Share.Entity.BaseEntity
         [Column(IsPrimary = true, IsIdentity = true, Position = 1)]
         public int ID { get; set; }
 
+        [Column(IsNullable = false,Position =2)]
+        public string? Name { get; set; }
 
 
         [Column(Position =-1)]
@@ -61,5 +63,11 @@ namespace Rubik.Identity.Share.Entity.BaseEntity
         [Column(Position = -6, IsNullable = false, DbType = "timestamp")]
         public DateTime? ModifyDate { get; set; }
 
+    }
+
+    public abstract class BaseTreeEntity:BaseFullEntity
+    {
+        [Column(IsNullable = true, Position = 99)]
+        public int? ParentID { get; set; }
     }
 }

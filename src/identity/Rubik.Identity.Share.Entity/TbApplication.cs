@@ -11,8 +11,6 @@ namespace Rubik.Identity.Share.Entity
     [Index("uq_code","Code",IsUnique =true)]
     public class TbApplication:BaseFullEntity
     {
-        [Column(IsNullable =false)]
-        public string? Name { get; set; }
 
         [Column(IsNullable =false)]
         public string? Code { get; set; }

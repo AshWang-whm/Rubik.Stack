@@ -11,15 +11,9 @@ namespace Rubik.Identity.Share.Entity
     /// 部门岗位
     /// </summary>
     [Table(Name ="tb_department_post")]
-    public class TbDepartmentPost:BaseFullEntity
+    public class TbDepartmentPost: BaseTreeEntity
     {
-        [Column(IsNullable =false,Position =2)]
-        public string? Name { get; set; }
-
         public int DepartmentID { get; set; }
-
-        [Column(IsNullable =true)]
-        public int? ParentID { get; set; }
 
         public TbDepartment? Department { get; set; }
     }

@@ -1,6 +1,5 @@
 using Rubik.Identity.Admin.Components;
 using Avd.Infrastructure.Freesql;
-using Rubik.Identity.Share.Entity;
 using Microsoft.FluentUI.AspNetCore.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +9,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.AddEnvironmentJsonFile();
+
+builder.Services.AddHttpContextAccessor();
 
 var fsql = builder.AddFreesql("identity", FreeSql.DataType.PostgreSQL, cmd =>
 {
