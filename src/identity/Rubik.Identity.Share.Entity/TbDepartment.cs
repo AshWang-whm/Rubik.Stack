@@ -14,6 +14,6 @@ namespace Rubik.Identity.Share.Entity
         [Column(IsNullable =true)]
         public string? Description { get; set; }
 
-        public List<TbDepartmentPost>? Posts { get; set; }
+        public List<TbDepartmentJob>? Posts { get; set; }
     }
 }

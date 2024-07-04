@@ -20,8 +20,8 @@ namespace Rubik.Identity.Share.Entity
             List<Type> types =
             [
                 typeof(TbApplication), typeof(TbApplicationPermission),typeof(TbApplicationRole),
-                typeof(TbDepartment),typeof(TbDepartmentPost),
-                typeof(TbRelationPostUser),typeof(TbRelationRolePermission),typeof(TbRelationRoleUser),
+                typeof(TbDepartment),typeof(TbDepartmentJob),
+                typeof(TbRelationJobUser),typeof(TbRelationRolePermission),typeof(TbRelationRoleUser),
                 typeof(TbUser)
                 
             ];

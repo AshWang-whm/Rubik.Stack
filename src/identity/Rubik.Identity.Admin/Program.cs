@@ -1,6 +1,6 @@
 using Rubik.Identity.Admin.Components;
 using Avd.Infrastructure.Freesql;
-using Microsoft.FluentUI.AspNetCore.Components;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,12 +21,11 @@ var fsql = builder.AddFreesql("identity", FreeSql.DataType.PostgreSQL, cmd =>
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddFluentUIComponents();
-
+builder.Services.AddRadzenComponents();
 
 var app = builder.Build();
 
-//await fsql.DbInitialize();
+//await FreesqlExtension.DbInitialize(fsql);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

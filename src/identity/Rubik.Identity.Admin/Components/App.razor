@@ -5,17 +5,16 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <base href="/" />
-    <link href="app.css"  rel="stylesheet"/>
-    <!--这个css 动态生成？-->
-    <link href="Rubik.Identity.Admin.styles.css" rel="stylesheet"/>
-    <HeadOutlet />
+    <link href="app.css" rel="stylesheet" />
+    <link rel="stylesheet" href="material3-base.css">
+    @*<link rel="stylesheet" href="_content/Radzen.Blazor/css/material-base.css">*@
+    <HeadOutlet @rendermode="InteractiveServer"/>
 </head>
 
 <body>
-    <Routes />
+    <Routes @rendermode="InteractiveServer"/>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js"></script>
     <script src="_framework/blazor.web.js"></script>
-    @*<script src="_content/Microsoft.FluentUI.AspNetCore.Components/Microsoft.FluentUI.AspNetCore.Components.lib.module.js" type="module" async></script>*@
-
 </body>
 
 </html>

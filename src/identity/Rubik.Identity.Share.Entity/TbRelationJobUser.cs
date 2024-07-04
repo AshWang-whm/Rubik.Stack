@@ -10,8 +10,8 @@ namespace Rubik.Identity.Share.Entity
     /// <summary>
     /// 岗位&用户
     /// </summary>
-    [Table(Name ="tb_relation_post_user")]
-    public class TbRelationPostUser:BaseNewEntity
+    [Table(Name ="tb_relation_job_user")]
+    public class TbRelationJobUser:BaseNewEntity
     {
         public int DepartmentID { get; set; }
 

@@ -10,8 +10,8 @@ namespace Rubik.Identity.Share.Entity
     /// <summary>
     /// 部门岗位
     /// </summary>
-    [Table(Name ="tb_department_post")]
-    public class TbDepartmentPost: BaseTreeEntity
+    [Table(Name ="tb_department_job")]
+    public class TbDepartmentJob: BaseTreeEntity
     {
         public int DepartmentID { get; set; }
 
