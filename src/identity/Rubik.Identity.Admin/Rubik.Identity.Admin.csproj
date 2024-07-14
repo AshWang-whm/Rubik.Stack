@@ -7,17 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Radzen.Blazor" Version="4.33.3" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Rubik.Identity.Share.Extension\Rubik.Identity.Share.Extension.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="wwwroot\app.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AntDesign" Version="0.19.4" />
+    <PackageReference Include="AntDesign.ProLayout" Version="0.19.4" />
   </ItemGroup>
 
 </Project>

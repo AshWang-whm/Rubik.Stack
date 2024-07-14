@@ -1,40 +1,64 @@
 ﻿@inherits LayoutComponentBase
+@using AntDesign.ProLayout;
 
-<RadzenLayout>
-    <RadzenHeader>
-        <ChildContent>
-            <RadzenRow AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Start" Gap="0px">
-                <RadzenColumn Size="5">
-                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center">
-                        <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)" />
-                    </RadzenStack>
-                </RadzenColumn>
-            </RadzenRow>
-        </ChildContent>
-    </RadzenHeader>
-    <RadzenSidebar @bind-Expanded="@sidebarExpanded">
-        <RadzenPanelMenu Match="NavLinkMatch.Prefix">
-            <RadzenPanelMenuItem Text="主页" Icon="home" Path="/" />
-            <RadzenPanelMenuItem Text="部门管理" Icon="account_balance" Path="/department"/>
-            <RadzenPanelMenuItem Text="用户管理" Icon="assignment_ind" Path="/user"/>
-            <RadzenPanelMenuItem Text="系统管理" Icon="android" Path="/application"/>
-
-            
-        </RadzenPanelMenu>
-    </RadzenSidebar>
-    <RadzenBody>
-        @Body
-    </RadzenBody>
-</RadzenLayout>
-
-
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+<BasicLayout MenuData="_menuData"
+             MenuAccordion
+             Title="权限管理平台">
+    <HeaderContentRender>
+        <Space Size="@("24")">
+            <SpaceItem>
+                <Icon Class="action" Type="@(collapsed?"menu-unfold":"menu-fold")" OnClick="Toggle" />
+            </SpaceItem>
+        </Space>
+    </HeaderContentRender>
+    <ChildContent>
+        <ReuseTabs />
+    </ChildContent>
+    <FooterRender>
+        <FooterView Links="[]" Copyright="AshGogogo" />
+    </FooterRender>
+</BasicLayout>
+<SettingDrawer />
 
 @code
 {
-    bool sidebarExpanded = true;
+    MenuDataItem[] _menuData = new MenuDataItem[]
+{
+        new MenuDataItem
+        {
+            Name="Home",
+            Path="/",
+            Icon="home",
+            Key="home",
+        },
+        new MenuDataItem()
+        {
+            Name="Organization",
+            Path="/organization",
+            Icon="apartment",
+            Key="organization"
+        },
+        new MenuDataItem
+        {
+            Name="用户管理",
+            Path="/user",
+            Icon="user",
+            Key="user"
+        },
+        new MenuDataItem
+        {
+            Name="应用管理",
+            Path="/application",
+            Icon="appstore",
+            Key="application"
+        },
+    };
+
+    bool collapsed;
+
+    void Toggle()
+    {
+        collapsed = !collapsed;
+    }
+
 }

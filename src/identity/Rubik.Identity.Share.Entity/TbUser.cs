@@ -11,6 +11,11 @@ namespace Rubik.Identity.Share.Entity
         [Column(IsNullable =false,Position =4)]
         public string? Password { get; set; }
 
+        /// <summary>
+        /// 职位
+        /// </summary>
+        [Column(IsNullable =false,Position =5)]
+        public int? PositionID { get; set; }
 
         [Column(IsNullable =true)]
         public string? Email { get; set; }
@@ -23,6 +28,9 @@ namespace Rubik.Identity.Share.Entity
 
         [Column(IsNullable =true)]
         public DateTime? EntryDate { get; set; }
+
+
+        public TbPosition? TbPosition { get; set; }
     }
 
 

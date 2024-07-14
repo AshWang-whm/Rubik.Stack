@@ -1,6 +1,7 @@
 using Rubik.Identity.Admin.Components;
 using Avd.Infrastructure.Freesql;
-using Radzen;
+using AntDesign.ProLayout;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +22,11 @@ var fsql = builder.AddFreesql("identity", FreeSql.DataType.PostgreSQL, cmd =>
 
 builder.Services.AddHttpClient();
 
-builder.Services.AddRadzenComponents();
+builder.Services.AddAntDesign();
 
 var app = builder.Build();
 
-//await FreesqlExtension.DbInitialize(fsql);
+//await Rubik.Identity.Share.Entity.FreesqlExtension.DbInitialize(fsql);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
