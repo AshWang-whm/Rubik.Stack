@@ -1,6 +1,5 @@
 using Rubik.Identity.Admin.Components;
 using Avd.Infrastructure.Freesql;
-using AntDesign.ProLayout;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +17,8 @@ var fsql = builder.AddFreesql("identity", FreeSql.DataType.PostgreSQL, cmd =>
 #if DEBUG
     System.Diagnostics.Debug.WriteLine(cmd.CommandText);
 #endif
+
+    // ²¹³ä aop
 });
 
 builder.Services.AddHttpClient();

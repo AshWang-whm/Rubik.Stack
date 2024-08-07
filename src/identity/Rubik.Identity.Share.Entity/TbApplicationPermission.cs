@@ -1,15 +1,9 @@
-﻿using Rubik.Identity.Share.Entity.BaseEntity;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace Rubik.Identity.Share.Entity
 {
     [Table(Name ="tb_application_permission")]
-    public class TbApplicationPermission: BaseTreeEntity
+    public class TbApplicationPermission: BaseTreeEntity<TbApplicationPermission>
     {
         [Column(IsNullable =false)]
         public PermissionType Type { get; set; }

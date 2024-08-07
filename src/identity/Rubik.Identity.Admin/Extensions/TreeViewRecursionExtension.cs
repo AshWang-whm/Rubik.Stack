@@ -1,5 +1,4 @@
 ﻿//using Microsoft.FluentUI.AspNetCore.Components;
-using Rubik.Identity.Share.Entity.BaseEntity;
 
 namespace Rubik.Identity.Admin.Extensions
 {

@@ -1,2 +1,63 @@
-﻿@page "/"
+﻿@using Rubik.Identity.Admin.Components.Pages
+
+@page "/"
 <h2>Hello World!</h2>
+
+@component1
+
+<br />
+
+<CascadingValue Value="@source" Name="TestCascading" IsFixed="false">
+    <CascadingValue Value="@Val" Name="Val" IsFixed="false">
+        <TestComponent Refresh="refresh" @ref="@comp" />
+
+    </CascadingValue>
+</CascadingValue>
+
+<br />
+<button @onclick="@Click">test</button>
+
+@code{
+
+    TestComponent? comp { get; set; }
+
+    public string? Val { get; set; } = "666";
+
+    public List<string> source = ["123"];
+
+    RenderFragment component1 =>@<p>@Val</p>;
+
+
+    Random random = new Random();
+
+    async Task Click()
+    {
+
+
+        //Val = Guid.NewGuid().ToString();
+
+        //var r = random.Next(1, 10);
+        //source.Clear();
+        //for (int i = 0; i < r; i++)
+        //{
+        //    source.Add(Guid.NewGuid().ToString());
+        //}
+
+        //await Task.Delay(2000);
+
+        await comp!.InternalRefresh();
+    }
+
+    async Task<List<string>> refresh()
+    {
+        Val = DateTime.Now.ToString();
+
+
+
+        source= Enumerable.Range(0, 5)
+            .Select(a => Guid.NewGuid().ToString())
+            .ToList();
+
+        return source;
+    }
+}

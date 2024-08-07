@@ -1,4 +1,4 @@
-﻿using Rubik.Identity.Share.Entity.BaseEntity;
+﻿
 
 namespace Rubik.Identity.Share.Entity
 {

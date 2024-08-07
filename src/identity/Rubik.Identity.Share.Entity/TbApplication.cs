@@ -1,11 +1,4 @@
-﻿using Rubik.Identity.Share.Entity.BaseEntity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Rubik.Identity.Share.Entity
+﻿namespace Rubik.Identity.Share.Entity
 {
     [Table(Name ="tb_application")]
     [Index("uq_code","Code",IsUnique =true)]

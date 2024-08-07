@@ -1,6 +1,6 @@
 ﻿using FreeSql.DataAnnotations;
 
-namespace Rubik.Identity.Share.Entity.BaseEntity
+namespace Rubik.Share.Entity.BaseEntity
 {
     public abstract class BaseNewEntity : INewEntity
     {
@@ -65,9 +65,19 @@ namespace Rubik.Identity.Share.Entity.BaseEntity
 
     }
 
-    public abstract class BaseTreeEntity:BaseFullEntity
+    public abstract class BaseTreeEntity<TEntity>:BaseFullEntity,ITreeEntity<TEntity>
+        where TEntity : class
     {
         [Column(IsNullable = true, Position = 99)]
         public int? ParentID { get; set; }
+
+
+        [Column(IsIgnore = true)]
+        [Navigate(nameof(ParentID))]
+        public List<TEntity> Children { get; set; } = [];
+
+
+        [Navigate(nameof(ParentID))]
+        public TEntity? Parent { get; set; }
     }
 }

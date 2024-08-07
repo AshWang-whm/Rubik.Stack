@@ -1,5 +1,5 @@
 ﻿
-namespace Rubik.Identity.Share.Entity.BaseEntity
+namespace Rubik.Share.Entity.BaseEntity
 {
     public interface IIdEntity<TId>
     {
@@ -42,7 +42,7 @@ namespace Rubik.Identity.Share.Entity.BaseEntity
     /// <summary>
     /// 包括 INewEntity, IModifyEntity,IDeleteEtity
     /// </summary>
-    public interface IFullEntity : INewEntity, IModifyEntity,IDeleteEtity
+    public interface IFullEntity : IRecordEntity,IModifyEntity
     {
 
     }

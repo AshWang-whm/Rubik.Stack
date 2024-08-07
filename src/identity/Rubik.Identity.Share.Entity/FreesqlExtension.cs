@@ -64,5 +64,11 @@ namespace Rubik.Identity.Share.Entity
             //    await freeSql.Insert(admin).ExecuteAffrowsAsync();
             System.Console.WriteLine("初始化完成");
         }
+
+
+        //public static EventHandler Aop(FreeSql.Aop.AuditValueEventArgs args)
+        //{
+
+        //}
     }
 }

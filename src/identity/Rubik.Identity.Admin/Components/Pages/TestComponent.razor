@@ -1,0 +1,85 @@
+﻿@inherits ComponentBase
+
+
+<p>@Val</p>
+
+<h3>TestComponent</h3>
+
+<br/>
+@if(TestCascading!=null)
+{
+    foreach (var item in TestCascading)
+    {
+        <p>@item</p>
+    }
+}
+
+<p>TestCascading</p>
+
+<li>
+    @foreach (var item in _datasource)
+    {
+        @li(item)
+    }
+</li>
+
+
+<br/>
+
+<li>
+    @body(_datasource)
+</li>
+
+
+
+
+@code {
+
+        [CascadingParameter(Name = "TestCascading")]
+        public List<string>? TestCascading { get; set; }
+
+        [CascadingParameter(Name = "Val")]
+        public string? Val { get; set; }
+
+        [Parameter]
+        public Func<Task<List<string>>>? Refresh { get; set; }
+
+
+        private List<string> _datasource = [];
+
+        protected override async Task OnParametersSetAsync()
+        {
+            await InternalRefresh();
+        }
+
+        public async Task InternalRefresh()
+        {
+            if(Refresh!=null)
+            {
+                _datasource = await Refresh.Invoke();
+            }
+        }
+
+
+        RenderFragment<string> li => (val) =>
+        @<li>@val</li>;
+
+    RenderFragment body(IEnumerable<string> source)
+    {
+        return builder =>
+        {
+            foreach (var item in source)
+            {
+                row()(item)(builder);
+            }
+        };
+    }
+
+    RenderFragment<string?> row()
+    {
+        return row =>
+        {
+            return @<li>@row</li>;
+        };
+    }
+}
