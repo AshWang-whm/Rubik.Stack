@@ -5,10 +5,8 @@ using Rubik.Identity.Share.Entity;
 
 namespace Rubik.Identity.Admin.Components.AdminPages
 {
-    public partial class Organization : BaseEditorPage<TbOrganization>
+    public partial class Organization : BaseTreePage<TbOrganization>
     {
-        protected override string[] HideColumns { get; set; } = [nameof(TbOrganization.Jobs)];
-
         public override async Task Query(QueryModel<TbOrganization> query)
         {
             var exp = query.GetQueryExpression();
@@ -34,6 +32,26 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             Total = (int)total;
         }
 
+        protected override async Task<bool> BeforeSave()
+        {
+            if(string.IsNullOrWhiteSpace(Editor.Code))
+            {
+                await MessageService.Error("[Code] 不允许为空!");
+                return false;
+            }
+
+            var exist = await FreeSql.Select<TbApplication>()
+                .Where(a => a.Code == Editor.Code && a.IsDelete == false)
+                .AnyAsync();
+            if (exist)
+            {
+                await MessageService.Error($"[Code]:{Editor.Code} 也存在!");
+                return false;
+            }
+
+            return true;
+        }
+
         protected override async Task AfterSave()
         {
             // 新数据直接添加到DataSource
@@ -41,6 +59,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             {
                 if (Editor.Parent != null)
                 {
+                    // 如果Children初始为0 ， 初次添加不会生成 + 号
                     Editor.Parent.Children.Add(Editor);
                 }
                 else

@@ -1,14 +1,14 @@
 ﻿@page "/organization"
-@inherits BaseEditorPage<TbOrganization>
+@inherits BaseTreePage<TbOrganization>
 
 
 <Table @ref="Table" TItem="TbOrganization" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total" 
-       SelectedRows="SelectedRows" TreeChildren="TreeChildren">
+       @bind-SelectedRows="SelectedRows" TreeChildren="TreeChildren">
     <TitleTemplate>
         <Flex Justify="start" Gap="10">
             <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
             <Button Type="@ButtonType.Primary" OnClick="OnNew">新增</Button>
-            <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选数据?" OnConfirm="OnDeleteSelectedRow" Disabled="SelectedRows.Count == 0">
+            <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选数据?" OnConfirm="OnDeleteSelectedRow">
                 <Button Type="@ButtonType.Primary" Danger >删除</Button>
             </Popconfirm>
         </Flex>
@@ -18,10 +18,11 @@
         <Selection />
 
         <PropertyColumn Property="item => item.Name" Filterable="true" />
+        <PropertyColumn Property="item => item.Code" />
         <PropertyColumn Property="item => item.OrganizationType" Filterable="true" />
         <PropertyColumn Property="item => item.Description" />
 
-        <PropertyColumn Property="item => item.ModifyDate" Filterable="true" Sortable="true" />
+        <PropertyColumn Property="item => item.ModifyDate" />
         <PropertyColumn Property="item => item.ModifyUser" />
 
         <ActionColumn Title="Action">
@@ -40,12 +41,15 @@
             if (Editor.Parent != null)
             {
                 <FormItem Label="Superior">
-                    <Input @bind-Value="@Editor!.Parent.Name" Disabled/>
+                    <Input @bind-Value="@Editor!.Parent.Name" Disabled />
                 </FormItem>
             }
         }
         <FormItem Label="Name">
             <Input @bind-Value="@Editor!.Name" />
+        </FormItem>
+        <FormItem Label="Code">
+            <Input @bind-Value="@Editor!.Code" />
         </FormItem>
         <FormItem Label="Type">
             <RadioGroup @bind-Value="@Editor.OrganizationType" TValue="OrganizationType">

@@ -1,12 +1,9 @@
-﻿using AntDesign;
-using AntDesign.TableModels;
-using Microsoft.AspNetCore.Components.Forms;
-using Rubik.Share.Entity.BaseEntity;
+﻿using Rubik.Share.Entity.BaseEntity;
 
 namespace Rubik.Identity.Admin.Components.BasePages
 {
-    public abstract partial class BaseEditorPage<T> : BasePage<T>
-        where T : BaseFullEntity, IFullEntity, new()
+    public abstract partial class BaseTreePage<T>: BasePage<T>
+        where T : BaseTreeEntity<T>, IFullEntity, new()
     {
         protected virtual Func<T, IEnumerable<T>> TreeChildren { get; set; } = item => [];
 
@@ -23,6 +20,10 @@ namespace Rubik.Identity.Admin.Components.BasePages
                 .SetSource(source)
                 .ExecuteAffrowsAsync();
 
+            foreach (var item in source)
+            {
+                item.Parent?.Children.Remove(item);
+            }
             await InvokeAsync(StateHasChanged);
         }
     }
