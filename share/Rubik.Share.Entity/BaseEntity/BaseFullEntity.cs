@@ -44,6 +44,8 @@ namespace Rubik.Share.Entity.BaseEntity
         [Column(IsNullable = false,Position =2)]
         public string? Name { get; set; }
 
+        [Column(IsNullable =false,Position =3)]
+        public string? Code { get; set; }
 
         [Column(Position =-1)]
         public int Sort { get; set; }

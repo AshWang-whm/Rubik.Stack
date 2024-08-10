@@ -2,12 +2,13 @@
 @inherits BaseEditorPage<TbOrganization>
 
 
-<Table @ref="Table" TItem="TbOrganization" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total" SelectedRows="SelectedRows" TreeChildren="TreeChildren">
+<Table @ref="Table" TItem="TbOrganization" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total" 
+       SelectedRows="SelectedRows" TreeChildren="TreeChildren">
     <TitleTemplate>
         <Flex Justify="start" Gap="10">
             <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
             <Button Type="@ButtonType.Primary" OnClick="OnNew">新增</Button>
-            <Popconfirm IsButton Placement="@Placement.Bottom" Title="您确定要删除所选数据?" OnClick="OnDeleteSelectedRow" Disabled="SelectedRows.Count == 0">
+            <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选数据?" OnConfirm="OnDeleteSelectedRow" Disabled="SelectedRows.Count == 0">
                 <Button Type="@ButtonType.Primary" Danger >删除</Button>
             </Popconfirm>
         </Flex>

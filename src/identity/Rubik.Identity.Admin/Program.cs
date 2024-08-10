@@ -27,7 +27,7 @@ builder.Services.AddAntDesign();
 
 var app = builder.Build();
 
-//await Rubik.Identity.Share.Entity.FreesqlExtension.DbInitialize(fsql);
+await Rubik.Identity.Share.Entity.FreesqlExtension.DbInitialize(fsql);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
