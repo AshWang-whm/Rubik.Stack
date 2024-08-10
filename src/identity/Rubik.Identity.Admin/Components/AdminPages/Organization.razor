@@ -2,13 +2,13 @@
 @inherits BaseEditorPage<TbOrganization>
 
 
-<Table @ref="Table" TItem="TbOrganization" OnChange="Query" RemoteDataSource DataSource="DataSource" @bind-Total="Total" SelectedRows="SelectedRows" TreeChildren="TreeChildren">
+<Table @ref="Table" TItem="TbOrganization" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total" SelectedRows="SelectedRows" TreeChildren="TreeChildren">
     <TitleTemplate>
         <Flex Justify="start" Gap="10">
             <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
             <Button Type="@ButtonType.Primary" OnClick="OnNew">新增</Button>
-            <Popconfirm IsButton Placement="@Placement.Bottom" Title="您确定要删除所选数据?" OnClick="OnDeleteSelectedRow">
-                <Button Type="@ButtonType.Primary" Danger Disabled="SelectedRows.Count == 0">删除</Button>
+            <Popconfirm IsButton Placement="@Placement.Bottom" Title="您确定要删除所选数据?" OnClick="OnDeleteSelectedRow" Disabled="SelectedRows.Count == 0">
+                <Button Type="@ButtonType.Primary" Danger >删除</Button>
             </Popconfirm>
         </Flex>
     </TitleTemplate>
@@ -19,13 +19,13 @@
         <PropertyColumn Property="item => item.Name" Filterable="true" />
         <PropertyColumn Property="item => item.OrganizationType" Filterable="true" />
         <PropertyColumn Property="item => item.Description" />
-        <PropertyColumn Property="item => item.AddDate" Filterable="true" Sortable="true" />
-        <PropertyColumn Property="item => item.AddUser" />
+        <PropertyColumn Property="item => item.ModifyDate" Filterable="true" Sortable="true" />
+        <PropertyColumn Property="item => item.ModifyUser" />
 
         <ActionColumn Title="Action">
-            <Button Type="@ButtonType.Primary" OnClick="() => OnEdit(context)">编辑</Button>
-            <Button Type="@ButtonType.Primary" Color="@Color.Orange2" OnClick="()=> OnEdit(new TbOrganization() { ParentID=context.ID,Parent=context },false)">添加子项</Button>
-            <Popconfirm IsButton Placement="@Placement.Bottom" Title="您确定要删除当前数据?" OnConfirm="async () => await OnDelete(context)">
+            <Button Type="@ButtonType.Primary" OnClick="async () =>OnEdit(context)">编辑</Button>
+            <Button Type="@ButtonType.Primary" Color="@Color.Green6" OnClick="async ()=>OnEdit(new TbOrganization() { ParentID=context.ID,Parent=context })">添加子项</Button>
+            <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前数据?" OnConfirm="async () => await OnDelete(context)">
                 <Button Type="@ButtonType.Primary" Danger>删除</Button>
             </Popconfirm>
         </ActionColumn>
@@ -34,6 +34,14 @@
 
 <Microsoft.AspNetCore.Components.Sections.SectionContent SectionId="@EditFormSectionID">
     <Form Model="@Editor" LabelColSpan="8" WrapperColSpan="16">
+        @{
+            if (Editor.Parent != null)
+            {
+                <FormItem Label="Superior">
+                    <Input @bind-Value="@Editor!.Parent.Name" Disabled/>
+                </FormItem>
+            }
+        }
         <FormItem Label="Name">
             <Input @bind-Value="@Editor!.Name" />
         </FormItem>

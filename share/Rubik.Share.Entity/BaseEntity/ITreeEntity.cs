@@ -12,6 +12,7 @@ namespace Rubik.Share.Entity.BaseEntity
         public int ID { get; set; }
         public int? ParentID { get; set; }
 
+        public T? Parent { get; set; }
         public List<T> Children { get; set; }
     }
 }

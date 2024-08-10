@@ -3,6 +3,7 @@ using AntDesign.TableModels;
 using Microsoft.AspNetCore.Components.Forms;
 using Rubik.Share.Entity.BaseEntity;
 using Rubik.Share.Utils.Objects;
+using Rubik.Share.Entity;
 
 namespace Rubik.Identity.Admin.Components.BasePages
 {
@@ -38,7 +39,7 @@ namespace Rubik.Identity.Admin.Components.BasePages
 
         protected virtual async Task OnDeleteSelectedRow()
         {
-            await OnDelete(SelectedRows.ToArray());
+            await OnDelete([.. SelectedRows]);
         }
 
         protected virtual bool BeforeSave()
@@ -99,10 +100,13 @@ namespace Rubik.Identity.Admin.Components.BasePages
         /// <param name="obj"></param>
         /// <param name="clone">是否深拷贝</param>
         /// <param name="options"></param>
-        protected void OnEdit(T obj,bool clone=true,Action<T>? options = null)
+        protected void OnEdit(T obj,Action<T>? options = null)
         {
-            Editor =clone? obj.DeepCopy():obj;
+            //Editor =clone? obj.TreeCopy():obj;
+            // 每次同步引用，若不保存数据需要恢复原始状态,todo:
+            Editor=obj;
             options?.Invoke(obj);
+            //await InvokeAsync(StateHasChanged);
             EditorModalVisiable = true;
         }
 
@@ -119,9 +123,11 @@ namespace Rubik.Identity.Admin.Components.BasePages
                 .SetSource(source)
                 .ExecuteAffrowsAsync();
 
-            await MessageService.Success("删除成功!", 2000);
+            foreach (var item in source)
+            {
+                item.Parent?.Children.Remove(item);
+            }
+            await InvokeAsync(StateHasChanged);
         }
-
-
     }
 }

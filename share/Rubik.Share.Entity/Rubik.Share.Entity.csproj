@@ -10,8 +10,4 @@
     <PackageReference Include="FreeSql" Version="3.2.830" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="TreeEntity\" />
-  </ItemGroup>
-
 </Project>

@@ -72,7 +72,7 @@ namespace Rubik.Share.Entity.BaseEntity
         public int? ParentID { get; set; }
 
 
-        [Column(IsIgnore = true)]
+        //[Column(IsIgnore = true)]
         [Navigate(nameof(ParentID))]
         public List<TEntity> Children { get; set; } = [];
 
