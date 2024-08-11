@@ -5,8 +5,6 @@ namespace Rubik.Identity.Share.Entity
     [Table(Name ="tb_user")]
     public class TbUser:BaseFullEntity
     {
-        [Column(IsNullable =false,Position =3)]
-        public string? Account { get; set; }
 
         [Column(IsNullable =false,Position =4)]
         public string? Password { get; set; }
@@ -30,6 +28,7 @@ namespace Rubik.Identity.Share.Entity
         public DateTime? EntryDate { get; set; }
 
 
+        [Navigate(nameof(PositionID))]
         public TbPosition? TbPosition { get; set; }
     }
 

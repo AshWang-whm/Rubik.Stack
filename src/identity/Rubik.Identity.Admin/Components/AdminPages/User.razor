@@ -1,6 +1,50 @@
 ﻿@page "/user"
-<h3>User</h3>
+@inherits BaseEditorPage<TbUser>
 
-@code {
 
-}
+
+<GridRow>
+    <GridCol Span="6">
+
+    </GridCol>
+    <GridCol Span="18">
+        <Table @ref="Table" TItem="TbUser" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
+               @bind-SelectedRows="SelectedRows">
+
+
+            <TitleTemplate>
+                <Flex Justify="start" Gap="10">
+                    <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
+                    <Button Type="@ButtonType.Primary" OnClick="OnNew">新增</Button>
+                    <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选数据?" OnConfirm="OnDeleteSelectedRow">
+                        <Button Type="@ButtonType.Primary" Danger>删除</Button>
+                    </Popconfirm>
+                </Flex>
+            </TitleTemplate>
+
+            <ColumnDefinitions>
+                <Selection />
+
+                <PropertyColumn Property="item => item.Name" Filterable="true" />
+                <PropertyColumn Property="item => item.Code" />
+                <PropertyColumn Property="item => item.Email" Filterable="true" />
+                <PropertyColumn Property="item => item.Gender" />
+                <PropertyColumn Property="item => item.TbPosition.Name" Title="岗位"/>
+
+                <PropertyColumn Property="item => item.ModifyDate" />
+                <PropertyColumn Property="item => item.ModifyUser" />
+
+                <ActionColumn Title="Action">
+                    <Button Type="@ButtonType.Primary" OnClick="async () =>OnEdit(context)">编辑</Button>
+                    <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前数据?" OnConfirm="async () => await OnDelete(context)">
+                        <Button Type="@ButtonType.Primary" Danger>删除</Button>
+                    </Popconfirm>
+                </ActionColumn>
+            </ColumnDefinitions>
+
+
+        </Table>
+    </GridCol>
+</GridRow>
+
+

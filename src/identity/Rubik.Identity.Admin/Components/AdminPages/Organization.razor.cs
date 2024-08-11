@@ -1,5 +1,6 @@
 ﻿using AntDesign;
 using AntDesign.TableModels;
+using Microsoft.AspNetCore.Components;
 using Rubik.Identity.Admin.Components.BasePages;
 using Rubik.Identity.Share.Entity;
 
@@ -7,6 +8,9 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 {
     public partial class Organization : BaseTreePage<TbOrganization>
     {
+        [Inject]
+        ModalService? ModalService { get; set; }
+
         public override async Task Query(QueryModel<TbOrganization> query)
         {
             var exp = query.GetQueryExpression();
@@ -52,27 +56,31 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             return true;
         }
 
-        protected override async Task AfterSave()
+        void OnShowOrganizePositionModal(TbOrganization org)
         {
-            // 新数据直接添加到DataSource
-            if (Editor.ID == 0)
+            RenderFragment buildModal = (builder) =>
             {
-                if (Editor.Parent != null)
-                {
-                    // 如果Children初始为0 ， 初次添加不会生成 + 号
-                    Editor.Parent.Children.Add(Editor);
-                }
-                else
-                {
-                    DataSource.Add(Editor);
-                }
-            }
-            EditorModalVisiable = false;
-            await InvokeAsync(StateHasChanged);
-            await MessageService.Success("保存成功",1);
+                builder.OpenComponent<OrganizationJob>(0);
+                builder.AddAttribute(1, "OrganizationID", org.ID);
+                builder.CloseComponent();
+            };
+
+            var @ref = ModalService!.CreateModal(new ModalOptions
+            {
+                Content= buildModal,
+                Title=$"查看 [{org.Name}] 岗位",
+                Keyboard=true,
+                Visible=true,
+                Centered=true,
+                MaskClosable=true,
+                Maximizable=true,
+                Width="75vw;"
+            });
+
+            @ref.OnClose = async () =>
+            {
+                System.Diagnostics.Debug.WriteLine("6666666");
+            };
         }
-
-
-        protected override Func<TbOrganization, IEnumerable<TbOrganization>> TreeChildren => item => item.Children;
     }
 }

@@ -26,7 +26,7 @@ Admin 实体:
 
 5.TbAppPermission，应用权限管理
 
-6.TbPost, 岗位
+6.TbPostion, 岗位
 
 7.RelationDeptPost, 部门&岗位关系
 

@@ -13,8 +13,10 @@ namespace Rubik.Identity.Share.Entity
     [Table(Name = "tb_organization_job")]
     public class TbOrganizationJob: BaseTreeEntity<TbOrganizationJob>
     {
+        [Column(IsNullable =false)]
         public int OrganizationID { get; set; }
 
+        [Navigate(nameof(OrganizationID))]
         public TbOrganization? Organization { get; set; }
     }
 }

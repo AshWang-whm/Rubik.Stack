@@ -6,8 +6,7 @@ namespace Rubik.Identity.Share.Entity
     /// 职位
     /// </summary>
     [Table(Name ="tb_position")]
-    public class TbPosition: BaseFullEntity
+    public class TbPosition: BaseTreeEntity<TbPosition>
     {
-
     }
 }
