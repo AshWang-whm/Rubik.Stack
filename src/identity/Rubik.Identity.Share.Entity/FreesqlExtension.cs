@@ -21,7 +21,7 @@ namespace Rubik.Identity.Share.Entity
             [
                 typeof(TbApplication), typeof(TbApplicationPermission),typeof(TbApplicationRole),
                 typeof(TbOrganization),typeof(TbOrganizationJob),typeof(TbPosition),
-                typeof(TbRelationJobUser),typeof(TbRelationRolePermission),typeof(TbRelationRoleUser),
+                typeof(TbRleationOrganizeUser),typeof(TbRelationRolePermission),typeof(TbRelationRoleUser),
                 typeof(TbUser)
                 
             ];

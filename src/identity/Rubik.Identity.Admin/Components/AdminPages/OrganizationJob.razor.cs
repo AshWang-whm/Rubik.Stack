@@ -5,7 +5,7 @@ using Rubik.Identity.Share.Entity;
 
 namespace Rubik.Identity.Admin.Components.AdminPages
 {
-    public partial class OrganizationJob : BaseTreePage<TbOrganizationJob>
+    public partial class OrganizationJob : BasePage<TbOrganizationJob>
     {
 
         [Parameter]
@@ -16,23 +16,21 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             var exp = query.GetQueryExpression();
 
             // 顶级的数据作为total数据分页统计
-            var source = await FreeSql.Select<TbOrganizationJob>()
+            DataSource = await FreeSql.Select<TbOrganizationJob>()
                 .WhereIf(exp != null, exp)
-                .WhereIf(exp == null, a => a.ParentID == null)
+                //.WhereIf(exp == null, a => a.ParentID == null)
                 .Where(a => a.IsDelete == false)
                 .Where(a => a.OrganizationID == OrganizationID)
                 .Count(out var total)
                 .ToListAsync();
 
-            var ids = source.Select(a => a.ID).ToList();
-            DataSource = ids.Count == 0 ? source : await FreeSql.Select<TbOrganizationJob>()
-                    .Where(a => a.IsDelete == false)
-                    .Where(a => ids.Contains(a.ID))
-                    .AsTreeCte()
-                    .OrderBy(a => a.Sort)
-                    .ToTreeListAsync();
-
             Total = (int)total;
+        }
+
+        protected override async Task<bool> BeforeSave()
+        {
+            Editor.OrganizationID= OrganizationID;
+            return true;
         }
     }
 }

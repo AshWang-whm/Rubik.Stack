@@ -1,16 +1,13 @@
 ﻿@page "/user"
 @inherits BaseEditorPage<TbUser>
 
-
-
 <GridRow>
-    <GridCol Span="6">
-
+    <GridCol Span="4">
+        
     </GridCol>
-    <GridCol Span="18">
+    <GridCol Span="20">
         <Table @ref="Table" TItem="TbUser" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
                @bind-SelectedRows="SelectedRows">
-
 
             <TitleTemplate>
                 <Flex Justify="start" Gap="10">
@@ -25,11 +22,11 @@
             <ColumnDefinitions>
                 <Selection />
 
-                <PropertyColumn Property="item => item.Name" Filterable="true" />
-                <PropertyColumn Property="item => item.Code" />
-                <PropertyColumn Property="item => item.Email" Filterable="true" />
-                <PropertyColumn Property="item => item.Gender" />
-                <PropertyColumn Property="item => item.TbPosition.Name" Title="岗位"/>
+                <PropertyColumn Property="item => item.Name" Filterable="true" Title="姓名" />
+                <PropertyColumn Property="item => item.Code" Title="工号" />
+                <PropertyColumn Property="item => item.Email" Filterable="true" Title="邮箱" />
+                <PropertyColumn Property="item => item.Gender" Title="性别" />
+                <PropertyColumn Property="item => item.EntryDate" Title="入职日期" />
 
                 <PropertyColumn Property="item => item.ModifyDate" />
                 <PropertyColumn Property="item => item.ModifyUser" />
@@ -41,7 +38,6 @@
                     </Popconfirm>
                 </ActionColumn>
             </ColumnDefinitions>
-
 
         </Table>
     </GridCol>

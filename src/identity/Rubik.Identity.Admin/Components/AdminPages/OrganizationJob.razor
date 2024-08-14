@@ -1,8 +1,8 @@
-﻿@inherits BaseTreePage<TbOrganizationJob>
+﻿@inherits BasePage<TbOrganizationJob>
 
 
 <Table @ref="Table" TItem="TbOrganizationJob" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
-       @bind-SelectedRows="SelectedRows" TreeChildren="TreeChildren" HidePagination>
+       @bind-SelectedRows="SelectedRows" HidePagination>
     <TitleTemplate>
         <Flex Justify="start" Gap="10">
             <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
@@ -24,7 +24,6 @@
 
         <ActionColumn Title="Action">
             <Button Type="@ButtonType.Primary" OnClick="async () =>OnEdit(context)">编辑</Button>
-            <Button Type="@ButtonType.Primary" Color="@Color.Green6" OnClick="async ()=>OnEdit(new TbOrganizationJob() { ParentID=context.ID,Parent=context,OrganizationID=OrganizationID })">添加子岗位</Button>
             <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前岗位?" OnConfirm="async () => await OnDelete(context)">
                 <Button Type="@ButtonType.Primary" Danger>删除</Button>
             </Popconfirm>
@@ -35,14 +34,6 @@
 
 <Microsoft.AspNetCore.Components.Sections.SectionContent SectionId="@EditFormSectionID">
     <Form Model="@Editor" LabelColSpan="8" WrapperColSpan="16">
-        @{
-        if (Editor.Parent != null)
-        {
-        <FormItem Label="Superior">
-            <Input @bind-Value="@Editor!.Parent.Name" Disabled />
-        </FormItem>
-        }
-        }
         <FormItem Label="Name">
             <Input @bind-Value="@Editor!.Name" />
         </FormItem>

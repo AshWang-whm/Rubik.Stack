@@ -11,7 +11,7 @@ namespace Rubik.Identity.Share.Entity
     /// 部门岗位
     /// </summary>
     [Table(Name = "tb_organization_job")]
-    public class TbOrganizationJob: BaseTreeEntity<TbOrganizationJob>
+    public class TbOrganizationJob: BaseFullEntity
     {
         [Column(IsNullable =false)]
         public int OrganizationID { get; set; }
