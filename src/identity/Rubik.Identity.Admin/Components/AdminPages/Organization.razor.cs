@@ -13,7 +13,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 
         public override async Task Query(QueryModel<TbOrganization> query)
         {
-            var exp = query.GetQueryExpression();
+            var exp = query.GetFilterExpression();
 
             // 顶级的数据作为total数据分页统计
             var source = await FreeSql.Select<TbOrganization>()

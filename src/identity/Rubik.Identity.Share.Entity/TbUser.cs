@@ -26,7 +26,7 @@ namespace Rubik.Identity.Share.Entity
         public string? Department { get; set; }
     }
 
-
+    [Flags]
     public enum Gender
     {
         Male,

@@ -3,7 +3,10 @@
 
 <GridRow>
     <GridCol Span="4">
-        
+        <Tree TItem="TbOrganization" ShowIcon="true" DataSource="TreeOrganization" TitleExpression="a=>a.DataItem.Name" ChildrenExpression="a=>a.DataItem.Children"
+              HideUnmatched="true" DefaultExpandAll BlockNode OnClick="OnOrgClick">
+
+        </Tree>
     </GridCol>
     <GridCol Span="20">
         <Table @ref="Table" TItem="TbUser" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
@@ -15,6 +18,9 @@
                     <Button Type="@ButtonType.Primary" OnClick="OnNew">新增</Button>
                     <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选数据?" OnConfirm="OnDeleteSelectedRow">
                         <Button Type="@ButtonType.Primary" Danger>删除</Button>
+                    </Popconfirm>
+                    <Popconfirm Disabled="@(!SelectedRows.Any())" Placement="@Placement.Bottom" Title="您确定要重置所选用户密码?" OnConfirm="OnResetPwd">
+                        <Button Type="@ButtonType.Primary" Color="Color.Magenta6">重置密码</Button>
                     </Popconfirm>
                 </Flex>
             </TitleTemplate>
@@ -44,3 +50,37 @@
 </GridRow>
 
 
+<Microsoft.AspNetCore.Components.Sections.SectionContent SectionId="@EditFormSectionID">
+    <Form Model="@Editor" LabelColSpan="8" WrapperColSpan="16">
+        <FormItem Label="所属部门">
+            <Input @bind-Value="@_current.Name" Disabled />
+        </FormItem>
+        <FormItem Label="姓名">
+            <Input @bind-Value="@Editor.Name" />
+        </FormItem>
+        <FormItem Label="账号">
+            <Input @bind-Value="@Editor.Code" />
+        </FormItem>
+
+        <FormItem Label="邮箱">
+            <Input @bind-Value="@Editor.Email" />
+        </FormItem>
+        <FormItem Label="性别">
+            <EnumSelect TEnum="Gender" @bind-Value="@Editor.Gender" />
+        </FormItem>
+        <FormItem Label="年龄">
+            <Input @bind-Value="@Editor.Age" />
+        </FormItem>
+        <FormItem Label="入职日期">
+            <Input @bind-Value="@Editor.EntryDate" />
+        </FormItem>
+        <FormItem Label="排序">
+            <Input @bind-Value="@Editor.Sort" />
+        </FormItem>
+    </Form>
+</Microsoft.AspNetCore.Components.Sections.SectionContent>
+
+
+@{
+    base.BuildRenderTree(__builder);
+}
