@@ -1,9 +1,14 @@
 ﻿@typeparam T
 
 
-<Modal Visible="EditorModalVisiable" OnOk="OnSave" OnCancel="() => { EditorModalVisiable = false; }" Draggable="true" Title="编辑">
-    <Microsoft.AspNetCore.Components.Sections.SectionOutlet SectionId="EditFormSectionID">
-
-
-    </Microsoft.AspNetCore.Components.Sections.SectionOutlet>
+<Modal Visible="EditorModalVisiable" OnOk="OnSave" OnCancel="() => { EditorModalVisiable = false; }" Draggable="true" Title="编辑" Width="@("50vw")">
+    <Form Model="@Editor" LabelColSpan="4" WrapperColSpan="20">
+        @EditorForm
+    </Form>
 </Modal>
+
+
+@code{
+    protected abstract RenderFragment EditorForm { get; }
+
+}

@@ -31,22 +31,22 @@
     </ColumnDefinitions>
 </Table>
 
-
-<Microsoft.AspNetCore.Components.Sections.SectionContent SectionId="@EditFormSectionID">
-    <Form Model="@Editor" LabelColSpan="8" WrapperColSpan="16">
-        <FormItem Label="Name">
-            <Input @bind-Value="@Editor!.Name" />
-        </FormItem>
-        <FormItem Label="Code">
-            <Input @bind-Value="@Editor!.Code" />
-        </FormItem>
-        <FormItem Label="Sort">
-            <Input @bind-Value="@Editor.Sort" />
-        </FormItem>
-    </Form>
-</Microsoft.AspNetCore.Components.Sections.SectionContent>
-
-
 @{
     base.BuildRenderTree(__builder);
+}
+
+@code{
+    protected override RenderFragment EditorForm =>
+        @<div>
+    <FormItem Label="Name">
+        <Input @bind-Value="@Editor!.Name" />
+    </FormItem>
+    <FormItem Label="Code">
+        <Input @bind-Value="@Editor!.Code" />
+    </FormItem>
+    <FormItem Label="Sort">
+        <Input @bind-Value="@Editor.Sort" />
+    </FormItem>
+</div>;
+
 }

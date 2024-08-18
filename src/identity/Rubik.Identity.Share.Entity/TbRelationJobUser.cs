@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Rubik.Identity.Share.Entity
 {
-    [Table(Name = "tb_relation_organization_user")]
-    public class TbRleationOrganizeUser: BaseNewEntity
+    [Table(Name = "tb_relation_job_user")]
+    public class TbRelationJobUser : BaseNewEntity
     {
-        public int OrganizationID { get; set; }
+        public int JobID { get; set; }
 
         public int UserID { get; set; }
     }

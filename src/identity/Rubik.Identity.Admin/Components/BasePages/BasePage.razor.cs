@@ -2,6 +2,7 @@
 using AntDesign.TableModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Rubik.Share.Entity.BaseEntity;
 
 namespace Rubik.Identity.Admin.Components.BasePages
@@ -36,10 +37,11 @@ namespace Rubik.Identity.Admin.Components.BasePages
         {
             await Query(Table!.BuildQueryModel());
         }
-        protected virtual void OnNew()
+        protected virtual Task OnNew()
         {
             Editor = new T();
             EditorModalVisiable = true;
+            return Task.CompletedTask;
         }
 
         protected virtual async Task OnDeleteSelectedRow()
@@ -64,7 +66,7 @@ namespace Rubik.Identity.Admin.Components.BasePages
                 .AnyAsync();
             if (exist)
             {
-                await MessageService.Error($"[Code]:{Editor.Code} 也存在!");
+                await MessageService.Error($"[Code]:{Editor.Code} 已存在!");
                 return false;
             }
 
@@ -87,7 +89,7 @@ namespace Rubik.Identity.Admin.Components.BasePages
             await MessageService.Error("提交失败");
         }
 
-        protected async Task OnSave()
+        protected virtual async Task OnSave()
         {
             if (Editor == null)
             {
@@ -97,7 +99,6 @@ namespace Rubik.Identity.Admin.Components.BasePages
             {
                 if (!await BeforeSave())
                 {
-
                     return;
                 }
                 else
@@ -133,7 +134,6 @@ namespace Rubik.Identity.Admin.Components.BasePages
             //await InvokeAsync(StateHasChanged);
             EditorModalVisiable = true;
         }
-
         protected virtual async Task OnDelete(params T[] source)
         {
             if (source.Length == 0)

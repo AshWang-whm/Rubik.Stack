@@ -8,8 +8,6 @@ namespace Rubik.Identity.Admin.Components.BasePages
     public abstract partial class BaseEditorPage<T> : BasePage<T>
         where T : BaseFullEntity, IFullEntity, new()
     {
-        protected virtual Func<T, IEnumerable<T>> TreeChildren { get; set; } = item => [];
-
         protected override async Task OnDelete(params T[] source)
         {
             if (source.Length == 0)

@@ -5,7 +5,6 @@
     <GridCol Span="4">
         <Tree TItem="TbOrganization" ShowIcon="true" DataSource="TreeOrganization" TitleExpression="a=>a.DataItem.Name" ChildrenExpression="a=>a.DataItem.Children"
               HideUnmatched="true" DefaultExpandAll BlockNode OnClick="OnOrgClick">
-
         </Tree>
     </GridCol>
     <GridCol Span="20">
@@ -50,37 +49,56 @@
 </GridRow>
 
 
-<Microsoft.AspNetCore.Components.Sections.SectionContent SectionId="@EditFormSectionID">
-    <Form Model="@Editor" LabelColSpan="8" WrapperColSpan="16">
-        <FormItem Label="所属部门">
-            <Input @bind-Value="@_current.Name" Disabled />
-        </FormItem>
-        <FormItem Label="姓名">
-            <Input @bind-Value="@Editor.Name" />
-        </FormItem>
-        <FormItem Label="账号">
-            <Input @bind-Value="@Editor.Code" />
-        </FormItem>
-
-        <FormItem Label="邮箱">
-            <Input @bind-Value="@Editor.Email" />
-        </FormItem>
-        <FormItem Label="性别">
-            <EnumSelect TEnum="Gender" @bind-Value="@Editor.Gender" />
-        </FormItem>
-        <FormItem Label="年龄">
-            <Input @bind-Value="@Editor.Age" />
-        </FormItem>
-        <FormItem Label="入职日期">
-            <Input @bind-Value="@Editor.EntryDate" />
-        </FormItem>
-        <FormItem Label="排序">
-            <Input @bind-Value="@Editor.Sort" />
-        </FormItem>
-    </Form>
-</Microsoft.AspNetCore.Components.Sections.SectionContent>
-
-
 @{
     base.BuildRenderTree(__builder);
+}
+
+@code
+{
+    protected override RenderFragment EditorForm =>
+        @<div>
+
+    <FormItem Label="所属部门">
+        <FormItem Style="display: inline-block; width: calc(50% - 10px)">
+            <TreeSelect DataSource="TreeOrganization" @bind-Value="@SelectedOrganization" AllowClear="true" Placeholder="请选择用户部门"
+                        TitleExpression="a=>a.DataItem.Name" ItemValue="a=>a.ID" ChildrenExpression="a=>a.DataItem.Children" TreeCheckStrictly="true" TreeDefaultExpandAll="true"
+                        KeyExpression="a=>a.DataItem.ID.ToString()" OnSelectedItemChanged="UserOrgainzationSelectedEventCallback">
+            </TreeSelect>
+        </FormItem>
+        <FormItem Style="display: inline-block; width: calc(50% - 10px)">
+            <Select DataSource="OrgainzationJobList" @bind-Value="@SelectedJob" LabelProperty="a=>a.Name" ValueProperty="a=>a.ID" Placeholder="请选择用户岗位" AllowClear="true" />
+        </FormItem>
+    </FormItem>
+   
+    <FormItem Label="职位">
+        <TreeSelect DataSource="TreePosition" @bind-Values="@SelectedPositions" TreeCheckable="true" Placeholder="请选择用户职位" AllowClear="true"
+                    TitleExpression="a=>a.DataItem.Name" ItemValue="a=>a.ID" ChildrenExpression="a=>a.DataItem.Children" TreeCheckStrictly="true" TreeDefaultExpandAll="true"
+                    KeyExpression="a=>a.DataItem.ID.ToString()">
+        </TreeSelect>
+    </FormItem>
+
+    <FormItem Label="姓名">
+        <Input @bind-Value="@Editor.Name" />
+    </FormItem>
+    <FormItem Label="账号">
+        <Input @bind-Value="@Editor.Code" />
+    </FormItem>
+
+    <FormItem Label="邮箱">
+        <Input @bind-Value="@Editor.Email" />
+    </FormItem>
+    <FormItem Label="性别">
+        <EnumSelect TEnum="Gender" @bind-Value="@Editor.Gender" />
+    </FormItem>
+    <FormItem Label="年龄">
+        <Input @bind-Value="@Editor.Age" />
+    </FormItem>
+    <FormItem Label="入职日期">
+        <DatePicker @bind-Value="@Editor.EntryDate" />
+    </FormItem>
+    <FormItem Label="排序">
+        <Input @bind-Value="@Editor.Sort" />
+    </FormItem>
+</div>;
+
 }

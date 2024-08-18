@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,13 +22,13 @@ namespace Rubik.Identity.Share.Entity
             [
                 typeof(TbApplication), typeof(TbApplicationPermission),typeof(TbApplicationRole),
                 typeof(TbOrganization),typeof(TbOrganizationJob),typeof(TbPosition),
-                typeof(TbRleationOrganizeUser),typeof(TbRelationRolePermission),typeof(TbRelationRoleUser),
+                typeof(TbRelationOrganizeUser),typeof(TbRelationRolePermission),typeof(TbRelationRoleUser),typeof(TbRelationPositionUser),typeof(TbRelationJobUser),
                 typeof(TbUser)
                 
             ];
             foreach (var type in types)
             {
-                if (!freeSql.DbFirst.ExistsTable(nameof(type)))
+                if (!freeSql.DbFirst.ExistsTable(type.GetCustomAttribute<TableAttribute>()!.Name))
                 {
                     freeSql.CodeFirst.SyncStructure(type);
                 }
