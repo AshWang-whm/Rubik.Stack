@@ -4,10 +4,6 @@
     [Index("uq_code","Code",IsUnique =true)]
     public class TbApplication:BaseFullEntity
     {
-
-        [Column(IsNullable =false)]
-        public string? Code { get; set; }
-
         [Column(IsNullable = true)]
         public string? RedirectUri { get; set; }
 
@@ -29,7 +25,9 @@
 
     public enum OidcAppType
     {
+        MVC,
         Client,
+        FrontEnd,
         ApiResource
     }
 }

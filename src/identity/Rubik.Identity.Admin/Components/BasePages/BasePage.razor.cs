@@ -75,14 +75,10 @@ namespace Rubik.Identity.Admin.Components.BasePages
 
         protected virtual async Task AfterSave()
         {
+            EditorModalVisiable = false;
             await OnRefresh();
         }
 
-        protected virtual async Task OnSubmitForm(EditContext context)
-        {
-            await OnSave();
-            EditorModalVisiable = false;
-        }
 
         protected virtual async Task OnSubmitFailed(EditContext context)
         {
@@ -115,23 +111,15 @@ namespace Rubik.Identity.Admin.Components.BasePages
                 }
             }
 
-            EditorModalVisiable = false;
             await AfterSave();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="clone">是否深拷贝</param>
-        /// <param name="options"></param>
-        protected void OnEdit(T obj, Action<T>? options = null)
+        protected virtual void OnEdit(T obj, Action<T>? options = null)
         {
             //Editor =clone? obj.TreeCopy():obj;
             // 每次同步引用，若不保存数据需要恢复原始状态,todo:
             Editor = obj;
             options?.Invoke(obj);
-            //await InvokeAsync(StateHasChanged);
             EditorModalVisiable = true;
         }
         protected virtual async Task OnDelete(params T[] source)
