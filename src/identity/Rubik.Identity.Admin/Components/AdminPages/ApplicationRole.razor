@@ -1,0 +1,66 @@
+﻿@inherits BaseTreePage<TbApplicationRole>
+
+
+<Table @ref="Table" TItem="TbApplicationRole" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
+       @bind-SelectedRows="SelectedRows" TreeChildren="TreeChildren" HidePagination>
+    <TitleTemplate>
+        <Flex Justify="start" Gap="10">
+            <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
+            <Button Type="@ButtonType.Primary" OnClick="OnNew">新增</Button>
+            <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选角色?" OnConfirm="OnDeleteSelectedRow">
+                <Button Type="@ButtonType.Primary" Danger>删除</Button>
+            </Popconfirm>
+        </Flex>
+    </TitleTemplate>
+
+    <ColumnDefinitions>
+        <Selection />
+
+        <PropertyColumn Property="item => item.Name" Filterable="true" />
+        <PropertyColumn Property="item => item.Code" />
+        <PropertyColumn Property="item => item.Sort" />
+        <PropertyColumn Property="item => item.ModifyDate" />
+        <PropertyColumn Property="item => item.ModifyUser" />
+
+        <ActionColumn Title="Action">
+            <Button Type="@ButtonType.Primary" OnClick="async () =>OnEdit(context)">编辑</Button>
+            <Button Type="@ButtonType.Primary" Color="@Color.Green6" OnClick="async ()=>OnEdit(new TbApplicationRole() { ParentID=context.ID,Parent=context })">添加子角色</Button>
+            <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前角色?" OnConfirm="async () => await OnDelete(context)">
+                <Button Type="@ButtonType.Primary" Danger>删除</Button>
+            </Popconfirm>
+        </ActionColumn>
+    </ColumnDefinitions>
+</Table>
+
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code
+{
+    protected override RenderFragment EditorForm =>
+        @<div>
+            @{
+                if (Editor.Parent != null)
+                {
+                    <FormItem Label="Superior">
+                        <Input @bind-Value="@Editor!.Parent.Name" Disabled />
+                    </FormItem>
+                }
+            }
+            <FormItem Label="Name">
+                <Input @bind-Value="@Editor!.Name" />
+            </FormItem>
+            <FormItem Label="Code">
+                <Input @bind-Value="@Editor!.Code" />
+            </FormItem>
+            <FormItem Label="Description">
+                <Input @bind-Value="@Editor!.Description" />
+            </FormItem>
+            <FormItem Label="Sort">
+                <Input @bind-Value="@Editor.Sort" />
+            </FormItem>
+        </div>;
+
+}

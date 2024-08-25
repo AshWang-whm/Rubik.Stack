@@ -79,7 +79,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 
             @ref.OnClose = async () =>
             {
-                System.Diagnostics.Debug.WriteLine("6666666");
+                System.Diagnostics.Debug.WriteLine("close");
             };
         }
     }

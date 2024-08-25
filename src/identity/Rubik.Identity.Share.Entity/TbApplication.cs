@@ -7,8 +7,8 @@
         [Column(IsNullable = true)]
         public string? RedirectUri { get; set; }
 
-        [Column(IsNullable = true)]
-        public string? ResponseType { get; set; }
+        [Column(IsNullable = true,MapType = typeof(sbyte?))]
+        public ResponseType? ResponseType { get; set; }
 
         [Column(IsNullable = true)]
         public string? ClientSecret { get; set; }
@@ -28,6 +28,14 @@
         MVC,
         Client,
         FrontEnd,
-        ApiResource
+        ApiResource,
+    }
+
+    [Flags]
+    public enum ResponseType
+    {
+        code=1,
+        token=2,
+        id_token=4
     }
 }

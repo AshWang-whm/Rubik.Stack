@@ -20,7 +20,6 @@ namespace Rubik.Identity.Admin.Components.BasePages
         public required IMessageService MessageService { get; set; }
 
 
-        protected string EditFormSectionID = Guid.NewGuid().ToString();
 
         protected List<T> DataSource = [];
         protected IEnumerable<T> SelectedRows = [];
@@ -58,15 +57,6 @@ namespace Rubik.Identity.Admin.Components.BasePages
             if (string.IsNullOrWhiteSpace(Editor.Code))
             {
                 await MessageService.Error("[Code] 不允许为空!");
-                return false;
-            }
-
-            var exist = await FreeSql.Select<T>()
-                .Where(a => a.Code == Editor.Code && a.IsDelete == false)
-                .AnyAsync();
-            if (exist)
-            {
-                await MessageService.Error($"[Code]:{Editor.Code} 已存在!");
                 return false;
             }
 

@@ -6,13 +6,13 @@ namespace Rubik.Identity.Share.Entity
     public class TbApplicationPermission: BaseTreeEntity<TbApplicationPermission>
     {
         [Column(IsNullable =false)]
-        public PermissionType Type { get; set; }
+        public PermissionType PermissionType { get; set; }
 
         [Column(IsNullable =false)]
         public int ApplicationID { get; set; }
 
-        [Column(IsNullable =false,Position =8)]
-        public PageType PageType { get; set; }
+        [Column(IsNullable =true,Position =8)]
+        public PageType? PageType { get; set; }
 
         [Column(IsNullable = true, Position = 10)]
         public string? Url { get; set; }

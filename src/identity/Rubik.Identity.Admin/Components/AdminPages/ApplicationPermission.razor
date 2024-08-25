@@ -1,0 +1,90 @@
+﻿@inherits BaseTreePage<TbApplicationPermission>
+
+
+<Table @ref="Table" TItem="TbApplicationPermission" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
+       @bind-SelectedRows="SelectedRows" TreeChildren="TreeChildren" HidePagination>
+    <TitleTemplate>
+        <Flex Justify="start" Gap="10">
+            <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
+            <Button Type="@ButtonType.Primary" OnClick="OnNew">新增</Button>
+            <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选菜单?" OnConfirm="OnDeleteSelectedRow">
+                <Button Type="@ButtonType.Primary" Danger>删除</Button>
+            </Popconfirm>
+        </Flex>
+    </TitleTemplate>
+
+    <ColumnDefinitions>
+        <Selection />
+
+        <PropertyColumn Property="item => item.Name" Filterable="true" />
+        <PropertyColumn Property="item => item.Code" />
+        <PropertyColumn Property="item => item.PermissionType" />
+        <PropertyColumn Property="item => item.PageType" />
+        <PropertyColumn Property="item => item.Url" />
+        <PropertyColumn Property="item => item.Sort" />
+        <PropertyColumn Property="item => item.ModifyDate" />
+        <PropertyColumn Property="item => item.ModifyUser" />
+
+        <ActionColumn Title="Action">
+            <Button Type="@ButtonType.Primary" OnClick="async () =>OnEdit(context)">编辑</Button>
+            <Button Type="@ButtonType.Primary" Color="@Color.Green6" OnClick="async ()=>OnEdit(new TbApplicationPermission() { ParentID=context.ID,Parent=context })">添加子菜单</Button>
+            <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前菜单?" OnConfirm="async () => await OnDelete(context)">
+                <Button Type="@ButtonType.Primary" Danger>删除</Button>
+            </Popconfirm>
+        </ActionColumn>
+    </ColumnDefinitions>
+</Table>
+
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code
+{
+    protected override RenderFragment EditorForm =>
+        @<div>
+    @{
+        if (Editor.Parent != null)
+        {
+            <FormItem Label="所属权限">
+                <Input @bind-Value="@Editor!.Parent.Name" Disabled />
+            </FormItem>
+        }
+    }
+    <FormItem Label="Name">
+        <Input @bind-Value="@Editor!.Name" />
+    </FormItem>
+    <FormItem Label="Code">
+        <Input @bind-Value="@Editor!.Code" />
+    </FormItem>
+    <FormItem Label="Type">
+        <EnumSelect @bind-Value="@Editor.PermissionType" OnSelectedItemChanged="PermissionTypeChangeCallback" />
+    </FormItem>
+
+    @if (Editor.PermissionType == PermissionType.Page)
+    {
+        <FormItem Label="Url">
+            <Input @bind-Value="@Editor.Url" />
+        </FormItem>
+        <FormItem Label="Page Type">
+            <EnumSelect @bind-Value="@Editor.PageType" />
+        </FormItem>
+    }
+    <FormItem Label="Icon">
+        <Input @bind-Value="@Editor.Icon" />
+    </FormItem>
+    <FormItem Label="Description">
+        <Input @bind-Value="@Editor!.Description" />
+    </FormItem>
+    <FormItem Label="Sort">
+        <Input @bind-Value="@Editor.Sort" />
+    </FormItem>
+</div>;
+
+}
