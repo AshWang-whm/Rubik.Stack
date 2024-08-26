@@ -25,12 +25,23 @@
         <ActionColumn Title="Action">
             <Button Type="@ButtonType.Primary" OnClick="async () =>OnEdit(context)">编辑</Button>
             <Button Type="@ButtonType.Primary" Color="@Color.Green6" OnClick="async ()=>OnEdit(new TbApplicationRole() { ParentID=context.ID,Parent=context })">添加子角色</Button>
+            <Button Type="@ButtonType.Primary" Color="@Color.Volcano4" OnClick="async ()=> await OnShowRolePermissions(context)">角色权限</Button>
+
             <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前角色?" OnConfirm="async () => await OnDelete(context)">
                 <Button Type="@ButtonType.Primary" Danger>删除</Button>
             </Popconfirm>
         </ActionColumn>
     </ColumnDefinitions>
 </Table>
+
+<Modal Visible="EditRolePermissionVisiable" OnOk="OnSaveRolePermission" OnCancel="() => { EditRolePermissionVisiable = false; }" Draggable="true" Title="角色权限" Width="@("30vw")" MaxBodyHeight="@("50vh")">
+    <Tree TItem="TbApplicationPermission" ShowIcon="true" DataSource="TreePermissions" 
+          TitleExpression="a=>a.DataItem.Name" ChildrenExpression="a=>a.DataItem.Children" KeyExpression="a=>a.DataItem.ID.ToString()"
+          HideUnmatched="true" DefaultExpandAll BlockNode Checkable Multiple
+          @bind-CheckedKeys="SelectedKeys"
+          >
+    </Tree>
+</Modal>
 
 
 @{
@@ -62,5 +73,4 @@
                 <Input @bind-Value="@Editor.Sort" />
             </FormItem>
         </div>;
-
 }

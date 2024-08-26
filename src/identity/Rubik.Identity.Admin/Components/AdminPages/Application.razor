@@ -25,11 +25,11 @@
 
         <ActionColumn Title="Action">
             <Button Type="@ButtonType.Primary" OnClick="async () =>OnEdit(context)">编辑</Button>
-            <Button Type="@ButtonType.Primary" Color="@Color.Green6" OnClick="@(async() => OnShowAppRoleModal<ApplicationPermission>(context,"权限"))">应用菜单</Button>
-            <Button Type="@ButtonType.Primary" Color="Color.Orange2" OnClick="@(async() => OnShowAppRoleModal<ApplicationRole>(context,"角色"))">应用角色</Button>
-            <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前应用?" OnConfirm="async () => await OnDelete(context)">
-                <Button Type="@ButtonType.Primary" Danger>删除</Button>
-            </Popconfirm>
+            <Button Type="@ButtonType.Primary" Color="@Color.Green6" OnClick="@(async() => OnShowAppModal<ApplicationPermission>(context,"权限"))">应用菜单</Button>
+            <Button Type="@ButtonType.Primary" Color="Color.Magenta5" OnClick="@(async() => OnShowAppModal<ApplicationRole>(context,"角色"))">应用角色</Button>
+            @*<Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前应用?" OnConfirm="async () => await OnDelete(context)">
+            <Button Type="@ButtonType.Primary" Danger>删除</Button>
+        </Popconfirm>*@
         </ActionColumn>
     </ColumnDefinitions>
 </Table>
@@ -41,42 +41,40 @@
 @code{
     protected override RenderFragment EditorForm =>
         @<div>
-    <FormItem Label="Name">
-        <Input @bind-Value="@Editor!.Name" />
-    </FormItem>
-    <FormItem Label="Code">
-        <Input @bind-Value="@Editor!.Code" />
-    </FormItem>
-    <FormItem Label="App Type">
-        <RadioGroup @bind-Value="@Editor.OidcAppType" TValue="OidcAppType" OnChange="OidcAppTypeChangeCallback">
-            <Radio RadioButton Value="@OidcAppType.MVC">MVC</Radio>
-            <Radio RadioButton Value="@OidcAppType.ApiResource">ApiResource</Radio>
-            <Radio RadioButton Value="@OidcAppType.Client">Client</Radio>
-            <Radio RadioButton Value="@OidcAppType.FrontEnd">FrontEnd</Radio>
-        </RadioGroup>
-    </FormItem>
-    @if (Editor.OidcAppType == OidcAppType.MVC || Editor.OidcAppType == OidcAppType.Client)
-    {
-        <FormItem Label="Client Secret">
-            <Input @bind-Value="@Editor!.ClientSecret" />
-        </FormItem>
-    }
-    <FormItem Label="ResponseType">
-        <EnumSelect @bind-Value="@Editor!.ResponseType" Mode="multiple" />
-    </FormItem>
-    <FormItem Label="Scope">
-        <Select Mode="tags" @bind-Value="@Editor.Scope" TItem="string" TItemValue="string" EnableSearch DataSource="Scopes"></Select>
-    </FormItem>
-    @if (Editor.OidcAppType == OidcAppType.MVC || Editor.OidcAppType == OidcAppType.FrontEnd)
-    {
-        <FormItem Label="RedirectUri">
-            <Input @bind-Value="@Editor!.RedirectUri" />
-        </FormItem>
-        <FormItem Label="CallbackPath">
-            <Input @bind-Value="@Editor!.CallbackPath" />
-        </FormItem>
-    }
-
-</div>;
-
+            <FormItem Label="Name">
+                <Input @bind-Value="@Editor!.Name" />
+            </FormItem>
+            <FormItem Label="Code">
+                <Input @bind-Value="@Editor!.Code" />
+            </FormItem>
+            <FormItem Label="App Type">
+                <RadioGroup @bind-Value="@Editor.OidcAppType" TValue="OidcAppType" OnChange="OidcAppTypeChangeCallback">
+                    <Radio RadioButton Value="@OidcAppType.MVC">MVC</Radio>
+                    <Radio RadioButton Value="@OidcAppType.ApiResource">ApiResource</Radio>
+                    <Radio RadioButton Value="@OidcAppType.Client">Client</Radio>
+                    <Radio RadioButton Value="@OidcAppType.FrontEnd">FrontEnd</Radio>
+                </RadioGroup>
+            </FormItem>
+            @if (Editor.OidcAppType == OidcAppType.MVC || Editor.OidcAppType == OidcAppType.Client)
+            {
+                <FormItem Label="Client Secret">
+                    <Input @bind-Value="@Editor!.ClientSecret" />
+                </FormItem>
+            }
+            <FormItem Label="ResponseType">
+                <EnumSelect @bind-Value="@Editor!.ResponseType" Mode="multiple" />
+            </FormItem>
+            <FormItem Label="Scope">
+                <Select Mode="tags" @bind-Value="@Editor.Scope" TItem="string" TItemValue="string" EnableSearch DataSource="Scopes"></Select>
+            </FormItem>
+            @if (Editor.OidcAppType == OidcAppType.MVC || Editor.OidcAppType == OidcAppType.FrontEnd)
+            {
+                <FormItem Label="RedirectUri">
+                    <Input @bind-Value="@Editor!.RedirectUri" />
+                </FormItem>
+                <FormItem Label="CallbackPath">
+                    <Input @bind-Value="@Editor!.CallbackPath" />
+                </FormItem>
+            }
+        </div>;
 }

@@ -27,15 +27,15 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             Total = (int)total;
         }
 
-        void OnShowAppRoleModal<TPage>(TbApplication org,string title)
+        void OnShowAppModal<TPage>(TbApplication org,string title)
             where TPage : IComponent
         {
-            RenderFragment buildModal = (builder) =>
+            void buildModal(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)
             {
                 builder.OpenComponent<TPage>(0);
                 builder.AddAttribute(1, "OrganizationID", org.ID);
                 builder.CloseComponent();
-            };
+            }
 
             var @ref = ModalService!.CreateModal(new ModalOptions
             {
@@ -46,13 +46,9 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                 Centered = true,
                 MaskClosable = true,
                 Maximizable = true,
-                Width = "75vw;"
+                Width = "75vw;",
+                DestroyOnClose = true,
             });
-
-            @ref.OnClose = async () =>
-            {
-                System.Diagnostics.Debug.WriteLine("close");
-            };
         }
 
         protected override async Task OnInitializedAsync()

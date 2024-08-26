@@ -16,11 +16,23 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         {
             var exp = query.GetFilterExpression();
 
-            DataSource = await FreeSql.Select<TbApplicationPermission>()
+            // 顶级的数据作为total数据分页统计
+            var source = await FreeSql.Select<TbApplicationPermission>()
                 .WhereIf(exp != null, exp)
+                .WhereIf(exp == null, a => a.ParentID == null)
                 .Where(a => a.IsDelete == false)
                 .Count(out var total)
                 .ToListAsync();
+
+            // 递归查询子节点
+            var ids = source.Select(a => a.ID).ToList();
+
+            DataSource = ids.Count == 0 ? source : await FreeSql.Select<TbApplicationPermission>()
+                    .Where(a => a.IsDelete == false)
+                    .Where(a => ids.Contains(a.ID))
+                    .AsTreeCte()
+                    .OrderBy(a => a.Sort)
+                    .ToTreeListAsync();
 
             Total = (int)total;
         }
