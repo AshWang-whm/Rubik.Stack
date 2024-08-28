@@ -27,20 +27,20 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             Total = (int)total;
         }
 
-        void OnShowAppModal<TPage>(TbApplication org,string title)
+        void OnShowAppModal<TPage>(TbApplication app,string title)
             where TPage : IComponent
         {
             void buildModal(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)
             {
                 builder.OpenComponent<TPage>(0);
-                builder.AddAttribute(1, "OrganizationID", org.ID);
+                builder.AddAttribute(1, "ApplicationID", app.ID);
                 builder.CloseComponent();
             }
 
             var @ref = ModalService!.CreateModal(new ModalOptions
             {
                 Content = buildModal,
-                Title = $"查看 [{org.Name}] {title}",
+                Title = $"查看 [{app.Name}] {title}",
                 Keyboard = true,
                 Visible = true,
                 Centered = true,

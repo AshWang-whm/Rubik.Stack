@@ -9,7 +9,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
     public partial class ApplicationRole : BaseTreePage<TbApplicationRole>
     {
         [Parameter]
-        public int OrganizationID { get; set; }
+        public int ApplicationID { get; set; }
 
         bool EditRolePermissionVisiable { get; set; } = false;
 
@@ -25,6 +25,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             var source = await FreeSql.Select<TbApplicationRole>()
                 .WhereIf(exp != null, exp)
                 .WhereIf(exp == null, a => a.ParentID == null)
+                .Where(a=>a.ApplicationID== ApplicationID)
                 .Where(a => a.IsDelete == false)
                 .Count(out var total)
                 .ToListAsync();
@@ -40,6 +41,12 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                     .ToTreeListAsync();
 
             Total = (int)total;
+        }
+
+        protected override Task<bool> BeforeSave()
+        {
+            Editor.ApplicationID = ApplicationID;
+            return base.BeforeSave();
         }
 
         protected override async Task AfterSave()
@@ -83,6 +90,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                     AddDate=DateTime.Now
                 })
                 .ToList();
+
             if(role_permissions.Count > 0)
             {
                 var uow = FreeSql.CreateUnitOfWork();
@@ -109,10 +117,6 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 
             EditRolePermissionVisiable = false;
             SelectedKeys = [];
-           
-
         }
     }
-
-
 }

@@ -9,7 +9,7 @@
     </GridCol>
 
     <GridCol Span="20">
-        <Table @ref="Table" TItem="TbUser" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
+        <Table @ref="Table" TItem="TbUser" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" PageSize="50" @bind-Total="Total"
                @bind-SelectedRows="SelectedRows">
 
             <TitleTemplate>
@@ -22,6 +22,7 @@
                     <Popconfirm Disabled="@(!SelectedRows.Any())" Placement="@Placement.Bottom" Title="您确定要重置所选用户密码?" OnConfirm="OnResetPwd">
                         <Button Type="@ButtonType.Primary" Color="Color.Magenta6">重置密码</Button>
                     </Popconfirm>
+                    <Button Color="Color.Volcano4" OnClick="OnShowRoleSetup" Disabled="!SelectedRows.Any()">角色设置</Button>
                 </Flex>
             </TitleTemplate>
 

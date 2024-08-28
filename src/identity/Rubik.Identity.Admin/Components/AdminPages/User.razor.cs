@@ -9,6 +9,9 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 {
     public partial class User: BaseEditorPage<TbUser>
     {
+        [Inject]
+        ModalService? ModalService { get; set; }
+
         List<TbOrganization> TreeOrganization = [];
         /// <summary>
         /// 选择的部门ID
@@ -24,7 +27,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         List<TbOrganizationJob> OrgainzationJobList = [];
         int? SelectedJob = null;
 
-        UserCompanyInfo UserCompanyInfo = new();
+        readonly UserCompanyInfo UserCompanyInfo = new();
 
         public EventCallback<TbOrganization> UserOrgainzationSelectedEventCallback { get; set; }
 
@@ -243,6 +246,32 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                 await MessageService.Error(ex.Message,3);
             }
         }
+
+        void OnShowRoleSetup()
+        {
+            var users = SelectedRows.Select(a => a.ID).ToList();
+
+            void buildModal(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)
+            {
+                builder.OpenComponent<UserRoleSetup>(0);
+                builder.AddAttribute(1, "Users", users);
+                builder.CloseComponent();
+            }
+
+            var @ref = ModalService!.CreateModal(new ModalOptions
+            {
+                Content = buildModal,
+                Title = $"查看用户权限",
+                Keyboard = true,
+                Visible = true,
+                Centered = true,
+                MaskClosable = true,
+                Maximizable = true,
+                Width = "75vw;",
+                DestroyOnClose = true,
+            });
+        }
+
     }
 
     public class UserCompanyInfo

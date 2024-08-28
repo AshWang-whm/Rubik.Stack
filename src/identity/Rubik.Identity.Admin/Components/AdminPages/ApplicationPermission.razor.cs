@@ -8,7 +8,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
     public partial class ApplicationPermission : BaseTreePage<TbApplicationPermission>
     {
         [Parameter]
-        public int OrganizationID { get; set; }
+        public int ApplicationID { get; set; }
 
         EventCallback<PermissionType> PermissionTypeChangeCallback { get; set; }
 
@@ -20,6 +20,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             var source = await FreeSql.Select<TbApplicationPermission>()
                 .WhereIf(exp != null, exp)
                 .WhereIf(exp == null, a => a.ParentID == null)
+                .Where(a=>a.ApplicationID==ApplicationID)
                 .Where(a => a.IsDelete == false)
                 .Count(out var total)
                 .ToListAsync();
@@ -63,7 +64,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                 await MessageService.Error("[Url] 不允许为空!");
                 return false;
             }
-
+            Editor.ApplicationID = ApplicationID;
             return await base.BeforeSave();
         }
     }
