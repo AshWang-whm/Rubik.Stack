@@ -250,15 +250,17 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         void OnShowRoleSetup()
         {
             var users = SelectedRows.Select(a => a.ID).ToList();
+            ModalRef? @ref = null;
 
             void buildModal(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)
             {
                 builder.OpenComponent<UserRoleSetup>(0);
                 builder.AddAttribute(1, "Users", users);
+                builder.AddAttribute(2, "ModalRef", @ref);
                 builder.CloseComponent();
             }
 
-            var @ref = ModalService!.CreateModal(new ModalOptions
+            @ref = ModalService!.CreateModal(new ModalOptions
             {
                 Content = buildModal,
                 Title = $"查看用户权限",
@@ -267,8 +269,9 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                 Centered = true,
                 MaskClosable = true,
                 Maximizable = true,
-                Width = "75vw;",
+                Width = "35vw;",
                 DestroyOnClose = true,
+                Draggable = true,
             });
         }
 
