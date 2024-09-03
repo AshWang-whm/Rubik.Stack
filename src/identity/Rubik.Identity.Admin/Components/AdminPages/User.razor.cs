@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 using Rubik.Identity.Admin.Components.BasePages;
 using Rubik.Identity.Share.Entity;
 using Rubik.Identity.Share.Extension;
+using Rubik.Share.Extension;
 
 namespace Rubik.Identity.Admin.Components.AdminPages
 {

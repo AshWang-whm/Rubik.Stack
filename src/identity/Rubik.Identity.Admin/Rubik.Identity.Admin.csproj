@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\Fork\ant-design-blazor\components\AntDesign.csproj" />
     <ProjectReference Include="..\..\share\Rubik.Share.Utils\Rubik.Share.Utils.csproj" />
+    <ProjectReference Include="..\Rubik.Identity.Share.Entity\Rubik.Identity.Share.Entity.csproj" />
     <ProjectReference Include="..\Rubik.Identity.Share.Extension\Rubik.Identity.Share.Extension.csproj" />
   </ItemGroup>
 

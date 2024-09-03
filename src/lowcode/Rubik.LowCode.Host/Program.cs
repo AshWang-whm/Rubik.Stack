@@ -1,7 +1,6 @@
-using Rubik.Identity.Admin.Components;
+using Rubik.LowCode.Host.Components;
 using Rubik.Share.Entity.FreesqlExtension;
 using Rubik.Share.Extension;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,11 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddBootstrapBlazor();
+
+
 builder.AddEnvironmentJsonFile();
 
-builder.Services.AddHttpContextAccessor();
-
-var fsql = builder.AddFreesql("identity", FreeSql.DataType.PostgreSQL, cmd =>
+var fsql = builder.AddFreesql("lowcode", FreeSql.DataType.PostgreSQL, cmd =>
 {
 #if DEBUG
     System.Diagnostics.Debug.WriteLine(cmd.CommandText);
@@ -21,13 +21,10 @@ var fsql = builder.AddFreesql("identity", FreeSql.DataType.PostgreSQL, cmd =>
     // ²¹³ä aop
 });
 
-builder.Services.AddHttpClient();
 
-builder.Services.AddAntDesign();
+
 
 var app = builder.Build();
-
-await Rubik.Identity.Share.Entity.FreesqlExtension.DbInitialize(fsql);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Rubik.Share.Entity.BaseEntity;
-using System.Security.Principal;
 
-namespace Avd.Infrastructure.Freesql
+namespace Rubik.Share.Entity.FreesqlExtension
 {
     public static class IocExtension
     {
@@ -15,7 +14,7 @@ namespace Avd.Infrastructure.Freesql
         /// <param name="builder"></param>
         /// <param name="conkey"></param>
         /// <param name="dataType"></param>
-        public static IFreeSql AddFreesql(this WebApplicationBuilder builder, string conkey, DataType dataType = DataType.MySql
+        public static IFreeSql AddFreesql(this WebApplicationBuilder builder, string conkey, DataType dataType = DataType.PostgreSQL
             ,Action<System.Data.Common.DbCommand>? executing=null)
         {
             var fsql = new FreeSqlBuilder()

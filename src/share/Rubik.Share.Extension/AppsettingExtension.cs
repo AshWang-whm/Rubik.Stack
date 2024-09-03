@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Avd.Infrastructure.Freesql
+namespace Rubik.Share.Extension
 {
     public static class AppsettingExtension
     {

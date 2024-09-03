@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubik.Identity.Share.Extension
+namespace Rubik.Share.Extension
 {
     public static class ExpressionExtension
     {
