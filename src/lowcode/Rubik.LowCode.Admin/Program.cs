@@ -1,4 +1,4 @@
-using Rubik.LowCode.Host.Components;
+using Rubik.LowCode.Admin.Components;
 using Rubik.Share.Entity.FreesqlExtension;
 using Rubik.Share.Extension;
 
@@ -13,15 +13,13 @@ builder.Services.AddBootstrapBlazor();
 
 builder.AddEnvironmentJsonFile();
 
-var fsql = builder.AddFreesql("lowcode_host", FreeSql.DataType.PostgreSQL, cmd =>
+var fsql = builder.AddFreesql("lowcode_admin", FreeSql.DataType.PostgreSQL, cmd =>
 {
 #if DEBUG
     System.Diagnostics.Debug.WriteLine(cmd.CommandText);
 #endif
     // ²¹³ä aop
 });
-
-
 
 
 var app = builder.Build();

@@ -27,15 +27,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntDesign", "..\..\Fork\ant
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lowcode", "lowcode", "{BA860174-4A09-4015-A99C-CD4B324292ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.LowCode.Host", "src\lowcode\Rubik.LowCode.Host\Rubik.LowCode.Host.csproj", "{D46E6994-C181-4A3E-AD2A-8D136A49FA9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.LowCode.Host", "src\lowcode\Rubik.LowCode.Host\Rubik.LowCode.Host.csproj", "{D46E6994-C181-4A3E-AD2A-8D136A49FA9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.LowCode.Service", "src\lowcode\Rubik.LowCode.Service\Rubik.LowCode.Service.csproj", "{3799E569-000A-4C2B-BFA6-F3C9B4B1F705}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.LowCode.Service", "src\lowcode\Rubik.LowCode.Service\Rubik.LowCode.Service.csproj", "{3799E569-000A-4C2B-BFA6-F3C9B4B1F705}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.LowCode.Share.Entity", "src\lowcode\Rubik.LowCode.Share.Entity\Rubik.LowCode.Share.Entity.csproj", "{1B637E52-9D58-426C-9C15-B8032AEE2E90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.LowCode.Share.Entity", "src\lowcode\Rubik.LowCode.Share.Entity\Rubik.LowCode.Share.Entity.csproj", "{1B637E52-9D58-426C-9C15-B8032AEE2E90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Share.Entity.FreesqlExtension", "src\share\Rubik.Share.Entity.FreesqlExtension\Rubik.Share.Entity.FreesqlExtension.csproj", "{EBF511F7-F554-4A73-90FB-B20E9DC3BEBC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Share.Entity.FreesqlExtension", "src\share\Rubik.Share.Entity.FreesqlExtension\Rubik.Share.Entity.FreesqlExtension.csproj", "{EBF511F7-F554-4A73-90FB-B20E9DC3BEBC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Share.Extension", "src\share\Rubik.Share.Extension\Rubik.Share.Extension.csproj", "{F098E61E-805E-40F2-BA5F-27647E27022B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Share.Extension", "src\share\Rubik.Share.Extension\Rubik.Share.Extension.csproj", "{F098E61E-805E-40F2-BA5F-27647E27022B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.LowCode.Admin", "src\lowcode\Rubik.LowCode.Admin\Rubik.LowCode.Admin.csproj", "{5FC80AC4-8577-481F-8DAA-D02ACA2B4281}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "infrastructure", "infrastructure", "{D26B4B50-4B45-49A8-940B-74F86EF77265}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.LowCode.Core", "src\lowcode\Rubik.LowCode.Core\Rubik.LowCode.Core.csproj", "{A15228AD-2085-4DCD-9A20-A2762C3FF604}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +97,14 @@ Global
 		{F098E61E-805E-40F2-BA5F-27647E27022B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F098E61E-805E-40F2-BA5F-27647E27022B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F098E61E-805E-40F2-BA5F-27647E27022B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FC80AC4-8577-481F-8DAA-D02ACA2B4281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FC80AC4-8577-481F-8DAA-D02ACA2B4281}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FC80AC4-8577-481F-8DAA-D02ACA2B4281}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FC80AC4-8577-481F-8DAA-D02ACA2B4281}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A15228AD-2085-4DCD-9A20-A2762C3FF604}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A15228AD-2085-4DCD-9A20-A2762C3FF604}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A15228AD-2085-4DCD-9A20-A2762C3FF604}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A15228AD-2085-4DCD-9A20-A2762C3FF604}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,6 +126,9 @@ Global
 		{1B637E52-9D58-426C-9C15-B8032AEE2E90} = {BA860174-4A09-4015-A99C-CD4B324292ED}
 		{EBF511F7-F554-4A73-90FB-B20E9DC3BEBC} = {34DDFC94-870B-4F7B-8EF6-6165D4B9E7AD}
 		{F098E61E-805E-40F2-BA5F-27647E27022B} = {34DDFC94-870B-4F7B-8EF6-6165D4B9E7AD}
+		{5FC80AC4-8577-481F-8DAA-D02ACA2B4281} = {BA860174-4A09-4015-A99C-CD4B324292ED}
+		{D26B4B50-4B45-49A8-940B-74F86EF77265} = {3A3AF48F-66CF-4234-9737-7E075AC97854}
+		{A15228AD-2085-4DCD-9A20-A2762C3FF604} = {BA860174-4A09-4015-A99C-CD4B324292ED}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {013ABA53-F0DF-4706-8106-0FA069C82488}
