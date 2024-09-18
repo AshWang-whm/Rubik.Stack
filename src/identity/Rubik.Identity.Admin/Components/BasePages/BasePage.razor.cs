@@ -69,7 +69,6 @@ namespace Rubik.Identity.Admin.Components.BasePages
             await OnRefresh();
         }
 
-
         protected virtual async Task OnSubmitFailed(EditContext context)
         {
             await MessageService.Error("提交失败");

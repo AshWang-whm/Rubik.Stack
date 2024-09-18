@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Rubik.Identity.Share.Entity\Rubik.Identity.Share.Entity.csproj" />
+    <ProjectReference Include="..\Rubik.Identity.Share.Extension\Rubik.Identity.Share.Extension.csproj" />
   </ItemGroup>
 
   <ItemGroup>

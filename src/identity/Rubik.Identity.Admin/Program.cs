@@ -21,7 +21,7 @@ var fsql = builder.AddFreesql("identity", FreeSql.DataType.PostgreSQL, cmd =>
     // ²¹³ä aop
 });
 
-builder.Services.AddHttpClient();
+//builder.Services.AddHttpClient();
 
 builder.Services.AddAntDesign();
 

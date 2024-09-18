@@ -27,6 +27,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 
         List<TbOrganizationJob> OrgainzationJobList = [];
         int? SelectedJob = null;
+        bool ShowOrgModal { get; set; } = false;
 
         readonly UserCompanyInfo UserCompanyInfo = new();
 
@@ -78,10 +79,13 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             await base.OnNew();
         }
 
-        void OnOrgClick(TreeEventArgs<TbOrganization> e)
+        void OnOrgClick(TreeEventArgs<TbOrganization> e,bool reload_table=true)
         {
             SelectedOrganization = e.Node.DataItem.ID;
-            Table!.ReloadData();
+            if (reload_table)
+            {
+                Table!.ReloadData();
+            }
         }
 
         async Task OnResetPwd()
@@ -248,6 +252,44 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             }
         }
 
+        async Task OnClearUserRole()
+        {
+            var userids = SelectedRows.Select(a => a.ID);
+            await FreeSql.Delete<TbRelationRoleUser>()
+                .Where(a => userids.Contains(a.UserID))
+                .ExecuteAffrowsAsync();
+            await MessageService!.Success("删除用户角色成功!",2);
+        }
+
+        async Task OnComfirmOrg()
+        {
+            var user_ids = SelectedRows.Select(a => a.ID).ToArray();
+
+            var uow = FreeSql.CreateUnitOfWork();
+            try
+            {
+                await uow.Orm.Delete<TbRelationOrganizeUser>()
+                    .Where(a => user_ids.Contains(a.UserID))
+                    .ExecuteAffrowsAsync();
+
+                var new_org_relations = user_ids.Select(a => new TbRelationOrganizeUser
+                {
+                    UserID=a,
+                    OrganizationID= SelectedOrganization
+                });
+                await uow.Orm.Insert(new_org_relations).ExecuteAffrowsAsync();
+
+                uow.Commit();
+
+                Table!.ReloadData();
+            }
+            catch (Exception ex)
+            {
+                uow.Rollback();
+                await MessageService.Error(ex.Message);
+            }
+        }
+
         void OnShowRoleSetup()
         {
             var users = SelectedRows.Select(a => a.ID).ToList();
@@ -275,7 +317,6 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                 Draggable = true,
             });
         }
-
     }
 
     public class UserCompanyInfo

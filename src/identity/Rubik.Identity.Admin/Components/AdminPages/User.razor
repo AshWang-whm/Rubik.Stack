@@ -4,7 +4,7 @@
 <GridRow Gutter="16">
     <GridCol Span="4">
         <Tree TItem="TbOrganization" ShowIcon="true" DataSource="TreeOrganization" TitleExpression="a=>a.DataItem.Name" ChildrenExpression="a=>a.DataItem.Children"
-              HideUnmatched="true" DefaultExpandAll BlockNode OnClick="OnOrgClick">
+              HideUnmatched="true" DefaultExpandAll BlockNode OnClick="(e)=>OnOrgClick(e)">
         </Tree>
     </GridCol>
 
@@ -16,13 +16,23 @@
                 <Flex Justify="start" Gap="10">
                     <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
                     <Button Type="@ButtonType.Primary" OnClick="OnNew">新增</Button>
+
                     <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选数据?" OnConfirm="OnDeleteSelectedRow">
                         <Button Type="@ButtonType.Primary" Danger>删除</Button>
                     </Popconfirm>
+
                     <Popconfirm Disabled="@(!SelectedRows.Any())" Placement="@Placement.Bottom" Title="您确定要重置所选用户密码?" OnConfirm="OnResetPwd">
                         <Button Type="@ButtonType.Primary" Color="Color.Magenta6">重置密码</Button>
                     </Popconfirm>
-                    <Button Color="Color.Volcano4" OnClick="OnShowRoleSetup" Disabled="!SelectedRows.Any()">角色设置</Button>
+
+                    <Button Color="Color.Volcano4" OnClick="OnShowRoleSetup" Disabled="!SelectedRows.Any()">系统角色</Button>
+
+                    <Popconfirm Disabled="@(!SelectedRows.Any())" Placement="@Placement.Bottom" Title="您确定要重置所选用户角色?" OnConfirm="OnClearUserRole">
+                        <Button Type="@ButtonType.Primary" Color="Color.Cyan6">重置角色</Button>
+                    </Popconfirm>
+
+                    <Button Color="Color.Lime6" OnClick="()=> { ShowOrgModal = true; }">转岗</Button>
+
                 </Flex>
             </TitleTemplate>
 
@@ -50,6 +60,11 @@
     </GridCol>
 </GridRow>
 
+<Modal Title="选择组织" @bind-Visible="ShowOrgModal" OnOk="OnComfirmOrg" Centered="true">
+    <Tree TItem="TbOrganization" ShowIcon="true" DataSource="TreeOrganization" TitleExpression="a=>a.DataItem.Name" ChildrenExpression="a=>a.DataItem.Children"
+          HideUnmatched="true" DefaultExpandAll BlockNode OnClick="(e)=>OnOrgClick(e,false)">
+    </Tree>
+</Modal>
 
 @{
     base.BuildRenderTree(__builder);
@@ -59,7 +74,6 @@
 {
     protected override RenderFragment EditorForm =>
         @<div>
-
             <FormItem Label="所属部门">
                 <FormItem Style="display: inline-block; width: calc(50% - 10px)">
                     <TreeSelect DataSource="TreeOrganization" @bind-Value="@SelectedOrganization" AllowClear="true" Placeholder="请选择用户部门"
@@ -102,5 +116,6 @@
                 <Input @bind-Value="@Editor.Sort" />
             </FormItem>
         </div>;
+
 
 }

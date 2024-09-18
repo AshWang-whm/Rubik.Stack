@@ -1,0 +1,64 @@
+﻿@model Rubik.Identity.AuthServer.Models.LoginInput
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>登录-中台admin</title>
+    <link rel="stylesheet" href="~/css/is4.min.css?v=@(DateTime.Now.Ticks)" />
+</head>
+<body class="is4">
+    <div class="header">
+        <span>欢迎使用Rubik框架</span>
+    </div>
+
+    <div class="login-body">
+        <div class="row">
+            <div class="col-sm-6 login-desc">
+                <p class="main-title">
+                    登录服务
+                </p>
+                <p class="secondary-title">
+                    统一认证授权服务中心
+                </p>
+            </div>
+            <div class="col-sm-6">
+                <form asp-route="Login">
+                    <div class="my-alert my-alert--error is-light"></div>
+                    <input id="returnUrl" type="hidden" asp-for="ReturnUrl" />
+                    <div class="form-group">
+                        <label>用户名：</label>
+                        <input class="form-control" id="userName" placeholder="账号" asp-for="UserName" autofocus autocomplete="off" value="user">
+                        <span class="text-danger field-validation-error" id="lblUserName">请输入账号</span>
+                    </div>
+                    <div class="form-group">
+                        <label>登录密码：</label>
+                        <input class="form-control" type="password" id="password" placeholder="密码" asp-for="Password" autocomplete="off" value="111111">
+                        <span class="text-danger field-validation-error" id="lblPassword">请输入密码</span>
+                    </div>
+                    <div class="form-group">
+                        <div id="content"></div>
+                    </div>
+                    <div class="form-group login-remember">
+                        <label for="rememberLogin">
+                            <input id="rememberLogin" asp-for="RememberLogin">
+                            <strong>记住我</strong>
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <button id="btnLogin" class="btn" name="button" value="login">登&nbsp;&nbsp;录</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-footer">
+        AshGogogo
+    </div>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/is4.min.js?v==@(DateTime.Now.Ticks)"></script>
+</body>
+</html>
