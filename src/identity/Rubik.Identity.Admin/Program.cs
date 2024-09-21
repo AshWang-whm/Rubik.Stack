@@ -2,7 +2,6 @@ using Rubik.Identity.Admin.Components;
 using Rubik.Share.Entity.FreesqlExtension;
 using Rubik.Share.Extension;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

@@ -1,10 +1,5 @@
 ﻿using FreeSql.DataAnnotations;
-using Rubik.Share.Entity.BaseEntity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Rubik.Infrastructure.Entity.BaseEntity;
 
 namespace Rubik.LowCode.Share.Entity
 {

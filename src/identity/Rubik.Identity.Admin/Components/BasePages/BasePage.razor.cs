@@ -2,8 +2,7 @@
 using AntDesign.TableModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Rubik.Share.Entity.BaseEntity;
+using Rubik.Infrastructure.Entity.BaseEntity;
 
 namespace Rubik.Identity.Admin.Components.BasePages
 {

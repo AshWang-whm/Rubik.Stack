@@ -1,2 +1,2 @@
 ﻿global using FreeSql.DataAnnotations;
-global using Rubik.Share.Entity.BaseEntity;
+global using Rubik.Infrastructure.Entity.BaseEntity;

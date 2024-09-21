@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Rubik.Identity.AuthServer.Models;
 
 namespace Rubik.Identity.AuthServer.Controllers
@@ -8,6 +9,7 @@ namespace Rubik.Identity.AuthServer.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            
             return View();
         }
 

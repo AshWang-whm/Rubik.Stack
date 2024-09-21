@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubik.Share.Entity.BaseEntity
+namespace Rubik.Infrastructure.Entity.BaseEntity
 {
     public interface ITreeEntity<T>
         where T : class

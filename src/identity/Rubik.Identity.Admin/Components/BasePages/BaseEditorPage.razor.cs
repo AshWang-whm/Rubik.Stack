@@ -1,7 +1,4 @@
-﻿using AntDesign;
-using AntDesign.TableModels;
-using Microsoft.AspNetCore.Components.Forms;
-using Rubik.Share.Entity.BaseEntity;
+﻿using Rubik.Infrastructure.Entity.BaseEntity;
 
 namespace Rubik.Identity.Admin.Components.BasePages
 {

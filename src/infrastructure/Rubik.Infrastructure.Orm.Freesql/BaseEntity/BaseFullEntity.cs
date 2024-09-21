@@ -1,6 +1,6 @@
 ﻿using FreeSql.DataAnnotations;
 
-namespace Rubik.Share.Entity.BaseEntity
+namespace Rubik.Infrastructure.Entity.BaseEntity
 {
     public abstract class BaseNewEntity : INewEntity
     {

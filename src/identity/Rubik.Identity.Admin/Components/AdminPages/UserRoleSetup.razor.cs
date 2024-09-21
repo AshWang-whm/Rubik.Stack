@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Rubik.Identity.Share.Entity;
 using AntDesign;
-using Rubik.Share.Entity.BaseEntity;
+using Rubik.Infrastructure.Entity.BaseEntity;
 
 namespace Rubik.Identity.Admin.Components.AdminPages
 {

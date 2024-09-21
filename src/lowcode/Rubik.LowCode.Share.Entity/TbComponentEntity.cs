@@ -1,5 +1,5 @@
 ﻿using FreeSql.DataAnnotations;
-using Rubik.Share.Entity.BaseEntity;
+using Rubik.Infrastructure.Entity.BaseEntity;
 
 namespace Rubik.LowCode.Share.Entity
 {

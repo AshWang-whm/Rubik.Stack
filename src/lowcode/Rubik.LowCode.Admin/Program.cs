@@ -13,7 +13,7 @@ builder.Services.AddBootstrapBlazor();
 
 builder.AddEnvironmentJsonFile();
 
-var fsql = builder.AddFreesql("lowcode_admin", FreeSql.DataType.PostgreSQL, cmd =>
+builder.AddFreesql("lowcode_admin", FreeSql.DataType.PostgreSQL, cmd =>
 {
 #if DEBUG
     System.Diagnostics.Debug.WriteLine(cmd.CommandText);
