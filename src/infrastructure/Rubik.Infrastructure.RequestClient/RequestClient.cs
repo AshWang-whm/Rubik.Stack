@@ -12,28 +12,28 @@ namespace Rubik.Infrastructure.RequestClient
         private readonly JsonSerializerOptions JsonSerializerOption = new() { PropertyNameCaseInsensitive = true };
         private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
 
-        internal static async Task<HttpResponseMessage?> CallHttpResponseMessage(string url, HttpClient client, HttpContent? content, string method = "POST")
+        internal static async Task<HttpResponseMessage?> CallHttpResponseMessage(string url, HttpClient client, HttpContent? content, HttpMethodType method =  HttpMethodType.POST)
         {
             HttpResponseMessage? hrm = null;
             switch (method)
             {
-                case "GET":
+                case HttpMethodType.GET:
                     hrm = await client.GetAsync(url);
                     break;
-                case "POST":
+                case HttpMethodType.POST:
                     hrm = await client.PostAsync(url, content);
                     break;
-                case "PUT":
+                case HttpMethodType.PUT:
                     hrm = await client.PutAsync(url, content);
                     break;
-                case "DELETE":
+                case HttpMethodType.DELETE:
                     hrm = await client.DeleteAsync(url);
                     break;
             }
             return hrm;
         }
 
-        internal async Task<IOutputHttpResponse<TResult>> CallApi<TResult>(string url, HttpContent? content,string method="POST", string? clientname = null)
+        internal async Task<IOutputHttpResponse<TResult>> InternalCallApi<TResult>(string url, HttpContent? content, HttpMethodType method = HttpMethodType.POST, string? clientname = null)
         where TResult : class
         {
 
@@ -68,7 +68,7 @@ namespace Rubik.Infrastructure.RequestClient
             }
         }
 
-        internal async Task<IOutputHttpResponse> CallApi(string url, HttpContent? content, string method = "POST", string? clientname = null)
+        internal async Task<IOutputHttpResponse> InternalCallApi(string url, HttpContent? content, HttpMethodType method = HttpMethodType.POST, string? clientname = null)
         {
             if (clientname == null)
             {
@@ -102,8 +102,8 @@ namespace Rubik.Infrastructure.RequestClient
 
         }
 
-        internal async Task<IOutputHttpPageResponse<TResult>> CallPageApi<TResult>(string url, HttpContent? content, string method = "POST", string? clientname = null)
-        where TResult : class
+        internal async Task<IOutputHttpPageResponse<TResult>> InternalCallPageApi<TResult>(string url, HttpContent? content, HttpMethodType method = HttpMethodType.POST, string? clientname = null)
+        where TResult : class, IOutputHttpPageResponse<TResult>
         {
             if (clientname == null)
             {
@@ -140,59 +140,58 @@ namespace Rubik.Infrastructure.RequestClient
             }
         }
 
-        public async Task<IOutputHttpResponse<TResult>> CallApi<TResult>(string url, object? parameter = null, string clientname = ClientName)
-        where TResult : class
+        public async Task<IOutputHttpResponse<TResult>> CallApi<TResult>(string url, object? parameter = null, HttpMethodType method = HttpMethodType.POST, string clientname = ClientName)
+            where TResult : class
+        {
+            var content = parameter==null?null: new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, "application/json");
+            return await InternalCallApi<TResult>(url, content,method, clientname);
+        }
+
+        public async Task<IOutputHttpResponse> CallApi(string url, object? parameter = null, HttpMethodType method = HttpMethodType.POST, string clientname = ClientName)
+        {
+            var content = parameter==null? null: new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, "application/json");
+            return await InternalCallApi(url, content,method, clientname);
+        }
+
+        public async Task<IOutputHttpPageResponse<TResult>> CallPageApi<TResult>(string url, object? parameter, HttpMethodType method = HttpMethodType.POST, string clientname = ClientName) 
+            where TResult : class, IOutputHttpPageResponse<TResult>
         {
             var content = new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, "application/json");
-            return await CallApi<TResult>(url, content, clientname);
+            return await InternalCallPageApi<TResult>(url, content, method, clientname);
         }
 
-        public async Task<IOutputHttpResponse> CallApi(string url, object? parameter = null, string clientname = ClientName)
-        {
-            var content = new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, "application/json");
-            return await CallApi(url, content, clientname);
-        }
 
-        public async Task<IOutputHttpResponse<TResult>> CallApi<TResult>(string url, string clientname = ClientName) where TResult : class
-        {
-            return await CallApi<TResult>(url, null, clientname);
-        }
-
-        public async Task<IOutputHttpPageResponse<TResult>> CallPageApi<TResult>(string url, object? parameter, string clientname = ClientName) where TResult : class
-        {
-            return await CallPageApi<TResult>(url, parameter, clientname);
-        }
-
-        public async Task<IOutputHttpResponse<TResult>> QueryApi<TResult>(string url, object parameter, string clientname = ClientName)
+        public async Task<IOutputHttpResponse<TResult>> GetApi<TResult>(string url, object parameter, string clientname = ClientName)
             where TResult : class
         {
             var query = parameter.ToQueryString(url);
-            return await CallApi<TResult>(query, null, clientname);
+            return await CallApi<TResult>(query, null, HttpMethodType.GET, clientname);
         }
 
-        public async Task<IOutputHttpResponse> QueryApi(string url, object parameter, string clientname = ClientName)
+        public async Task<IOutputHttpResponse> GetApi(string url, object parameter, string clientname = ClientName)
         {
             var query = parameter.ToQueryString(url);
-            return await CallApi(query, null, clientname);
+            return await CallApi(query, null,HttpMethodType.GET, clientname);
         }
 
-        public async Task<IOutputHttpResponse<TResult>> CallRestApi<TResult>(string url, object parameter, string clientname = ClientName)
-        where TResult : class
+        public async Task<IOutputHttpResponse<TResult>> GetRestApi<TResult>(string url, object parameter, string clientname = ClientName)
+            where TResult : class
         {
             var query = parameter.ToRestQueryString(url);
-            return await CallApi<TResult>(query, null, clientname);
+            return await CallApi<TResult>(query, null, HttpMethodType.GET, clientname);
         }
 
-        public async Task<IOutputHttpResponse> CallRestApi(string url, object parameter, string clientname = ClientName)
+        public async Task<IOutputHttpResponse> GetRestApi(string url, object parameter, string clientname = ClientName)
         {
             var query = parameter.ToRestQueryString(url);
-            return await CallApi(query, null, clientname);
+            return await CallApi(query, null, HttpMethodType.GET, clientname);
         }
+
 
         public async Task<IOutputHttpResponse> UploadFile(string url, UploadFileRequest parameter, string clientname = ClientName)
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await CallApi(url, content, clientname: clientname);
+            return await InternalCallApi(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -203,10 +202,11 @@ namespace Rubik.Infrastructure.RequestClient
         /// <param name="parameter"></param>
         /// <param name="clientname"></param>
         /// <returns></returns>
-        public async Task<IOutputHttpResponse> UploadFile<TResult>(string url, UploadFileRequest parameter, string clientname = ClientName) where TResult : class
+        public async Task<IOutputHttpResponse<TResult>> UploadFile<TResult>(string url, UploadFileRequest parameter, string clientname = ClientName) 
+            where TResult : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await CallApi<TResult>(url, content, clientname: clientname);
+            return await InternalCallApi<TResult>(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace Rubik.Infrastructure.RequestClient
         public async Task<IOutputHttpResponse> UploadFile<TIn>(string url, UploadFileRequest<TIn> parameter, string clientname = ClientName) where TIn : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await CallApi(url, content, clientname: clientname);
+            return await InternalCallApi(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace Rubik.Infrastructure.RequestClient
             where TResult : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await CallApi<TResult>(url, content, clientname: clientname);
+            return await InternalCallApi<TResult>(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -247,10 +247,10 @@ namespace Rubik.Infrastructure.RequestClient
         /// <param name="parameter"></param>
         /// <param name="clientname"></param>
         /// <returns></returns>
-        public async Task<IOutputHttpResponse> UploadFile(string url, UploadStreamRequest parameter, string clientname = ClientName)
+        public async Task<IOutputHttpResponse> UploadStream(string url, UploadStreamRequest parameter, string clientname = ClientName)
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await CallApi(url, content, clientname: clientname);
+            return await InternalCallApi(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -261,10 +261,10 @@ namespace Rubik.Infrastructure.RequestClient
         /// <param name="parameter"></param>
         /// <param name="clientname"></param>
         /// <returns></returns>
-        public async Task<IOutputHttpResponse> UploadFile<TResult>(string url, UploadStreamRequest parameter, string clientname = ClientName) where TResult : class
+        public async Task<IOutputHttpResponse<TResult>> UploadStream<TResult>(string url, UploadStreamRequest parameter, string clientname = ClientName) where TResult : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await CallApi<TResult>(url, content, clientname: clientname);
+            return await InternalCallApi<TResult>(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -275,10 +275,10 @@ namespace Rubik.Infrastructure.RequestClient
         /// <param name="parameter"></param>
         /// <param name="clientname"></param>
         /// <returns></returns>
-        public async Task<IOutputHttpResponse> UploadFile<TIn>(string url, UploadStreamRequest<TIn> parameter, string clientname = ClientName) where TIn : class
+        public async Task<IOutputHttpResponse> UploadStream<TIn>(string url, UploadStreamRequest<TIn> parameter, string clientname = ClientName) where TIn : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await CallApi(url, content, clientname: clientname);
+            return await InternalCallApi(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -290,15 +290,24 @@ namespace Rubik.Infrastructure.RequestClient
         /// <param name="parameter"></param>
         /// <param name="clientname"></param>
         /// <returns></returns>
-        public async Task<IOutputHttpResponse<TResult>> UploadFile<TIn, TResult>(string url, UploadStreamRequest<TIn> parameter, string clientname = ClientName)
+        public async Task<IOutputHttpResponse<TResult>> UploadStream<TIn, TResult>(string url, UploadStreamRequest<TIn> parameter, string clientname = ClientName)
             where TIn : class
             where TResult : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await CallApi<TResult>(url, content, clientname: clientname);
+            return await InternalCallApi<TResult>(url, content, clientname: clientname);
         }
 
-        public async Task DownloadFile(string url, string destFolder, string clientname = ClientName, string method = "GET")
+        /// <summary>
+        /// 下载文件到指定目录
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="destFolder"></param>
+        /// <param name="clientname"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task DownloadFile(string url, string destFolder, string clientname = ClientName, HttpMethodType method = HttpMethodType.GET)
         {
             var hrm = await DownloadFileContent(url, clientname, method) ?? throw new Exception("文件下载失败,接口无返回数据");
             if (!hrm.IsSuccessStatusCode)
@@ -332,14 +341,22 @@ namespace Rubik.Infrastructure.RequestClient
             await sr.CopyToAsync(fs);
         }
 
-        public async Task<Stream?> DownloadStream(string url,string clientname=ClientName,string method="GET")
+        /// <summary>
+        /// 下载文件流
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="clientname"></param>
+        /// <param name="method"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<Stream?> DownloadStream(string url,string clientname=ClientName, HttpMethodType method = HttpMethodType.GET)
         {
             var hrm = await DownloadFileContent(url, clientname,method);
             var stream = await hrm!.Content!.ReadAsStreamAsync();
             return stream ?? throw new Exception("HttpResponseMessage is empty!");
         }
 
-        public async Task<HttpResponseMessage?> DownloadFileContent(string url, string clientname = ClientName, string method = "GET")
+        public async Task<HttpResponseMessage?> DownloadFileContent(string url, string clientname = ClientName, HttpMethodType method = HttpMethodType.GET)
         {
             using var client = httpClientFactory.CreateClient(clientname) ?? throw new Exception($"Client Option:[{clientname}] Not Found!");
             var hrm = await CallHttpResponseMessage(url, client, null, method);
@@ -351,7 +368,7 @@ namespace Rubik.Infrastructure.RequestClient
         {
             using var client = httpClientFactory.CreateClient(clientname) ?? throw new Exception($"Client Option:[{clientname}] Not Found!");
             var content = new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, "application/json");
-            var hrm = await CallHttpResponseMessage(url, client, content, "POST");
+            var hrm = await CallHttpResponseMessage(url, client, content, HttpMethodType.GET);
             return hrm;
         }
 

@@ -133,7 +133,8 @@ namespace Rubik.Infrastructure.Contract.HttpResponse
             return OutputHttpPageResponse<T>.Ok(data, total, msg);
         }
 
-        public static IOutputHttpPageResponse<T> PageNotOk<T>(IEnumerable<T>? data = default, long total = 0, string? msg = null) where T : class
+        public static IOutputHttpPageResponse<T> PageNotOk<T>(IEnumerable<T>? data = default, long total = 0, string? msg = null) 
+            where T : class
         {
             return OutputHttpPageResponse<T>.Ok(data, total, msg);
         }

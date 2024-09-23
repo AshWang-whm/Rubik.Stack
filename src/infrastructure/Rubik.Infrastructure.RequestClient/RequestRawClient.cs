@@ -6,7 +6,7 @@ namespace Rubik.Infrastructure.RequestClient
 {
     public partial class RequestClient
     {
-        public async Task<TResult?> CallApiRawOutput<TResult>(string url, HttpContent? content, string method = "POST", string? clientname = null)
+        public async Task<TResult?> CallApiRawOutput<TResult>(string url, HttpContent? content, HttpMethodType method = HttpMethodType.POST, string? clientname = null)
             where TResult : class
         {
             if (clientname == null)
@@ -27,7 +27,7 @@ namespace Rubik.Infrastructure.RequestClient
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
             finally
             {
@@ -39,7 +39,7 @@ namespace Rubik.Infrastructure.RequestClient
             where TResult : class
         {
             var content = new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, "application/json");
-            return await CallApiRawOutput<TResult>(url, content, clientname);
+            return await CallApiRawOutput<TResult>(url, content, HttpMethodType.POST, clientname);
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace Rubik.Infrastructure.RequestClient
         /// <param name="method"></param>
         /// <param name="clientname"></param>
         /// <returns></returns>
-        public async Task<TResult?> GetRawApi<TResult>(string url,object? parameter = null,string mediaType= "text/plain", string method="GET", string clientname = ClientName)
+        public async Task<TResult?> GetRawApi<TResult>(string url,object? parameter = null,string mediaType= "text/plain", HttpMethodType method = HttpMethodType.GET, string clientname = ClientName)
             where TResult : class
         {
             var rawurl = parameter.ToQueryString(url);
@@ -69,7 +69,7 @@ namespace Rubik.Infrastructure.RequestClient
         /// <param name="method"></param>
         /// <param name="clientname"></param>
         /// <returns></returns>
-        public async Task<TResult?> GetRestApi<TResult>(string url, object? parameter = null, string mediaType = "text/plain", string method = "GET", string clientname = ClientName)
+        public async Task<TResult?> GetRestApi<TResult>(string url, object? parameter = null, string mediaType = "text/plain", HttpMethodType method = HttpMethodType.GET, string clientname = ClientName)
             where TResult : class
         {
             var rawurl = parameter.ToQueryString(url);

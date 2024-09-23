@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Rubik.Identity.AuthServer.Extensions;
+using Rubik.Identity.Oidc.Core.RsaKey;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -9,7 +10,7 @@ namespace Server.Endpoints
 {
     public class TokenEndpoint
     {
-        public static async Task<IResult> GetToken(IDataProtectionProvider dataProtectionProvider,HttpContext httpContext,DevKeys devKeys)
+        public static async Task<IResult> GetToken(IDataProtectionProvider dataProtectionProvider,HttpContext httpContext, JwkRsaKeys devKeys)
         {
             var body = (await httpContext.Request.BodyReader.ReadAsync()).Buffer;
             var query = HttpUtility.ParseQueryString(Encoding.UTF8.GetString(body));
@@ -103,7 +104,7 @@ namespace Server.Endpoints
         /// <param name="claims"></param>
         /// <param name="exp"></param>
         /// <returns></returns>
-        public static string? GeneratorToken(DevKeys devKeys,string? clientid,List<Claim>? claims,DateTime exp)
+        public static string? GeneratorToken(JwkRsaKeys devKeys,string? clientid,List<Claim>? claims,DateTime exp)
         {
             // var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(clientsecret!));
             var id_token_options = new JwtSecurityToken(

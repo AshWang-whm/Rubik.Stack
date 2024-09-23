@@ -5,10 +5,10 @@ namespace Rubik.Identity.AuthServer.Configs
     public class DiscoveryConfig
     {
         public string? Issuer { get; set; }
-        public  string[] Responsetypes {get;set;}= ["code", "token", "id_token"];
-        public  string[] Claims {get;set;}= ["sid", "email", "name"];
-        public  string[] Scopes {get;set;}= ["openid", "profile"];
-        public  string[] Subjects {get;set;}= ["pairwise", "public"];
+        public string[] Responsetypes {get;set;}= ["code", "token", "id_token"];
+        public string[] Claims {get;set;}= ["sid","name","code","dept"];
+        public string[] Scopes {get;set;}= ["openid", "profile"];
+        public string[] Subjects {get;set;}= ["pairwise", "public"];
         public string[] Algorithms { get; set; } = ["RS256"];
 
         public string AuthorizationEndpointUrl { get; set; } = "/oauth/authorize";

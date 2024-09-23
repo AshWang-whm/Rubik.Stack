@@ -11,7 +11,7 @@ namespace Rubik.Infrastructure.RequestClient
                 opts.BaseAddress = uri;
             });
 
-            services.AddSingleton<RequestClient>();
+            services.AddScoped<RequestClient>();
         }
     }
 }

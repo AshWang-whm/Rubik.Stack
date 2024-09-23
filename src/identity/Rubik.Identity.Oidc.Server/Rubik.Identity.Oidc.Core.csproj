@@ -1,17 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Stores\**" />
-    <Content Remove="Stores\**" />
-    <EmbeddedResource Remove="Stores\**" />
-    <None Remove="Stores\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Remove="oidc" />
@@ -22,17 +15,16 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="IdentityModel" Version="7.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.2" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\Rubik.Identity.Oidc.Server\Rubik.Identity.Oidc.Core.csproj" />
-    <ProjectReference Include="..\Rubik.Identity.Share.Entity\Rubik.Identity.Share.Entity.csproj" />
-    <ProjectReference Include="..\Rubik.Identity.Share.Extension\Rubik.Identity.Share.Extension.csproj" />
+    <Folder Include="Services\" />
+    <Folder Include="Stores\" />
   </ItemGroup>
-
 </Project>

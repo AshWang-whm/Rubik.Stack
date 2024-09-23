@@ -19,8 +19,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Identity.Share.Extens
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "share", "share", "{34DDFC94-870B-4F7B-8EF6-6165D4B9E7AD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Share.Utils", "src\share\Rubik.Share.Utils\Rubik.Share.Utils.csproj", "{26D29147-288F-40AC-9860-74229AE30763}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AntDesign", "..\..\Fork\ant-design-blazor\components\AntDesign.csproj", "{0B646D6F-E60B-4B2F-9C76-2699DCCB4C71}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lowcode", "lowcode", "{BA860174-4A09-4015-A99C-CD4B324292ED}"
@@ -45,23 +43,25 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Infrastructure.Contra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Infrastructure.OAuth", "src\infrastructure\Rubik.Infrastructure.OAuth\Rubik.Infrastructure.OAuth.csproj", "{6F7BEF3A-8052-4BCE-BBFE-D6ED3E9DDD62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Infrastructure.Dispatcher", "src\infrastructure\Rubik.Infrastructure.Dispatcher\Rubik.Infrastructure.Dispatcher.csproj", "{DA2C4D93-77C7-4B1A-BC5D-F86E2DCC8629}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Infrastructure.Dispatcher", "src\infrastructure\Rubik.Infrastructure.Dispatcher\Rubik.Infrastructure.Dispatcher.csproj", "{DA2C4D93-77C7-4B1A-BC5D-F86E2DCC8629}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logger", "logger", "{5BBFA59E-8EE5-4CF1-A308-AA898A302CFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Infrastructure.Logger.Extension", "src\infrastructure\logger\Rubik.Infrastructure.Logger.Extension\Rubik.Infrastructure.Logger.Extension.csproj", "{4A73987D-03DF-4D22-9CA2-C9F31D661196}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Infrastructure.Logger.Extension", "src\infrastructure\logger\Rubik.Infrastructure.Logger.Extension\Rubik.Infrastructure.Logger.Extension.csproj", "{4A73987D-03DF-4D22-9CA2-C9F31D661196}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Infrastructure.Logger.File", "src\infrastructure\Rubik.Infrastructure.Logger.File\Rubik.Infrastructure.Logger.File.csproj", "{FB3129C8-1C05-49B2-AC85-788B32722003}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Infrastructure.Logger.File", "src\infrastructure\Rubik.Infrastructure.Logger.File\Rubik.Infrastructure.Logger.File.csproj", "{FB3129C8-1C05-49B2-AC85-788B32722003}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubk.Infrastructure.Logger.WebMiddleware", "src\infrastructure\Rubk.Infrastructure.Logger.Middleware\Rubk.Infrastructure.Logger.WebMiddleware.csproj", "{84307C43-3E38-4539-A58C-F2755303B999}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubk.Infrastructure.Logger.WebMiddleware", "src\infrastructure\Rubk.Infrastructure.Logger.Middleware\Rubk.Infrastructure.Logger.WebMiddleware.csproj", "{84307C43-3E38-4539-A58C-F2755303B999}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Infrastructure.Orm.Freesql", "src\infrastructure\Rubik.Infrastructure.Orm.Freesql\Rubik.Infrastructure.Orm.Freesql.csproj", "{26EDA51F-D749-4076-B3BA-E79F3195E639}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Infrastructure.Orm.Freesql", "src\infrastructure\Rubik.Infrastructure.Orm.Freesql\Rubik.Infrastructure.Orm.Freesql.csproj", "{26EDA51F-D749-4076-B3BA-E79F3195E639}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "utils", "utils", "{E7C61496-0D12-4AF8-9BAB-ED588D4A5F63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Infrastructure.RequestClient", "src\infrastructure\Rubik.Infrastructure.RequestClient\Rubik.Infrastructure.RequestClient.csproj", "{F9B545D6-48CD-4A06-A16F-17A28BAFB041}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Infrastructure.RequestClient", "src\infrastructure\Rubik.Infrastructure.RequestClient\Rubik.Infrastructure.RequestClient.csproj", "{F9B545D6-48CD-4A06-A16F-17A28BAFB041}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Infrastructure.Utils.Common", "src\Infrastructure\Rubik.Infrastructure.Utils.Common\Rubik.Infrastructure.Utils.Common.csproj", "{004FBE7B-66C5-4C59-BE1D-77A0FE604C30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Infrastructure.Utils.Common", "src\Infrastructure\Rubik.Infrastructure.Utils.Common\Rubik.Infrastructure.Utils.Common.csproj", "{004FBE7B-66C5-4C59-BE1D-77A0FE604C30}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Identity.Oidc.Core", "src\identity\Rubik.Identity.Oidc.Server\Rubik.Identity.Oidc.Core.csproj", "{03FC863B-336B-428D-BDEE-5AD1A3001E7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,10 +85,6 @@ Global
 		{5C99FD40-844E-4BD0-B1C0-88FFDDC65961}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C99FD40-844E-4BD0-B1C0-88FFDDC65961}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C99FD40-844E-4BD0-B1C0-88FFDDC65961}.Release|Any CPU.Build.0 = Release|Any CPU
-		{26D29147-288F-40AC-9860-74229AE30763}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26D29147-288F-40AC-9860-74229AE30763}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{26D29147-288F-40AC-9860-74229AE30763}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26D29147-288F-40AC-9860-74229AE30763}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0B646D6F-E60B-4B2F-9C76-2699DCCB4C71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0B646D6F-E60B-4B2F-9C76-2699DCCB4C71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B646D6F-E60B-4B2F-9C76-2699DCCB4C71}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -157,6 +153,10 @@ Global
 		{004FBE7B-66C5-4C59-BE1D-77A0FE604C30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{004FBE7B-66C5-4C59-BE1D-77A0FE604C30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{004FBE7B-66C5-4C59-BE1D-77A0FE604C30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03FC863B-336B-428D-BDEE-5AD1A3001E7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03FC863B-336B-428D-BDEE-5AD1A3001E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03FC863B-336B-428D-BDEE-5AD1A3001E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03FC863B-336B-428D-BDEE-5AD1A3001E7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -169,7 +169,6 @@ Global
 		{C7B7A5DE-28B4-44F3-A949-1DD271979E61} = {3A3AF48F-66CF-4234-9737-7E075AC97854}
 		{5C99FD40-844E-4BD0-B1C0-88FFDDC65961} = {32F38690-C6FF-4D33-9C7A-84963065240C}
 		{34DDFC94-870B-4F7B-8EF6-6165D4B9E7AD} = {3A3AF48F-66CF-4234-9737-7E075AC97854}
-		{26D29147-288F-40AC-9860-74229AE30763} = {34DDFC94-870B-4F7B-8EF6-6165D4B9E7AD}
 		{0B646D6F-E60B-4B2F-9C76-2699DCCB4C71} = {32F38690-C6FF-4D33-9C7A-84963065240C}
 		{BA860174-4A09-4015-A99C-CD4B324292ED} = {3A3AF48F-66CF-4234-9737-7E075AC97854}
 		{D46E6994-C181-4A3E-AD2A-8D136A49FA9A} = {BA860174-4A09-4015-A99C-CD4B324292ED}
@@ -191,6 +190,7 @@ Global
 		{E7C61496-0D12-4AF8-9BAB-ED588D4A5F63} = {D26B4B50-4B45-49A8-940B-74F86EF77265}
 		{F9B545D6-48CD-4A06-A16F-17A28BAFB041} = {D26B4B50-4B45-49A8-940B-74F86EF77265}
 		{004FBE7B-66C5-4C59-BE1D-77A0FE604C30} = {E7C61496-0D12-4AF8-9BAB-ED588D4A5F63}
+		{03FC863B-336B-428D-BDEE-5AD1A3001E7E} = {32F38690-C6FF-4D33-9C7A-84963065240C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {013ABA53-F0DF-4706-8106-0FA069C82488}

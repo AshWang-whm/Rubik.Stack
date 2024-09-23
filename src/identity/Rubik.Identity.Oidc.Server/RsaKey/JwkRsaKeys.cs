@@ -1,11 +1,12 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Text.Json;
 
-namespace Server
+namespace Rubik.Identity.Oidc.Core.RsaKey
 {
-    public class DevKeys
+    public class JwkRsaKeys
     {
         public RSA RsaKey { get; }
 
@@ -15,17 +16,12 @@ namespace Server
         public JwtSecurityTokenHandler Token_handler = new JwtSecurityTokenHandler();
         public string JwkJson => JsonSerializer.Serialize(new { keys = new List<JsonWebKey> { Jwk } });
         
-        public DevKeys(IWebHostEnvironment webHostEnvironment)
+        public JwkRsaKeys()
         {
             RsaKey = RSA.Create();
-            var path = Path.Combine(webHostEnvironment.ContentRootPath,"RsaKey", "crypto_key");
-            if(!File.Exists(path))
-            {
-                throw new Exception("no crypto_key file");
-            }
-            RsaKey.ImportRSAPrivateKey(File.ReadAllBytes(path), out _);
+            RsaKey.ImportRSAPrivateKey(File.ReadAllBytes(OidcServer.RsaKeyConfig.RsaKeyFileFullPath!), out _);
             Jwk = JsonWebKeyConverter.ConvertFromRSASecurityKey(RsaSecurityKey);
-            Jwk.Kid = "oidc";
+            Jwk.Kid = OidcServer.RsaKeyConfig.RsaKid;
         }
 
 
