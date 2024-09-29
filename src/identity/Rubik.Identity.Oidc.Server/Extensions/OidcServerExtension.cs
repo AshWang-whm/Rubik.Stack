@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Rubik.Identity.AuthServer.Endpoints;
 using Rubik.Identity.Oidc.Core.Configs;
+using Rubik.Identity.Oidc.Core.Endpoints;
 using Rubik.Identity.Oidc.Core.RsaKey;
+using Rubik.Identity.Oidc.Core.Services;
 
 namespace Rubik.Identity.Oidc.Core.Extensions
 {
@@ -19,6 +21,16 @@ namespace Rubik.Identity.Oidc.Core.Extensions
                     o.LoginPath = "/Account/Login";
                 });
 
+            // code 生成器
+            builder.Services.AddDataProtection(opt=>opt.ApplicationDiscriminator="Rubik.Identity.AuthServer");
+
+            // oidc services
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSingleton<HttpContextService>();
+            builder.Services.AddScoped<AuthorizationCodeEncrtptService>();
+
+
+            builder.Services.AddSingleton<TokenService>();
 
             return builder;
         }
@@ -36,13 +48,13 @@ namespace Rubik.Identity.Oidc.Core.Extensions
             {
                 throw new FileNotFoundException($"[{rsa_file}]文件不存在!");
             }
-            OidcServer.RsaKeyConfig.RsaKeyFileFullPath = rsa_file;
-            OidcServer.RsaKeyConfig = rsa_config;
 
             OidcServer.DiscoveryConfig = discovery_config;
 
-
+            builder.Services.AddSingleton(rsa_config);
             builder.Services.AddSingleton<JwkRsaKeys>();
+            builder.Services.AddSingleton<DiscoveryConfig>();
+
             return builder;
         }
 
@@ -51,6 +63,10 @@ namespace Rubik.Identity.Oidc.Core.Extensions
         {
             OidcServer.WebApplication = web;
             web.MapGet(OidcServer.DiscoveryConfig!.DiscoveryEndpoint, DiscoveryEndpoint.GetDiscoveryDoc);
+            web.MapGet(OidcServer.DiscoveryConfig!.JwksEndpoint, JwkEndpoint.GetJwks);
+            web.MapGet(OidcServer.DiscoveryConfig!.UserInfoEndpoint, UserInfoEndpoint.GetUserInfo);
+            web.MapGet(OidcServer.DiscoveryConfig!.AuthorizationEndpoint, AuthorizeEndpoint.Authorize);
+
         }
     }
 }
