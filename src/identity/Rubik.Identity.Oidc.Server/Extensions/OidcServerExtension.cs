@@ -48,7 +48,7 @@ namespace Rubik.Identity.Oidc.Core.Extensions
             {
                 throw new FileNotFoundException($"[{rsa_file}]文件不存在!");
             }
-
+            rsa_config.RsaKeyFileFullPath = rsa_file;
             OidcServer.DiscoveryConfig = discovery_config;
 
             builder.Services.AddSingleton(rsa_config);
@@ -64,8 +64,10 @@ namespace Rubik.Identity.Oidc.Core.Extensions
             OidcServer.WebApplication = web;
             web.MapGet(OidcServer.DiscoveryConfig!.DiscoveryEndpoint, DiscoveryEndpoint.GetDiscoveryDoc);
             web.MapGet(OidcServer.DiscoveryConfig!.JwksEndpoint, JwkEndpoint.GetJwks);
-            web.MapGet(OidcServer.DiscoveryConfig!.UserInfoEndpoint, UserInfoEndpoint.GetUserInfo);
+            web.MapGet(OidcServer.DiscoveryConfig!.UserInfoEndpoint, UserInfoEndpoint.GetUserInfo).RequireAuthorization();
             web.MapGet(OidcServer.DiscoveryConfig!.AuthorizationEndpoint, AuthorizeEndpoint.Authorize);
+            web.MapPost(OidcServer.DiscoveryConfig!.TokenEndpoint, TokenEndoint.GetToken).RequireAuthorization();
+
 
         }
     }

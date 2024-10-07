@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Rubik.Identity.AuthServer.Models;
+using System.Security.Claims;
+using System.Web;
 
 namespace Rubik.Identity.AuthServer.Controllers
 {
@@ -9,16 +12,31 @@ namespace Rubik.Identity.AuthServer.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            
-            return View();
+            var query = HttpContext.Request.Query;
+            var return_url = $"/login?returnUrl={HttpUtility.UrlEncode(query["returnUrl"])}";
+            return View(new LoginInput
+            {
+                ReturnUrl = return_url
+            });
         }
 
 
         [HttpPost]
-        public IActionResult Login(LoginInput input)
+        public async Task<IActionResult> Login(LoginInput input)
         {
+            // 检查登录
 
-            return View();
+            var principal = new ClaimsPrincipal(new ClaimsIdentity(
+                    new Claim[]
+                    {
+                        new Claim(ClaimTypes.Name,"ash")
+                    },
+                    "cookie"
+                ));
+
+            await HttpContext.SignInAsync("cookie", principal);
+
+            return Redirect(input.ReturnUrl!);
         }
     }
 }

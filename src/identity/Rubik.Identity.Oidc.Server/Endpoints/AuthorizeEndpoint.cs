@@ -34,7 +34,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
 
             var _httpresult = response_type.ToString() switch
             {
-                ResponseTypes.Code => CodeResult(codeEncrtptService, contextService),
+                ResponseTypes.Code => CodeResult(parameter,codeEncrtptService, contextService),
                 ResponseTypes.Token => TokenResult(parameter, contextService, rsaKeys),
                 ResponseTypes.IdToken => IdTokenResult(parameter, contextService, rsaKeys),
                 ResponseTypes.IdTokenToken => IdTokenTokenResult(parameter,contextService, rsaKeys),
@@ -44,11 +44,10 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
 
         }
 
-        static IResult CodeResult(AuthorizationCodeEncrtptService codeEncrtptService,HttpContextService contextService)
+        static IResult CodeResult(AuthorizationCodeParameter codeParameter,AuthorizationCodeEncrtptService codeEncrtptService,HttpContextService contextService)
         {
-            var query = contextService.ToCodeQueryParameter();
-            var code = codeEncrtptService.GenerateCode(query);
-            return Results.Redirect($"{query.RedirectUri}?code={code}&state={query.State}");
+            var code = codeEncrtptService.GenerateCode(codeParameter);
+            return Results.Redirect($"{codeParameter.RedirectUri}?code={code}&state={codeParameter.State}");
         }
 
         /// <summary>
