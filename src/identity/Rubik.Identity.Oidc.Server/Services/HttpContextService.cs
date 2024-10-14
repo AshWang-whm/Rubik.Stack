@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Rubik.Identity.Oidc.Core.Exceptions;
 using System.Collections.Specialized;
+using System.Security.Claims;
 using System.Text;
 using System.Web;
 using static IdentityModel.OidcConstants;
@@ -27,7 +28,7 @@ namespace Rubik.Identity.Oidc.Core.Services
         /// </summary>
         /// <returns></returns>
         /// <exception cref="OidcParameterInValidationException"></exception>
-        public AuthorizationCodeParameter ToCodeQueryParameter()
+        public AuthorizationCodeParameter ToCodeQueryParameter(bool sid = true)
         {
             var code_challenge = GetQueryParameterNotNull(AuthorizeRequest.CodeChallenge);
 
@@ -43,7 +44,7 @@ namespace Rubik.Identity.Oidc.Core.Services
 
             var redirect_uri = GetQueryParameterNotNull(AuthorizeRequest.RedirectUri);
 
-            return new AuthorizationCodeParameter
+            var parameter= new AuthorizationCodeParameter
             {
                 ClientID = client_id!,
                 CodeChallenge = code_challenge!,
@@ -51,8 +52,15 @@ namespace Rubik.Identity.Oidc.Core.Services
                 State = state!,
                 Nonce = nonce!,
                 RedirectUri = redirect_uri!,
-                CodeChallengeMethod= code_challenge_method,
+                CodeChallengeMethod = code_challenge_method,
             };
+
+            if (sid)
+            {
+                parameter.Sid= httpContext.HttpContext!.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Sid)?.Value;
+            }
+
+            return parameter;
         }
 
         /// <summary>
@@ -87,8 +95,10 @@ namespace Rubik.Identity.Oidc.Core.Services
     public class AuthorizationCodeParameter
     {
         public required string ClientID { get; set; }
+        public string? Sid { get; set; }
         public required string CodeChallenge{ get; set; }
         public required string Scope { get; set; }
+        public string[]? ScopeArr => Scope?.Split(' ');
 
         public required string State { get; set; }
 

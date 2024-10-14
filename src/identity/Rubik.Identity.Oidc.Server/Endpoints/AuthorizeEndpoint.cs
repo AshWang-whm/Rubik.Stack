@@ -1,12 +1,11 @@
-﻿using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using static IdentityModel.OidcConstants.Algorithms;
 using static IdentityModel.OidcConstants;
 using Rubik.Identity.Oidc.Core.RsaKey;
 using Rubik.Identity.Oidc.Core.Services;
-using Rubik.Identity.Oidc.Core.Configs;
+using Rubik.Identity.Oidc.Core.Stores;
 
 namespace Rubik.Identity.Oidc.Core.Endpoints
 {
@@ -21,7 +20,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         const string QUERY_PARAMETER_FORMAT = @"{0}={1}";
         const string FORM_INPUT_FORMAT = @"<input type=""hidden"" name=""{0}"" value=""{1}""/>";
 
-        public static async Task<IResult> Authorize(AuthorizationCodeEncrtptService codeEncrtptService,HttpContextService contextService, JwkRsaKeys rsaKeys)
+        public static async Task<IResult> Authorize(AuthorizationCodeEncrtptService codeEncrtptService,HttpContextService contextService, JwkRsaKeys rsaKeys, IClientStore clientStore)
         {
             // 验证
             var response_type = contextService.GetQueryParameterNotNull(AuthorizeRequest.ResponseType);
@@ -32,7 +31,17 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             // 验证scope 等一系列操作 todo:
             var parameter = contextService.ToCodeQueryParameter();
 
-            var _httpresult = response_type.ToString() switch
+            // 验证client id
+            var client = await clientStore.GetClient(parameter.ClientID);
+            if (client == null)
+                return Results.BadRequest($"client_id is invalid!");
+            if (client.ResponseType != response_type)
+                return Results.BadRequest($"response_type is invalid!");
+            if (client.ScopeArr?.Except(parameter.ScopeArr ?? []).Any()??true)
+                return Results.BadRequest($"scope is invalid!");
+
+
+            var _httpresult = response_type switch
             {
                 ResponseTypes.Code => CodeResult(parameter,codeEncrtptService, contextService),
                 ResponseTypes.Token => TokenResult(parameter, contextService, rsaKeys),
@@ -126,14 +135,11 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
 
         static List<Claim> TokenClaims(AuthorizationCodeParameter parameter)
         {
-            //var client_id = contextService.GetQueryParameterNotNull(AuthorizeRequest.ClientId);
-            //var scope = contextService.GetQueryParameterNotNull(AuthorizeRequest.Scope);
-
             // 根据scope 获取用户信息： 类似 ApiResource TODO：
             var claims = new List<Claim>
             {
-                new (JwtRegisteredClaimNames.Sub,"my access token sub id"),
-                new (StandardScopes.OpenId,"openid"),
+                new (JwtRegisteredClaimNames.Sid,parameter.Sid!),
+                new ("scope",parameter.Scope),
             };
 
             return claims;
@@ -141,20 +147,16 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
 
         static List<Claim> IdTokenClaims(AuthorizationCodeParameter parameter)
         {
-            //var scope = contextService.GetQueryParameterNotNull(AuthorizeRequest.Scope);
-            //var nonce = contextService.GetQueryParameterNotNull(AuthorizeRequest.Nonce);
-
             // 根据scope 获取用户信息： 类似 IdentityResource TODO：
-            var claims = new List<Claim>(5)
+            var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Iat,DateTime.Now.Ticks.ToString()),
-                new(JwtRegisteredClaimNames.Sub,"my id token sub id")
+                new(JwtRegisteredClaimNames.Sid,parameter.Sid!)
             };
 
             // client 端没发送nonce就不需要添加
             if (!string.IsNullOrEmpty(parameter.Nonce))
                 claims.Add(new Claim(JwtRegisteredClaimNames.Nonce, parameter.Nonce!));
-
 
             return claims;
         }

@@ -32,19 +32,19 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                     return Results.BadRequest("invalid code!");
                 }
 
-
+                // access token 默认带上sid
                 var access_token_claims = new List<Claim>
                 {
-                    new Claim("custom_claim","custom_claim_value"),
-                    new Claim("scope",auth!.Scope),
+                    new("scope",auth!.Scope),
+                    new (JwtRegisteredClaimNames.Sid,auth.Sid!),
                 };
-                var access_token = tokenService.GeneratorAccessToken(parameter.ClientID, access_token_claims, DateTime.Now.AddMinutes(3));
+                var access_token = tokenService.GeneratorAccessToken(parameter.ClientID, access_token_claims, DateTime.Now.AddHours(4));
 
+                // 通过sid & scope 读取用户其他信息 todo：
                 var idtoken_claims = new List<Claim>()
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub,"123123"),
-                    new Claim(JwtRegisteredClaimNames.Name,"ash"),
-                    new Claim(JwtRegisteredClaimNames.Iat,DateTime.Now.Ticks.ToString()),
+                    new (JwtRegisteredClaimNames.Sid,auth.Sid!),
+                    new (JwtRegisteredClaimNames.Iat,DateTime.Now.Ticks.ToString()),
                 };
 
                 // client 端没发送nonce就不需要添加
@@ -53,7 +53,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                     idtoken_claims.Add(new Claim(JwtRegisteredClaimNames.Nonce, auth.Nonce));
 
                 // id token 会过期吗?
-                var id_token = tokenService.GeneratorAccessToken(parameter.ClientID, idtoken_claims, DateTime.Now.AddMinutes(3));
+                var id_token = tokenService.GeneratorAccessToken(parameter.ClientID, idtoken_claims, DateTime.Now.AddHours(4));
                 return Results.Json(new
                 {
                     access_token = access_token,

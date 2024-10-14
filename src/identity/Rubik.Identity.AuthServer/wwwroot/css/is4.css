@@ -55,7 +55,7 @@ input:-webkit-autofill {
 }
 body.is4 {
   height: auto;
-  background: url(/image/banner.png), linear-gradient(103deg, #209de6, #37def2) fixed;
+  background: linear-gradient(103deg, #209de6, #37def2) fixed;
   background-repeat: no-repeat, no-repeat;
   background-position: center bottom;
 }

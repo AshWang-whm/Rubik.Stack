@@ -8,8 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Fork\ant-design-blazor\components\AntDesign.csproj" />
-    <ProjectReference Include="..\..\share\Rubik.Share.Utils\Rubik.Share.Utils.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Rubik.Infrastructure.Utils.Common\Rubik.Infrastructure.Utils.Common.csproj" />
     <ProjectReference Include="..\Rubik.Identity.Share.Entity\Rubik.Identity.Share.Entity.csproj" />
     <ProjectReference Include="..\Rubik.Identity.Share.Extension\Rubik.Identity.Share.Extension.csproj" />
   </ItemGroup>
@@ -20,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AntDesign.ProLayout" Version="0.19.4" />
+    <PackageReference Include="AntDesign.ProLayout" Version="0.20.3" />
     <PackageReference Include="FreeSql.Extensions.Linq" Version="3.2.833" />
   </ItemGroup>
 

@@ -16,7 +16,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         List<string?> Scopes = [];
         public override async Task Query(QueryModel<TbApplication> query)
         {
-            var exp = query.GetFilterExpression();
+            var exp = query.GetFilterExpressionOrNull();
 
             DataSource = await FreeSql.Select<TbApplication>()
                 .WhereIf(exp != null, exp)

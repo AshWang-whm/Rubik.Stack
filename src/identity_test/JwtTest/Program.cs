@@ -12,7 +12,9 @@ builder.Services.AddSwaggerGen();
 // 前后端分离系统，前端自行处理refresh token 1：定时刷新token 2：401时再刷新token
 // 后端api只接入server做验证
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services
+    .AddAuthorization()
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(o =>
     {
         o.RequireHttpsMetadata = false;

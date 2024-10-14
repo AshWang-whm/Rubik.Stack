@@ -13,8 +13,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 
         public override async Task Query(QueryModel<TbOrganization> query)
         {
-            var exp = query.GetFilterExpression();
-
+            var exp = query.GetFilterExpressionOrNull();
             // 顶级的数据作为total数据分页统计
             var source = await FreeSql.Select<TbOrganization>()
                 .WhereIf(exp != null, exp)
@@ -29,6 +28,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             DataSource = ids.Count==0 ? source: await FreeSql.Select<TbOrganization>()
                     .Where(a => a.IsDelete == false)
                     .Where(a => ids.Contains(a.ID))
+                    .Distinct()
                     .AsTreeCte()
                     .OrderBy(a => a.Sort)
                     .ToTreeListAsync();

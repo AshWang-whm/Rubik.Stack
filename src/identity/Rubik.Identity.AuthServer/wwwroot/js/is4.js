@@ -73,7 +73,7 @@ $(function () {
         var $me = $("#btnLogin");
         $me.prop('disabled', true).addClass('is-disabled').text('登录中...');
         var input = getInput();
-
+        
         $.ajax({
             type: "post",
             url: '/account/login',
@@ -86,11 +86,11 @@ $(function () {
                 }
                 if (res.code === 1) {
                     var returnUrl = $.trim($("#returnUrl").val());
+                    console.log(returnUrl);
                     if (returnUrl) {
                         window.location.href = returnUrl;
                     }
                 } else {
-
                     $me.prop('disabled', false).removeClass('is-disabled').text('重新登录');
                     var msg = res.msg;
                     if (res.data === 1) {

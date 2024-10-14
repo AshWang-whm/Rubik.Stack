@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Rubik.Identity.AuthServer.Endpoints;
+using Rubik.Identity.Oidc.Core.Attributes;
 using Rubik.Identity.Oidc.Core.Configs;
 using Rubik.Identity.Oidc.Core.Endpoints;
 using Rubik.Identity.Oidc.Core.RsaKey;
 using Rubik.Identity.Oidc.Core.Services;
+using System.Reflection;
 
 namespace Rubik.Identity.Oidc.Core.Extensions
 {
@@ -28,9 +29,10 @@ namespace Rubik.Identity.Oidc.Core.Extensions
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSingleton<HttpContextService>();
             builder.Services.AddScoped<AuthorizationCodeEncrtptService>();
-
-
             builder.Services.AddSingleton<TokenService>();
+
+            // stores
+            builder.AutoInject();
 
             return builder;
         }
@@ -58,17 +60,53 @@ namespace Rubik.Identity.Oidc.Core.Extensions
             return builder;
         }
 
-         
         public static void UseOidcServer(this WebApplication web)
         {
             OidcServer.WebApplication = web;
             web.MapGet(OidcServer.DiscoveryConfig!.DiscoveryEndpoint, DiscoveryEndpoint.GetDiscoveryDoc);
             web.MapGet(OidcServer.DiscoveryConfig!.JwksEndpoint, JwkEndpoint.GetJwks);
             web.MapGet(OidcServer.DiscoveryConfig!.UserInfoEndpoint, UserInfoEndpoint.GetUserInfo).RequireAuthorization();
-            web.MapGet(OidcServer.DiscoveryConfig!.AuthorizationEndpoint, AuthorizeEndpoint.Authorize);
-            web.MapPost(OidcServer.DiscoveryConfig!.TokenEndpoint, TokenEndoint.GetToken).RequireAuthorization();
+            web.MapGet(OidcServer.DiscoveryConfig!.AuthorizationEndpoint, AuthorizeEndpoint.Authorize).RequireAuthorization();
+            web.MapPost(OidcServer.DiscoveryConfig!.TokenEndpoint, TokenEndoint.GetToken);
 
 
+        }
+
+        static void AutoInject(this WebApplicationBuilder builder)
+        {
+            var ass = AppDomain.CurrentDomain.GetAssemblies();
+            // 加载所需
+            var types = ass.SelectMany(a => a.GetTypes()).ToArray();
+
+            var auto_inject = types
+                .Select(a=>new { Type=a,Attribute=a.GetCustomAttribute<AutoInjectAttribute>()})
+                .Where(a => a.Attribute != null);
+            foreach (var item in auto_inject)
+            {
+                // 
+                var instances = types.Where(a=>a.IsClass&&a.IsAssignableTo(item.Type)).ToArray();
+                builder.AddService(item.Attribute!,item.Type, instances);
+            }
+        }
+
+        static void AddService(this WebApplicationBuilder builder,AutoInjectAttribute autoInject,Type serviceType, params Type[] impls)
+        {
+            foreach (var item in impls)
+            {
+                switch (autoInject.InjectType)
+                {
+                    case AutoInjectType.Transient:
+                        builder.Services.AddTransient(serviceType, item);
+                        break;
+                    case AutoInjectType.Scope:
+                        builder.Services.AddScoped(serviceType, item);
+                        break;
+                    case AutoInjectType.Singleton:
+                        builder.Services.AddSingleton(serviceType, item);
+                        break;
+                }
+            }
+            
         }
     }
 }

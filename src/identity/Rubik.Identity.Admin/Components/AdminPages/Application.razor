@@ -65,7 +65,8 @@
                 <EnumSelect @bind-Value="@Editor!.ResponseType" Mode="multiple" />
             </FormItem>
             <FormItem Label="Scope">
-                <Select Mode="tags" @bind-Value="@Editor.Scope" TItem="string" TItemValue="string" EnableSearch DataSource="Scopes"></Select>
+                @*<Select Mode="tags" @bind-Value="@Editor.Scope" TItem="string" TItemValue="string" EnableSearch DataSource="Scopes"></Select>*@
+                <Input @bind-Value="@Editor!.Scope" />
             </FormItem>
             @if (Editor.OidcAppType == OidcAppType.MVC || Editor.OidcAppType == OidcAppType.FrontEnd)
             {

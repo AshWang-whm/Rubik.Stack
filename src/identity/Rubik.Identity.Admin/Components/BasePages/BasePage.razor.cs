@@ -33,7 +33,7 @@ namespace Rubik.Identity.Admin.Components.BasePages
 
         protected virtual async Task OnRefresh()
         {
-            await Query(Table!.BuildQueryModel());
+            await Query(Table!.GetQueryModel() as QueryModel<T>);
         }
         protected virtual Task OnNew()
         {

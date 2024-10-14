@@ -35,7 +35,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 
         public override async Task Query(QueryModel<TbUser> query)
         {
-            var user_exp = query.GetFilterExpression();
+            var user_exp = query.GetFilterExpressionOrNull();
 
             var table_exp = user_exp.ExpressionConvertToMultiGenerics<TbUser,TbRelationOrganizeUser>();
 

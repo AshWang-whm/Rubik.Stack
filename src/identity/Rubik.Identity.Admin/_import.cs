@@ -1,0 +1,1 @@
+﻿global using Rubik.Identity.Admin.Extensions;

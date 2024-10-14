@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Stores\**" />
-    <Content Remove="Stores\**" />
-    <EmbeddedResource Remove="Stores\**" />
-    <None Remove="Stores\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Remove="oidc" />
   </ItemGroup>
 
