@@ -32,18 +32,18 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                     return Results.BadRequest("invalid code!");
                 }
 
-                // access token 默认带上sid
+                // access token 默认带上用户账号
                 var access_token_claims = new List<Claim>
                 {
                     new("scope",auth!.Scope),
-                    new (JwtRegisteredClaimNames.Sid,auth.Sid!),
+                    new (JwtRegisteredClaimNames.Sub,auth.UserCode!),
                 };
                 var access_token = tokenService.GeneratorAccessToken(parameter.ClientID, access_token_claims, DateTime.Now.AddHours(4));
 
                 // 通过sid & scope 读取用户其他信息 todo：
                 var idtoken_claims = new List<Claim>()
                 {
-                    new (JwtRegisteredClaimNames.Sid,auth.Sid!),
+                    new (JwtRegisteredClaimNames.Sub,auth.UserCode!),
                     new (JwtRegisteredClaimNames.Iat,DateTime.Now.Ticks.ToString()),
                 };
 
@@ -56,11 +56,11 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 var id_token = tokenService.GeneratorAccessToken(parameter.ClientID, idtoken_claims, DateTime.Now.AddHours(4));
                 return Results.Json(new
                 {
-                    access_token = access_token,
+                    access_token,
                     token_type = "Bearer",
-                    expires_in = DateTime.Now.AddSeconds(15),
+                    expires_in = DateTime.Now.AddHours(8),
                     refresh_token = "refresh_token test",
-                    id_token = id_token,
+                    id_token,
                 });
             }
             else
@@ -73,14 +73,29 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 var access_token = tokenService.GeneratorAccessToken(parameter.ClientID, access_token_claims, DateTime.Now.AddMinutes(3));
                 return Results.Json(new
                 {
-                    access_token = access_token,
+                    access_token,
                     token_type = "Bearer",
                     expires_in = DateTime.Now.AddSeconds(15),
                 });
             }
         }
 
+        public static async Task<IResult> VerifyReferenceToken(string token,TokenService tokenService)
+        {
+            var result = await tokenService.VerifyAccessToken(token);
+            return Results.Json(new
+            {
+                Result=result.IsValid,
+                Exception=result.IsValid? null: result.Exception.Message
+            });
+        }
+    }
 
-
+    public class RefreshToken
+    {
+        /// <summary>
+        /// 7天过期
+        /// </summary>
+        public DateTime? Exp { get; set; } = DateTime.Now.AddDays(7);
     }
 }

@@ -24,6 +24,7 @@ namespace Rubik.Identity.AuthServer.Endpoints
                     { OidcConstants.Discovery.TokenEndpoint, $"{address}{config.TokenEndpoint}" },
                     { OidcConstants.Discovery.DiscoveryEndpoint, $"{address}{config.DiscoveryEndpoint}" },
                     { OidcConstants.Discovery.JwksUri, $"{address}{config.JwksEndpoint}" },
+                    { "verifytoken_endpoint", $"{address}{config.VerifyTokenEndpoint}" },
 
                     { OidcConstants.Discovery.ClaimsSupported, config.Claims },
                     { OidcConstants.Discovery.ScopesSupported, config.Scopes },

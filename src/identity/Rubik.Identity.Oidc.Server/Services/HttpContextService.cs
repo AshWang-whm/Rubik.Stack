@@ -57,7 +57,7 @@ namespace Rubik.Identity.Oidc.Core.Services
 
             if (sid)
             {
-                parameter.Sid= httpContext.HttpContext!.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Sid)?.Value;
+                parameter.UserCode= httpContext.HttpContext!.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Sid)?.Value;
             }
 
             return parameter;
@@ -95,7 +95,7 @@ namespace Rubik.Identity.Oidc.Core.Services
     public class AuthorizationCodeParameter
     {
         public required string ClientID { get; set; }
-        public string? Sid { get; set; }
+        public string? UserCode { get; set; }
         public required string CodeChallenge{ get; set; }
         public required string Scope { get; set; }
         public string[]? ScopeArr => Scope?.Split(' ');

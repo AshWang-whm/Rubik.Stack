@@ -138,7 +138,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             // 根据scope 获取用户信息： 类似 ApiResource TODO：
             var claims = new List<Claim>
             {
-                new (JwtRegisteredClaimNames.Sid,parameter.Sid!),
+                new (JwtRegisteredClaimNames.Sid,parameter.UserCode!),
                 new ("scope",parameter.Scope),
             };
 
@@ -151,7 +151,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Iat,DateTime.Now.Ticks.ToString()),
-                new(JwtRegisteredClaimNames.Sid,parameter.Sid!)
+                new(JwtRegisteredClaimNames.Sid,parameter.UserCode!)
             };
 
             // client 端没发送nonce就不需要添加
@@ -170,7 +170,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 expires: parameter.Expire,
                 signingCredentials: rsaKeys.SigningCredentials
                 );
-            var token = rsaKeys.Token_handler.WriteToken(access_token_options);
+            var token = rsaKeys.TokenHandler.WriteToken(access_token_options);
             return token;
         }
 

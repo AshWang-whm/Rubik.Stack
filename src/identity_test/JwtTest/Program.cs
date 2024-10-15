@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,11 @@ builder.Services.AddSwaggerGen();
 // api 项目通过Authority配置，从DiscoveryEndpoint获取配置，包括token验证公钥，api端自行验证token， 权限，scope等
 // 前后端分离系统，前端自行处理refresh token 1：定时刷新token 2：401时再刷新token
 // 后端api只接入server做验证
+
+builder.Services.AddHttpClient("OidcServer", opt =>
+{
+    opt.BaseAddress = new Uri("http://localhost:5000");
+});
 
 builder.Services
     .AddAuthorization()
@@ -33,18 +39,24 @@ builder.Services
                 ctx.Token = ctx.HttpContext.Request.Cookies["access_token"];
                 return Task.CompletedTask;
             },
-            OnTokenValidated = ctx =>
+            OnTokenValidated =async ctx =>
             {
-                // 验证 scope ， 类似 IdentityServer4 的 AddIdentityServerAuthencation 的 ApiName 
-                if ((ctx.Principal?.Identity?.IsAuthenticated ?? false))
+                // 链接远程 VerifyReferenceToken , /oauth/verify
+                var client = ctx.HttpContext.RequestServices.GetRequiredService<IHttpClientFactory>()
+                    .CreateClient("OidcServer");
+                if (client == null)
                 {
-                    var scope = ctx.Principal.Claims.FirstOrDefault(a => a.Type == "scope")?.Value;
-                    if (!(scope?.Contains("scope1") ?? false))
-                        ctx.Fail(new Exception("scope is invalid"));
+                    ctx.Fail(new Exception("未设置远程OidcServer HttpClient!"));
+                    return;
                 }
-                else
+                var a = ctx.SecurityToken.UnsafeToString();
+                var b = ctx.SecurityToken.GetType();
+                var reference = await client!.GetStringAsync($"/oauth/verify?token={ctx.SecurityToken.UnsafeToString()}");
+                var result = JsonSerializer.Deserialize<VerifyToken>(reference);
+                if (result?.result ?? false)
                     ctx.Success();
-                return Task.CompletedTask;
+                else
+                    ctx.Fail(new Exception(result?.exception??"验证token失败!"));
             }
         };
     });
@@ -87,4 +99,12 @@ app.Run();
 internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+}
+
+
+internal class VerifyToken
+{
+    public bool result { get; set; }
+
+    public string? exception { get; set; }
 }

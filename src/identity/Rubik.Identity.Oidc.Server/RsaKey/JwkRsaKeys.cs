@@ -14,7 +14,7 @@ namespace Rubik.Identity.Oidc.Core.RsaKey
         public RsaSecurityKey RsaSecurityKey =>new(RsaKey);
         public SigningCredentials SigningCredentials => new(RsaSecurityKey, SecurityAlgorithms.RsaSha256);
         public JsonWebKey Jwk;
-        public JwtSecurityTokenHandler Token_handler = new();
+        public JwtSecurityTokenHandler TokenHandler = new();
         public string JwkJson => JsonSerializer.Serialize(new { keys = new List<JsonWebKey> { Jwk } });
         
         public JwkRsaKeys(RsaKeyConfig keyConfig)
