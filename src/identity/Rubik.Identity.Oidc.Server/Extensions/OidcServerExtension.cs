@@ -69,6 +69,7 @@ namespace Rubik.Identity.Oidc.Core.Extensions
             web.MapGet(OidcServer.DiscoveryConfig!.AuthorizationEndpoint, AuthorizeEndpoint.Authorize).RequireAuthorization();
             web.MapPost(OidcServer.DiscoveryConfig!.TokenEndpoint, TokenEndoint.GetToken);
             web.MapGet(OidcServer.DiscoveryConfig!.VerifyTokenEndpoint, TokenEndoint.VerifyReferenceToken);
+            web.MapGet(OidcServer.DiscoveryConfig!.VerifyTokenRestEndpoint, TokenEndoint.VerifyReferenceToken);
         }
 
         static void AutoInject(this WebApplicationBuilder builder)

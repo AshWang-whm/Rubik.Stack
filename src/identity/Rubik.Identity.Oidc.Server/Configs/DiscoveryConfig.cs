@@ -22,5 +22,6 @@ namespace Rubik.Identity.Oidc.Core.Configs
         public string JwksEndpoint { get; set; } = "/oauth/jwks";
 
         public string VerifyTokenEndpoint { get; set; } = "/oauth/verify";
+        public string VerifyTokenRestEndpoint { get; set; } = "/oauth/verify/{token}";
     }
 }
