@@ -1,27 +1,33 @@
 ﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Globalization;
+using Microsoft.Net.Http.Headers;
 
 namespace Rubik.Identity.OidcReferenceAuthentication
 {
     public class OidcReferenceAuthenticationHandler
-        (IOptionsMonitor<OidcReferenceAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IHttpClientFactory clientFactory,IHttpContextAccessor httpContextAccessor)
+        (IOptionsMonitor<OidcReferenceAuthenticationOptions> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, IHttpClientFactory clientFactory)
                 : AuthenticationHandler<OidcReferenceAuthenticationOptions>(options, logger, encoder, clock)
     {
         private readonly HttpClient _httpClient = clientFactory.CreateClient(OidcReferenceDefaults.ReferenceHttpClient);
-        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler = new();
+
+        protected new OidcReferenceEvents Events
+        {
+            get => (OidcReferenceEvents)base.Events!;
+            set => base.Events = value;
+        }
+
+        protected override Task<object> CreateEventsAsync() => Task.FromResult<object>(new OidcReferenceEvents());
+
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             // 访问远程oidc server，
@@ -30,7 +36,25 @@ namespace Rubik.Identity.OidcReferenceAuthentication
             // 3.通过token verify api 验证 token并返回token解析数据
             // 4.token数据写入到IdentityClaims
 
-            var token = httpContextAccessor.HttpContext!.Request.Cookies["access_token"];
+            var msgContext = new MessageReceivedContext(Request.HttpContext,Scheme,Options);
+            await Events.MessageReceived(msgContext);
+            if(msgContext.Result!=null)
+                return msgContext.Result;
+
+            string? token = msgContext.Token;
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                token = Request.Headers.TryGetValue(HeaderNames.Authorization, out var authorization) ? authorization.ToString() : null;
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    return AuthenticateResult.NoResult();
+                }
+                if (token?.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)??false)
+                {
+                    token = token["Bearer ".Length..].Trim();
+                }
+            }            
+
             var verify_result = await _httpClient.GetStringAsync(string.Format(Options.VerifyEndpointFormat, token));
             var result = JsonSerializer.Deserialize<TokenVerifyResult>(verify_result);
 
@@ -46,6 +70,18 @@ namespace Rubik.Identity.OidcReferenceAuthentication
 
                 // 需要设置authenticationType
                 var principal = new ClaimsPrincipal(identity);
+
+                if (Options.Events.OnTokenValidated != null) 
+                {
+                    var tokenValidatedContext = new TokenValidatedContext(Context, Scheme, Options)
+                    {
+                        Principal = principal,
+                    };
+                    await Events.TokenValidated(tokenValidatedContext);
+                    if(tokenValidatedContext.Result!=null)
+                        return tokenValidatedContext.Result;
+                }
+
                 return AuthenticateResult.Success(new AuthenticationTicket(principal, Options.Scheme));
             }
 

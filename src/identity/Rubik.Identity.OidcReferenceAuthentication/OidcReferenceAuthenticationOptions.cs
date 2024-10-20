@@ -18,9 +18,18 @@ namespace Rubik.Identity.OidcReferenceAuthentication
 
         public string? Authority { get; set; }
 
+        public string? Audience { get; set; }
+
+        /// <summary>
+        /// default is true
+        /// </summary>
+        public bool VerifyAudience { get; set; } = true;
+
         /// <summary>
         /// 是否保存解析token并保存claims
         /// </summary>
         public bool SaveClaims { get; set; }= true;
+
+        public new OidcReferenceEvents Events { get=>(OidcReferenceEvents)base.Events;set { base.Events = value; } }
     }
 }

@@ -70,12 +70,19 @@ namespace JwtTest
         public static void AddOidcReferenceAuthencation(this WebApplicationBuilder builder)
         {
             builder.Services
-                .AddHttpContextAccessor()
                 .AddAuthorization()
                 .AddAuthentication(OidcReferenceDefaults.AuthenticationScheme)
                 .AddOidcReferenceAuthencation(o =>
                 {
                     o.Authority = "http://localhost:5000";
+                    o.Events = new OidcReferenceEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            context.Token = context.Request.Cookies["access_token"];
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
         }
     }
