@@ -67,7 +67,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvcClient", "src\identity_t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JwtTest", "src\identity_test\JwtTest\JwtTest.csproj", "{534D1FB1-0B74-47AE-98EF-0020F41B8D22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Identity.OidcReferenceAuthentication", "src\identity\Rubik.Identity.OidcReferenceAuthentication\Rubik.Identity.OidcReferenceAuthentication.csproj", "{67D63378-00FC-494A-B703-79B333C34254}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubik.Identity.OidcReferenceAuthentication", "src\identity\Rubik.Identity.OidcReferenceAuthentication\Rubik.Identity.OidcReferenceAuthentication.csproj", "{67D63378-00FC-494A-B703-79B333C34254}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorServerTest", "src\identity_test\BlazorServerTest\BlazorServerTest.csproj", "{7A013CF9-8B17-4BB0-B605-8DF745B8FA90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -171,6 +173,10 @@ Global
 		{67D63378-00FC-494A-B703-79B333C34254}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67D63378-00FC-494A-B703-79B333C34254}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67D63378-00FC-494A-B703-79B333C34254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A013CF9-8B17-4BB0-B605-8DF745B8FA90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A013CF9-8B17-4BB0-B605-8DF745B8FA90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A013CF9-8B17-4BB0-B605-8DF745B8FA90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A013CF9-8B17-4BB0-B605-8DF745B8FA90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -208,6 +214,7 @@ Global
 		{BB541B5F-81AD-465B-BF55-F95088071239} = {E8E558F9-169C-474F-8277-910C003CE8BA}
 		{534D1FB1-0B74-47AE-98EF-0020F41B8D22} = {E8E558F9-169C-474F-8277-910C003CE8BA}
 		{67D63378-00FC-494A-B703-79B333C34254} = {32F38690-C6FF-4D33-9C7A-84963065240C}
+		{7A013CF9-8B17-4BB0-B605-8DF745B8FA90} = {E8E558F9-169C-474F-8277-910C003CE8BA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {013ABA53-F0DF-4706-8106-0FA069C82488}

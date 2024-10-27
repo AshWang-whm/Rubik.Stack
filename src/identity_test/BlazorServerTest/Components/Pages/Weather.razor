@@ -1,0 +1,74 @@
+﻿@using Microsoft.AspNetCore.Authentication
+@page "/weather"
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    [Inject]
+    public IHttpClientFactory httpClientFactory { get; set; }
+
+    [Inject]
+    public IHttpContextAccessor httpContextAccessor { get; set; }
+
+
+    private WeatherForecast[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate asynchronous loading to demonstrate a loading indicator
+        await Task.Delay(500);
+
+        var access_token = await httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+
+        // token access jwt test
+        var client = new HttpClient()
+        {
+            BaseAddress = new Uri("http://localhost:5166")
+        };
+        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {access_token}");
+        forecasts = System.Text.Json.JsonSerializer.Deserialize<WeatherForecast[]>( await client.GetStringAsync("weatherforecast"));
+
+    }
+
+    private class WeatherForecast
+    {
+        public DateOnly Date { get; set; }
+        public int TemperatureC { get; set; }
+        public string? Summary { get; set; }
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}

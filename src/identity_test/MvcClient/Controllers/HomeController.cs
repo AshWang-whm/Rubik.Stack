@@ -30,6 +30,18 @@ namespace MvcClient.Controllers
             {
                 System.Diagnostics.Debug.WriteLine($"{item.Type} : {item.Value}");
             }
+
+            // token access jwt test
+            var client = new HttpClient()
+            {
+                BaseAddress = new Uri("http://localhost:5166")
+            };
+            client.DefaultRequestHeaders.Add("Authorization", $"Bearer {access_token}");
+            var data = await client.GetStringAsync("weatherforecast");
+
+            System.Diagnostics.Debug.WriteLine(data);
+
+
             return View();
         }
 
