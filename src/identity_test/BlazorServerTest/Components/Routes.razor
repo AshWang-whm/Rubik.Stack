@@ -5,10 +5,11 @@
         <Found Context="routeData">
             <Microsoft.AspNetCore.Components.Authorization.AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
                 <NotAuthorized>
-                    @{ 
+                    <p>Not Authorized</p>
+                    @*@{ 
                         var returnUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
                         NavigationManager.NavigateTo($"", true);
-                    }
+                    }*@
                 </NotAuthorized>
             </Microsoft.AspNetCore.Components.Authorization.AuthorizeRouteView>
             <FocusOnNavigate RouteData="routeData" Selector="h1" />
