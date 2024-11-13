@@ -7,7 +7,7 @@ namespace Rubik.Infrastructure.Logger.Middleware.Api
     public static class SerilogExtension
     {
         /// <summary>
-        /// Rabbit Mq Logger Sink
+        /// Logger Sink
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="configure"></param>

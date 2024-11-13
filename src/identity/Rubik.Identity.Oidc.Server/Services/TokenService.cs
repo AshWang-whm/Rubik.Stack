@@ -1,12 +1,15 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Rubik.Identity.Oidc.Core.Configs;
+using Rubik.Identity.Oidc.Core.Extensions;
+using Rubik.Identity.Oidc.Core.OidcEntities;
 using Rubik.Identity.Oidc.Core.RsaKey;
+using Rubik.Identity.Oidc.Core.Stores;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace Rubik.Identity.Oidc.Core.Services
 {
-    internal class TokenService(JwkRsaKeys jwkKeys,DiscoveryConfig discovery)
+    internal class TokenService(JwkRsaKeys jwkKeys,DiscoveryConfig discovery): ITokenStore
     {
         /// <summary>
         /// 生成 token,算法有限制,HmacSha256 能正常运行
@@ -16,13 +19,13 @@ namespace Rubik.Identity.Oidc.Core.Services
         /// <param name="claims"></param>
         /// <param name="exp"></param>
         /// <returns></returns>
-        public string? GeneratorAccessToken(string? clientid, List<Claim>? claims, DateTime exp)
+        public string? GeneratorAccessToken(TokenEndpointParameter parameter, List<Claim>? claims)
         {
             var id_token_options = new JwtSecurityToken(
                 issuer: discovery.Issuer,
-                audience: clientid,
+                audience: parameter.ClientID,
                 claims: claims,
-                expires: exp,
+                expires: ExpDateByDay(),
                 signingCredentials: jwkKeys.SigningCredentials
                 );
 
@@ -30,19 +33,55 @@ namespace Rubik.Identity.Oidc.Core.Services
             return token;
         }
 
-        public string GeneratorRefreshToken()
+        public string GeneratorRefreshToken(string access_token)
         {
-            return "";
+            // 简单md5 加密 access_token 当作 refresh token
+            return MD5Util.GetMd5Hash(access_token);
         }
 
-        public string GeneratorIdToken()
+        public string GeneratorIdToken(TokenEndpointParameter parameter, List<Claim>? claims)
         {
-            return "";
+            var id_token_options = new JwtSecurityToken(
+                issuer: discovery.Issuer,
+                audience: parameter.ClientID,
+                claims: claims,
+                expires: ExpDateByDay(),
+                signingCredentials: jwkKeys.SigningCredentials
+                );
+
+            var token = jwkKeys.TokenHandler.WriteToken(id_token_options);
+            return token;
         }
 
-        public bool VerifyRefreshToken()
+        public async Task<RefreshTokenValidationResultEntity> VerifyRefreshToken(TokenEndpointParameter parameter)
         {
-            return true;
+            // 验证md5 签名， refresh token 过期时间默认小于 access_token 过期时间的+3天
+            var access_token = parameter.Query["access_token"];
+            if (access_token == null)
+                return new  RefreshTokenValidationResultEntity { IsValid = false, Exception = "access_token is not found in query!" };
+
+            var refresh_token = parameter.Query["refresh_token"];
+            if (refresh_token == null)
+                return new RefreshTokenValidationResultEntity { IsValid = false, Exception = "refresh_token is not found in query!" };
+
+            var md5 = MD5Util.GetMd5Hash(access_token);
+            if(!md5.Equals(refresh_token))
+            {
+                return new RefreshTokenValidationResultEntity { IsValid = false, Exception = "refresh token is not valided!" };
+            }
+
+            // 生成新的access_token 和 refresh token
+            var old_access_token= jwkKeys.TokenHandler.ReadJwtToken(access_token);
+
+            var new_access_token = GeneratorAccessToken(parameter, old_access_token.Claims.ToList());
+            var new_refresh_token = GeneratorRefreshToken(new_access_token!);
+
+            return new RefreshTokenValidationResultEntity 
+            {
+                IsValid = true,
+                AccessToken= new_access_token,
+                RefreshToken= new_refresh_token,
+            };
         }
 
 
@@ -62,5 +101,13 @@ namespace Rubik.Identity.Oidc.Core.Services
 
             return result;
         }
+
+
+        public DateTime ExpDateByDay(int days=3)
+        {
+            return DateTime.Now.AddDays(days);
+        }
+
+
     }
 }

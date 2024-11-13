@@ -85,7 +85,7 @@ namespace Rubik.Identity.OidcReferenceAuthentication
                 return AuthenticateResult.Success(new AuthenticationTicket(principal, Options.Scheme));
             }
 
-            return AuthenticateResult.Fail(new Exception(result?.Exception ?? "Oidc Reference Token Verify Fail!"));
+            return AuthenticateResult.Fail(new Exception(result?.Exception ?? "Oidc Reference Token Verify Failed!"));
         }
     }
 

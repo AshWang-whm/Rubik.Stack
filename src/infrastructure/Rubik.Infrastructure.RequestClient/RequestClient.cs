@@ -34,7 +34,7 @@ namespace Rubik.Infrastructure.RequestClient
         }
 
         internal async Task<IOutputHttpResponse<TResult>> InternalCallApi<TResult>(string url, HttpContent? content, HttpMethodType method = HttpMethodType.POST, string? clientname = null)
-        where TResult : class
+            where TResult : class
         {
 
             using var client = httpClientFactory.CreateClient(clientname!);
