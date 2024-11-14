@@ -1,4 +1,5 @@
-﻿using Rubik.Infrastructure.Contract.Extensions;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Rubik.Infrastructure.Contract.Extensions;
 using Rubik.Infrastructure.Contract.HttpRequest;
 using Rubik.Infrastructure.Contract.HttpResponse;
 using System.Text;
@@ -6,14 +7,20 @@ using System.Text.Json;
 
 namespace Rubik.Infrastructure.RequestClient
 {
-    public partial class RequestClient(IHttpClientFactory httpClientFactory)
+    public partial class RequestClient(IHttpClientFactory httpClientFactory,IServiceProvider serviceProvider)
     {
+        public const string HandlerPerfix = "__REQUESTCONFIG__";
         public const string ClientName = "__REQUESTCLIENT__";
         private readonly JsonSerializerOptions JsonSerializerOption = new() { PropertyNameCaseInsensitive = true };
         private readonly IHttpClientFactory httpClientFactory = httpClientFactory;
 
-        internal static async Task<HttpResponseMessage?> CallHttpResponseMessage(string url, HttpClient client, HttpContent? content, HttpMethodType method =  HttpMethodType.POST)
+        internal async Task<HttpResponseMessage?> CallHttpResponseMessage(string url, HttpContent? content, HttpMethodType method =  HttpMethodType.POST, string? clientname = null)
         {
+            using var client = httpClientFactory.CreateClient(clientname!) ?? throw new Exception( $"Client Option:[{clientname}] Not Found!");
+
+            var clientHandler = serviceProvider.GetKeyedService<IRequestClientHandler>($"{HandlerPerfix}_{clientname}");
+            clientHandler?.HttpClientSetup(client);
+
             HttpResponseMessage? hrm = null;
             switch (method)
             {
@@ -33,34 +40,27 @@ namespace Rubik.Infrastructure.RequestClient
             return hrm;
         }
 
-        internal async Task<IOutputHttpResponse<TResult>> InternalCallApi<TResult>(string url, HttpContent? content, HttpMethodType method = HttpMethodType.POST, string? clientname = null)
+        internal async Task<TResult> InternalCallApi<TResult>(string url, HttpContent? content, HttpMethodType method = HttpMethodType.POST, string? clientname = null)
             where TResult : class
         {
-
-            using var client = httpClientFactory.CreateClient(clientname!);
-            if (client == null)
-            {
-                return HttpOutput.NotOk(default(TResult), $"Client Option:[{clientname}] Not Found!");
-            }
-
             try
             {
-                var hrm = await CallHttpResponseMessage(url, client, content, method);
+                var hrm = await CallHttpResponseMessage(url, content, method,clientname);
                 if (hrm == null)
                 {
-                    return HttpOutput.NotOk(data: default(TResult), msg: "HttpResponseMessage Is Null!");
+                    throw new Exception("HttpResponseMessage Is Null!");
                 }
                 else if (!hrm.IsSuccessStatusCode)
                 {
-                    return HttpOutput.NotOk(data: default(TResult), msg: hrm.ReasonPhrase);
+                    throw new Exception(hrm.ReasonPhrase);
                 }
                 var json = await hrm.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<OutputHttpResponse<TResult>>(json, JsonSerializerOption);
-                return result ?? HttpOutput.NotOk(data: default(TResult), msg: "Response Json Deserialize Error!");
+                var result = JsonSerializer.Deserialize<TResult>(json, JsonSerializerOption) ?? throw new Exception("Response Json Deserialize Error!");
+                return result;
             }
             catch (Exception ex)
             {
-                return HttpOutput.NotOk(data: default(TResult), msg: $"Url:{url}, Err:{ex.Message}");
+               throw new Exception($"Url:{url}, Err:{ex.Message}");
             }
             finally
             {
@@ -68,130 +68,50 @@ namespace Rubik.Infrastructure.RequestClient
             }
         }
 
-        internal async Task<IOutputHttpResponse> InternalCallApi(string url, HttpContent? content, HttpMethodType method = HttpMethodType.POST, string? clientname = null)
+        public async Task<IOutputHttpResponse<TResult>> CallApi<TResult>(string url, object? parameter, HttpMethodType method = HttpMethodType.POST,string mediaType= "application/json", string clientname = ClientName)
+            where TResult : class, IOutputHttpResponse<TResult>
         {
-            if (clientname == null)
-            {
-                return HttpOutput.NotOk($"Client Option:[{clientname}] Not Found!");
-            }
-            var client = httpClientFactory.CreateClient(clientname);
-            if (client == null)
-            {
-                return HttpOutput.NotOk($"Client Option:[{clientname}] Not Found!");
-            }
-
-            try
-            {
-                var hrm = await CallHttpResponseMessage(url, client, content, method);
-                if (hrm == null)
-                {
-                    return HttpOutput.NotOk("HttpResponseMessage Is Null!");
-                }
-                var response = await hrm.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<OutputHttpResponse>(response, JsonSerializerOption);
-                return result ?? HttpOutput.NotOk(msg: "Response Json Deserialize Error!");
-            }
-            catch (Exception ex)
-            {
-                return HttpOutput.NotOk(ex.Message);
-            }
-            finally
-            {
-                content?.Dispose();
-            }
-
+            var content = new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, mediaType);
+            return await InternalCallApi<OutputHttpResponse<TResult>>(url, content, method, clientname);
         }
 
-        internal async Task<IOutputHttpPageResponse<TResult>> InternalCallPageApi<TResult>(string url, HttpContent? content, HttpMethodType method = HttpMethodType.POST, string? clientname = null)
-        where TResult : class, IOutputHttpPageResponse<TResult>
-        {
-            if (clientname == null)
-            {
-                return HttpOutput.PageNotOk<TResult>(msg:$"Client Option:[{clientname}] Not Found!");
-            }
-            using var client = httpClientFactory.CreateClient(clientname);
-            if (client == null)
-            {
-                return HttpOutput.PageNotOk<TResult>(msg: $"Client Option:[{clientname}] Not Found!");
-            }
-
-            try
-            {
-                var hrm = await CallHttpResponseMessage(url, client, content, method);
-                if (hrm == null)
-                {
-                    return HttpOutput.PageNotOk<TResult>(msg: "HttpResponseMessage Is Null!");
-                }
-                else if (!hrm.IsSuccessStatusCode)
-                {
-                    return HttpOutput.PageNotOk<TResult>(msg: hrm.ReasonPhrase??hrm.StatusCode.ToString());
-                }
-                var json = await hrm.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<OutputHttpPageResponse<TResult>>(json, JsonSerializerOption);
-                return result ?? HttpOutput.PageNotOk<TResult>(msg: "Response Json Deserialize Error!");
-            }
-            catch (Exception ex)
-            {
-                return HttpOutput.PageNotOk<TResult>(msg: ex.Message);
-            }
-            finally
-            {
-                content?.Dispose();
-            }
-        }
-
-        public async Task<IOutputHttpResponse<TResult>> CallApi<TResult>(string url, object? parameter = null, HttpMethodType method = HttpMethodType.POST, string clientname = ClientName)
-            where TResult : class
-        {
-            var content = parameter==null?null: new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, "application/json");
-            return await InternalCallApi<TResult>(url, content,method, clientname);
-        }
-
-        public async Task<IOutputHttpResponse> CallApi(string url, object? parameter = null, HttpMethodType method = HttpMethodType.POST, string clientname = ClientName)
-        {
-            var content = parameter==null? null: new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, "application/json");
-            return await InternalCallApi(url, content,method, clientname);
-        }
-
-        public async Task<IOutputHttpPageResponse<TResult>> CallPageApi<TResult>(string url, object? parameter, HttpMethodType method = HttpMethodType.POST, string clientname = ClientName) 
+        public async Task<IOutputHttpPageResponse<TResult>> CallPageApi<TResult>(string url, object? parameter, HttpMethodType method = HttpMethodType.POST, string mediaType = "application/json", string clientname = ClientName) 
             where TResult : class, IOutputHttpPageResponse<TResult>
         {
-            var content = new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, "application/json");
-            return await InternalCallPageApi<TResult>(url, content, method, clientname);
+            var content = new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, mediaType);
+            return await InternalCallApi<OutputHttpPageResponse<TResult>>(url, content, method, clientname);
         }
 
-
-        public async Task<IOutputHttpResponse<TResult>> GetApi<TResult>(string url, object parameter, string clientname = ClientName)
+        public async Task<IOutputHttpResponse<TResult>> GetApi<TResult>(string url, object? parameter, string clientname = ClientName)
             where TResult : class
         {
             var query = parameter.ToQueryString(url);
-            return await CallApi<TResult>(query, null, HttpMethodType.GET, clientname);
+            return await InternalCallApi<OutputHttpResponse<TResult>>(query, null, HttpMethodType.GET, clientname);
         }
 
-        public async Task<IOutputHttpResponse> GetApi(string url, object parameter, string clientname = ClientName)
+        public async Task<IOutputHttpResponse> GetApi(string url, object? parameter, string clientname = ClientName)
         {
             var query = parameter.ToQueryString(url);
-            return await CallApi(query, null,HttpMethodType.GET, clientname);
+            return await InternalCallApi<OutputHttpResponse>(query, null,HttpMethodType.GET, clientname);
         }
 
-        public async Task<IOutputHttpResponse<TResult>> GetRestApi<TResult>(string url, object parameter, string clientname = ClientName)
+        public async Task<IOutputHttpResponse<TResult>> GetRestApi<TResult>(string url, object? parameter, string clientname = ClientName)
             where TResult : class
         {
             var query = parameter.ToRestQueryString(url);
-            return await CallApi<TResult>(query, null, HttpMethodType.GET, clientname);
+            return await InternalCallApi<OutputHttpResponse<TResult>>(query, null, HttpMethodType.GET, clientname);
         }
 
-        public async Task<IOutputHttpResponse> GetRestApi(string url, object parameter, string clientname = ClientName)
+        public async Task<IOutputHttpResponse> GetRestApi(string url, object? parameter, string clientname = ClientName)
         {
             var query = parameter.ToRestQueryString(url);
-            return await CallApi(query, null, HttpMethodType.GET, clientname);
+            return await InternalCallApi<OutputHttpResponse>(query, null, HttpMethodType.GET, clientname);
         }
-
 
         public async Task<IOutputHttpResponse> UploadFile(string url, UploadFileRequest parameter, string clientname = ClientName)
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await InternalCallApi(url, content, clientname: clientname);
+            return await InternalCallApi<OutputHttpResponse>(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -206,7 +126,7 @@ namespace Rubik.Infrastructure.RequestClient
             where TResult : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await InternalCallApi<TResult>(url, content, clientname: clientname);
+            return await InternalCallApi<OutputHttpResponse<TResult>>(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -220,7 +140,7 @@ namespace Rubik.Infrastructure.RequestClient
         public async Task<IOutputHttpResponse> UploadFile<TIn>(string url, UploadFileRequest<TIn> parameter, string clientname = ClientName) where TIn : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await InternalCallApi(url, content, clientname: clientname);
+            return await InternalCallApi<OutputHttpResponse>(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -237,7 +157,7 @@ namespace Rubik.Infrastructure.RequestClient
             where TResult : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await InternalCallApi<TResult>(url, content, clientname: clientname);
+            return await InternalCallApi<OutputHttpResponse<TResult>>(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -250,7 +170,7 @@ namespace Rubik.Infrastructure.RequestClient
         public async Task<IOutputHttpResponse> UploadStream(string url, UploadStreamRequest parameter, string clientname = ClientName)
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await InternalCallApi(url, content, clientname: clientname);
+            return await InternalCallApi<OutputHttpResponse>(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -264,7 +184,7 @@ namespace Rubik.Infrastructure.RequestClient
         public async Task<IOutputHttpResponse<TResult>> UploadStream<TResult>(string url, UploadStreamRequest parameter, string clientname = ClientName) where TResult : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await InternalCallApi<TResult>(url, content, clientname: clientname);
+            return await InternalCallApi<OutputHttpResponse<TResult>>(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -278,7 +198,7 @@ namespace Rubik.Infrastructure.RequestClient
         public async Task<IOutputHttpResponse> UploadStream<TIn>(string url, UploadStreamRequest<TIn> parameter, string clientname = ClientName) where TIn : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await InternalCallApi(url, content, clientname: clientname);
+            return await InternalCallApi<OutputHttpResponse>(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -295,7 +215,7 @@ namespace Rubik.Infrastructure.RequestClient
             where TResult : class
         {
             var content = parameter.ToMultipartFormDataContent();
-            return await InternalCallApi<TResult>(url, content, clientname: clientname);
+            return await InternalCallApi<OutputHttpResponse<TResult>>(url, content, clientname: clientname);
         }
 
         /// <summary>
@@ -358,17 +278,15 @@ namespace Rubik.Infrastructure.RequestClient
 
         public async Task<HttpResponseMessage?> DownloadFileContent(string url, string clientname = ClientName, HttpMethodType method = HttpMethodType.GET)
         {
-            using var client = httpClientFactory.CreateClient(clientname) ?? throw new Exception($"Client Option:[{clientname}] Not Found!");
-            var hrm = await CallHttpResponseMessage(url, client, null, method);
+            var hrm = await CallHttpResponseMessage(url, null, method,clientname);
             return hrm;
         }
 
         public async Task<HttpResponseMessage?> DownloadFileContent<TIn>(string url, TIn parameter, string clientname = ClientName)
             where TIn : class
         {
-            using var client = httpClientFactory.CreateClient(clientname) ?? throw new Exception($"Client Option:[{clientname}] Not Found!");
             var content = new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, "application/json");
-            var hrm = await CallHttpResponseMessage(url, client, content, HttpMethodType.GET);
+            var hrm = await CallHttpResponseMessage(url, content, HttpMethodType.GET,clientname);
             return hrm;
         }
 

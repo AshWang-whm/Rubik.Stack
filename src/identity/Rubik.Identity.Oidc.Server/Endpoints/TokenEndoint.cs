@@ -94,6 +94,8 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             if (!string.IsNullOrEmpty(auth.Nonce))
                 idtoken_claims.Add(new Claim(JwtRegisteredClaimNames.Nonce, auth.Nonce));
 
+            // 检查是否需要 refresh_token 和 id_token TODO:
+
             // id token 会过期吗?
             var id_token = tokenService.GeneratorIdToken(parameter, idtoken_claims);
 

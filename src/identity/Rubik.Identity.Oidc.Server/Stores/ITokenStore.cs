@@ -12,7 +12,7 @@ namespace Rubik.Identity.Oidc.Core.Stores
 {
     public interface ITokenStore
     {
-        public string GeneratorAccessToken(TokenEndpointParameter parameter, List<Claim>? claims);
+        public string GeneratorAccessToken(TokenEndpointParameter parameter, IEnumerable<Claim>? claims);
 
         public Task<TokenValidationResult> VerifyAccessToken(string token);
         public Task<RefreshTokenValidationResultEntity> VerifyRefreshToken(TokenEndpointParameter parameter);

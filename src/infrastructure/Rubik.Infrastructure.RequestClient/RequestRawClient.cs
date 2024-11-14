@@ -6,28 +6,25 @@ namespace Rubik.Infrastructure.RequestClient
 {
     public partial class RequestClient
     {
-        public async Task<TResult?> CallApiRawOutput<TResult>(string url, HttpContent? content, HttpMethodType method = HttpMethodType.POST, string? clientname = null)
-            where TResult : class
+        internal async Task<string> CallApiRawContent(string url, HttpContent? content, HttpMethodType method = HttpMethodType.POST, string? clientname = null)
         {
-            if (clientname == null)
-            {
-                return default;
-            }
-            var client = httpClientFactory.CreateClient(clientname) ?? throw new Exception($"Client Option:[{clientname}] Not Found!");
             try
             {
-                var hrm = await CallHttpResponseMessage(url, client, content, method);
+                var hrm = await CallHttpResponseMessage(url, content, method, clientname);
                 if (hrm == null)
                 {
-                    return default;
+                    throw new Exception("HttpResponseMessage Is Null!");
                 }
-                var response = await hrm.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<TResult>(response, JsonSerializerOption);
-                return result;
+                else if (!hrm.IsSuccessStatusCode)
+                {
+                    throw new Exception(hrm.ReasonPhrase);
+                }
+                var json = await hrm.Content.ReadAsStringAsync();
+                return json;
             }
             catch (Exception ex)
             {
-                throw;
+                throw new Exception($"Url:{url}, Err:{ex.Message}");
             }
             finally
             {
@@ -35,11 +32,29 @@ namespace Rubik.Infrastructure.RequestClient
             }
         }
 
-        public async Task<TResult?> PostRawApi<TResult>(string url, object? parameter = null, string clientname = ClientName)
+        public async Task<string> PostApiForRawContent(string url, object? parameter = null, string mediaType = "application/json", string clientname = ClientName)
+        {
+            var content = new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, mediaType);
+            return await CallApiRawContent(url,content, HttpMethodType.POST, clientname);
+        }
+
+        public async Task<string> GetApiForRawContent(string url, object? parameter = null, HttpMethodType method = HttpMethodType.GET, string clientname = ClientName)
+        {
+            var rawurl = parameter.ToQueryString(url);
+            return await CallApiRawContent(rawurl,null, HttpMethodType.GET, clientname);
+        }
+
+        public async Task<string> GetRestApiForRawContent(string url, object? parameter = null, HttpMethodType method = HttpMethodType.GET, string clientname = ClientName)
+        {
+            var rawurl = parameter.ToRestQueryString(url);
+            return await CallApiRawContent(rawurl, null, HttpMethodType.GET, clientname);
+        }
+
+        public async Task<TResult?> PostRawApi<TResult>(string url, object? parameter = null, string mediaType = "application/json", string clientname = ClientName)
             where TResult : class
         {
-            var content = new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, "application/json");
-            return await CallApiRawOutput<TResult>(url, content, HttpMethodType.POST, clientname);
+            var content = new StringContent(JsonSerializer.Serialize(parameter), Encoding.UTF8, mediaType);
+            return await InternalCallApi<TResult>(url, content, HttpMethodType.POST, clientname);
         }
 
         /// <summary>
@@ -52,11 +67,11 @@ namespace Rubik.Infrastructure.RequestClient
         /// <param name="method"></param>
         /// <param name="clientname"></param>
         /// <returns></returns>
-        public async Task<TResult?> GetRawApi<TResult>(string url,object? parameter = null,string mediaType= "text/plain", HttpMethodType method = HttpMethodType.GET, string clientname = ClientName)
+        public async Task<TResult?> GetRawApi<TResult>(string url,object? parameter = null, HttpMethodType method = HttpMethodType.GET, string clientname = ClientName)
             where TResult : class
         {
             var rawurl = parameter.ToQueryString(url);
-            return await CallApiRawOutput<TResult>(rawurl, null, method, clientname);
+            return await InternalCallApi<TResult>(rawurl, null, method, clientname);
         }
 
         /// <summary>
@@ -69,11 +84,12 @@ namespace Rubik.Infrastructure.RequestClient
         /// <param name="method"></param>
         /// <param name="clientname"></param>
         /// <returns></returns>
-        public async Task<TResult?> GetRestApi<TResult>(string url, object? parameter = null, string mediaType = "text/plain", HttpMethodType method = HttpMethodType.GET, string clientname = ClientName)
+        public async Task<TResult?> GetRestApi<TResult>(string url, object? parameter = null, HttpMethodType method = HttpMethodType.GET, string clientname = ClientName)
             where TResult : class
         {
-            var rawurl = parameter.ToQueryString(url);
-            return await CallApiRawOutput<TResult>(rawurl, null, method, clientname);
+            var rawurl = parameter.ToRestQueryString(url);
+            return await InternalCallApi<TResult>(rawurl, null, method, clientname);
         }
+
     }
 }

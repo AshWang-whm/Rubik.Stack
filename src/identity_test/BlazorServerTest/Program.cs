@@ -21,7 +21,6 @@ builder.Services.AddAuthentication("oidc")
                 // 仅发送到idp验证用
                 o.ClientSecret = "ClientSecretClientSecretClientSecretClientSecret";
 
-                o.UsePkce = true;
                 o.SaveTokens = true;
 
                 o.CallbackPath = "/oidc/callback";

@@ -19,7 +19,7 @@ namespace Rubik.Identity.Oidc.Core.Services
         /// <param name="claims"></param>
         /// <param name="exp"></param>
         /// <returns></returns>
-        public string? GeneratorAccessToken(TokenEndpointParameter parameter, List<Claim>? claims)
+        public string? GeneratorAccessToken(TokenEndpointParameter parameter, IEnumerable<Claim>? claims)
         {
             var id_token_options = new JwtSecurityToken(
                 issuer: discovery.Issuer,
@@ -73,7 +73,7 @@ namespace Rubik.Identity.Oidc.Core.Services
             // 生成新的access_token 和 refresh token
             var old_access_token= jwkKeys.TokenHandler.ReadJwtToken(access_token);
 
-            var new_access_token = GeneratorAccessToken(parameter, old_access_token.Claims.ToList());
+            var new_access_token = GeneratorAccessToken(parameter, old_access_token.Claims);
             var new_refresh_token = GeneratorRefreshToken(new_access_token!);
 
             return new RefreshTokenValidationResultEntity 

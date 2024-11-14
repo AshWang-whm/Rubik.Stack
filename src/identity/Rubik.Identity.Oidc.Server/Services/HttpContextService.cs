@@ -81,7 +81,6 @@ namespace Rubik.Identity.Oidc.Core.Services
             OidcParameterInValidationException.NotNullOrEmpty(nameof(grant_type), grant_type);
             OidcParameterInValidationException.NotNullOrEmpty(nameof(clientid), clientid);
 
-
             return new TokenEndpointParameter
             {
                 ClientID = clientid!,
