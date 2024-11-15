@@ -1,4 +1,29 @@
 # Rubik.Stack
+
+##### Organizational structure management system & Oidc single sign-on service (written with reference to OAuth2.0 & Oidc official document process, not all functions are implemented)
+##### The project framework mainly uses Blazor App, UI: AntDesign, Orm: Freesql, Database: PgSql
+## Directory structure
+
++ identity
+
++ + Rubik.Identity.Admin: Organizational structure management system, project startup initialization database
+  + Rubik.Identity.AuthServer: Single sign-on service Mvc Host
+  + Rubik.Identity.Oidc.Core: Single sign-on core process
+  + Rubik.Identity.OidcReferenceAuthentication: Jwt component token authentication process access Oidc expansion package
+  + Rubik.Identity.Share.Entity: Organizational structure database mapping entity
+
+  
++ identity_test
++ + BlazorServerTest: Blazor App access oidc server & request JwtTest api test project
+  + BlazorWasmTest: Blazor Wasm access oidc server, not implemented
+  + JwtTest: JwtAuthentication Connect to oidc server for testing
+  + MvcClient: AddOpenIdConnect Connect to oidc server for testing
+  + infrastructure Encapsulation of some common class libraries
+
++ lowcode Low-code platform, no use
+
+-------------------------------------------------------------------------------------------
+
 ##### 组织架构管理系统&Oidc单点登录服务（参考OAuth2.0&Oidc官方文档流程编写，未实现全部功能）
 ##### 项目框架主要使用Blazor App，UI:AntDesign, Orm：Freesql，Database：PgSql
 ##目录结构
