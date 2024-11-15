@@ -1,6 +1,6 @@
 # Rubik.Stack
 ##### 组织架构管理系统&Oidc单点登录服务（参考OAuth2.0&Oidc官方文档流程编写，未实现全部功能）
-##### 项目服务主要以Blazor App开发，UI框架AntDesing Blazor, Orm：Freesql，Database：PgSql
+##### 项目框架主要使用Blazor App，UI:AntDesign, Orm：Freesql，Database：PgSql
 ##目录结构
 + identity
 + + Rubik.Identity.Admin：组织架构管理系统，项目启动初始化数据库
