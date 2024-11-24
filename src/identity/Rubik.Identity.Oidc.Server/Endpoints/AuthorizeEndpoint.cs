@@ -6,6 +6,7 @@ using static IdentityModel.OidcConstants;
 using Rubik.Identity.Oidc.Core.RsaKey;
 using Rubik.Identity.Oidc.Core.Services;
 using Rubik.Identity.Oidc.Core.Stores;
+using Rubik.Identity.Oidc.Core.Contants;
 
 namespace Rubik.Identity.Oidc.Core.Endpoints
 {
@@ -34,11 +35,11 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             // 验证client id
             var client = await clientStore.GetClient(parameter.ClientID);
             if (client == null)
-                return Results.BadRequest($"client_id is invalid!");
+                return Results.BadRequest(OidcExceptionContanst.ClientId_Invalid);
             if (client.ResponseType != response_type)
-                return Results.BadRequest($"response_type is invalid!");
+                return Results.BadRequest(OidcExceptionContanst.ResponseType_Invalid);
             if (client.ScopeArr?.Except(parameter.ScopeArr ?? []).Any()??true)
-                return Results.BadRequest($"scope is invalid!");
+                return Results.BadRequest(OidcExceptionContanst.Scope_Invalid);
 
 
             var _httpresult = response_type switch

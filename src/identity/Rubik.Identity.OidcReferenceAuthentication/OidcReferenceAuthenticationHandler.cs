@@ -63,7 +63,7 @@ namespace Rubik.Identity.OidcReferenceAuthentication
                 var identity = new ClaimsIdentity(Options.Scheme);
                 if (Options.SaveClaims)
                 {
-                    // 解析token
+                    // 解析token,考虑缓存处理TODO：
                     var jwtToken = _jwtSecurityTokenHandler.ReadJwtToken(token);
                     identity.AddClaims(jwtToken.Payload.Claims);
                 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Rubik.Identity.Oidc.Core.Configs;
+using Rubik.Identity.Oidc.Core.Contants;
 using Rubik.Identity.Oidc.Core.Extensions;
 using Rubik.Identity.Oidc.Core.OidcEntities;
 using Rubik.Identity.Oidc.Core.RsaKey;
@@ -56,18 +57,18 @@ namespace Rubik.Identity.Oidc.Core.Services
         public async Task<RefreshTokenValidationResultEntity> VerifyRefreshToken(TokenEndpointParameter parameter)
         {
             // 验证md5 签名， refresh token 过期时间默认小于 access_token 过期时间的+3天
-            var access_token = parameter.Query["access_token"];
+            var access_token = parameter.Query[OidcParameterContanst.AccessToken];
             if (access_token == null)
-                return new  RefreshTokenValidationResultEntity { IsValid = false, Exception = "access_token is not found in query!" };
+                return new  RefreshTokenValidationResultEntity { IsValid = false, Exception = OidcExceptionContanst.AccessToken_NotFound };
 
-            var refresh_token = parameter.Query["refresh_token"];
+            var refresh_token = parameter.Query[OidcParameterContanst.RefreshToken];
             if (refresh_token == null)
-                return new RefreshTokenValidationResultEntity { IsValid = false, Exception = "refresh_token is not found in query!" };
+                return new RefreshTokenValidationResultEntity { IsValid = false, Exception = OidcExceptionContanst.RefreshToken_NotFound };
 
             var md5 = MD5Util.GetMd5Hash(access_token);
             if(!md5.Equals(refresh_token))
             {
-                return new RefreshTokenValidationResultEntity { IsValid = false, Exception = "refresh token is not valided!" };
+                return new RefreshTokenValidationResultEntity { IsValid = false, Exception = OidcExceptionContanst.RefreshToken_Invalid };
             }
 
             // 生成新的access_token 和 refresh token
