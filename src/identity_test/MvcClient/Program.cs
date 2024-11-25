@@ -8,8 +8,6 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddOpenIDAuth();
 
-//builder.AddJwt_OpenIDAuth();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -13,11 +13,12 @@ namespace Rubik.Identity.AuthServer.Endpoints
         {
             if (_discovertDoc == null)
             {
-                var config = OidcServer.DiscoveryConfig;
                 var address = server.Features.Get<IServerAddressesFeature>()!.Addresses.First();
+                var config = OidcServer.DiscoveryConfig;
+                config.Issuer = address;
                 var doc = new Dictionary<string, object>
                 {
-                    { OidcConstants.Discovery.Issuer, config.Issuer },
+                    { OidcConstants.Discovery.Issuer, address },
 
                     { OidcConstants.Discovery.AuthorizationEndpoint, $"{address}{config.AuthorizationEndpoint}" },
                     { OidcConstants.Discovery.UserInfoEndpoint, $"{address}{config.UserInfoEndpoint}" },

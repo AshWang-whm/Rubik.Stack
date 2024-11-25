@@ -2,7 +2,7 @@
 
 namespace Rubik.Identity.Oidc.Core.Configs
 {
-    public record DiscoveryConfig
+    public class DiscoveryConfig
     {
         public string Issuer { get; set; } = "rubik.oidc";
         public string[] Responsetypes {get;set;}= ["code", "token", "id_token"];

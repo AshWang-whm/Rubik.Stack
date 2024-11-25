@@ -25,5 +25,9 @@ namespace Rubik.Identity.Oidc.Core.Contants
         public const string Scope = "scope";
 
         public const string Bearer = "Bearer";
+
+        public const string ClientCredentialsFlow="client_credentials";
+
+        public const string PasswordFlow = "password";
     }
 }

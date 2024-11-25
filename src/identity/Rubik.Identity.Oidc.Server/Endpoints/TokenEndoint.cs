@@ -12,32 +12,18 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         public static async Task<IResult> GetToken(TokenService tokenService, HttpContextService contextService, AuthorizationCodeEncrtptService codeEncrtptService)
         {
             var parameter =await contextService.RequestBodyToTokenEndpointParameter();
-
-            if (parameter.GrantType == OidcParameterContanst.RefreshToken)
+            return parameter.GrantType switch
             {
-                return await RefreshToken(parameter, tokenService);
-            }
-            else if (parameter.GrantType == OidcParameterContanst.Authorization_Code)
-            {
-                return AuthorizationCode(parameter, tokenService,codeEncrtptService);
-            }
-            else
-            {
-                // 正常不会走到这个分支 ,  implicit 流程在Authorize中就完成token输出
-                // authorization_code 流程会在上面的分支获取token
-                // refresh_token 会在第一个分支获取token
-
-                return Results.BadRequest(OidcExceptionContanst.GrantType_NotFound);
-
-                //var access_token_claims = new List<Claim> { };
-                //var access_token = tokenService.GeneratorAccessToken(parameter.ClientID, access_token_claims, DateTime.Now.AddMinutes(3));
-                //return Results.Json(new
-                //{
-                //    access_token,
-                //    token_type = "Bearer",
-                //    expires_in = DateTime.Now.AddSeconds(15),
-                //});
-            }
+                OidcParameterContanst.RefreshToken=> await RefreshToken(parameter, tokenService),
+                OidcParameterContanst.Authorization_Code=> AuthorizationCode(parameter, tokenService, codeEncrtptService),
+                // 客户端自行验证用户信息成功后，再向idp申请颁发token？
+                // https://oauth.example.com/token?grant_type=client_credentials&client_id=CLIENT_ID&client_secret=CLIENT_SECRET
+                OidcParameterContanst.ClientCredentialsFlow=> Results.BadRequest(),
+                // 客户端发送用户账号密码&客户端信息到idp，idp验证客户端注册信息&用户信息后，返回token？
+                // https://oauth.example.com/token?grant_type=password&username=USERNAME&password=PASSWORD&client_id=CLIENT_ID
+                OidcParameterContanst.PasswordFlow=> Results.BadRequest(),
+                _ => Results.BadRequest(OidcExceptionContanst.GrantType_NotFound)
+            };
         }
 
         public static async Task<IResult> VerifyReferenceToken(string token,TokenService tokenService)
