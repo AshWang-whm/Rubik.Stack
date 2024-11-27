@@ -6,22 +6,28 @@ using System.Threading.Tasks;
 
 namespace Rubik.Identity.Oidc.Core.Contants
 {
-    internal class OidcExceptionContanst
+    internal class OidcExceptionConstant
     {
         public const string RefreshToken_Invalid = "refresh token is not valided!";
 
-        public const string RefreshToken_NotFound = "refresh_token is not found in query!";
+        public const string RefreshToken_IsRequired = "refresh_token is required!";
 
-        public const string AccessToken_NotFound = "access_token is not found in query!";
+        public const string AccessToken_IsRequired = "access_token is required!";
 
         public const string AuthorizationCode_Invalid = "code";
 
-        public const string GrantType_NotFound = "grant type not found!";
+        public const string GrantType_IsRequired = "grant type is invalid!";
 
         public const string ClientId_Invalid = "client_id is invalid!";
 
         public const string ResponseType_Invalid = "response_type is invalid!";
 
         public const string Scope_Invalid = "scope is invalid!";
+
+        public const string UserName_IsRequired = "user name is required!";
+
+        public const string Password_IsRequired = "password id required!";
+
+        public const string Password_Invalid = "password is invalid!";
     }
 }

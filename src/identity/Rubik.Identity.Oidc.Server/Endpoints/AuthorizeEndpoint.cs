@@ -35,11 +35,11 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             // 验证client id
             var client = await clientStore.GetClient(parameter.ClientID);
             if (client == null)
-                return Results.BadRequest(OidcExceptionContanst.ClientId_Invalid);
+                return Results.BadRequest(OidcExceptionConstant.ClientId_Invalid);
             if (client.ResponseType != response_type)
-                return Results.BadRequest(OidcExceptionContanst.ResponseType_Invalid);
+                return Results.BadRequest(OidcExceptionConstant.ResponseType_Invalid);
             if (client.ScopeArr?.Except(parameter.ScopeArr ?? []).Any()??true)
-                return Results.BadRequest(OidcExceptionContanst.Scope_Invalid);
+                return Results.BadRequest(OidcExceptionConstant.Scope_Invalid);
 
 
             var _httpresult = response_type switch
@@ -189,6 +189,8 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             // 不管是query还是form_post ，不是authorization code flow就都是返回一个form html ， 根据id_token和token来判断要哪个token
             // 这个的作用是？？？
             var response_mode = contextService.GetQueryParameterNotNull(AuthorizeRequest.ResponseMode);
+
+            var response_type = contextService.GetQueryParameterNotNull(AuthorizeRequest.ResponseType);
 
             if (parameter.State.Length == 0)
                 return Results.BadRequest();

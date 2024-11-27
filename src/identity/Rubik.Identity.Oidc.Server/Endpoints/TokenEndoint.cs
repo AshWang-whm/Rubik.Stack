@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Rubik.Identity.Oidc.Core.Contants;
+using Rubik.Identity.Oidc.Core.Exceptions;
 using Rubik.Identity.Oidc.Core.Services;
+using Rubik.Identity.Oidc.Core.Stores;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json.Nodes;
@@ -9,20 +12,25 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
 {
     internal class TokenEndoint
     {
-        public static async Task<IResult> GetToken(TokenService tokenService, HttpContextService contextService, AuthorizationCodeEncrtptService codeEncrtptService)
+        public static async Task<IResult> GetToken(TokenService tokenService, HttpContextService contextService, AuthorizationCodeEncrtptService codeEncrtptService
+            ,IClientStore clientStore
+            ,IUserStore userStore)
         {
             var parameter =await contextService.RequestBodyToTokenEndpointParameter();
+
+
             return parameter.GrantType switch
             {
-                OidcParameterContanst.RefreshToken=> await RefreshToken(parameter, tokenService),
-                OidcParameterContanst.Authorization_Code=> AuthorizationCode(parameter, tokenService, codeEncrtptService),
+                OidcParameterConstant.RefreshToken => await RefreshToken(parameter, tokenService),
+                OidcParameterConstant.Authorization_Code => AuthorizationCode(parameter, tokenService, codeEncrtptService),
                 // 客户端自行验证用户信息成功后，再向idp申请颁发token？
                 // https://oauth.example.com/token?grant_type=client_credentials&client_id=CLIENT_ID&client_secret=CLIENT_SECRET
-                OidcParameterContanst.ClientCredentialsFlow=> Results.BadRequest(),
+                OidcParameterConstant.ClientCredentialsFlow => await ClientCredentialsFlow(parameter, tokenService, clientStore),
                 // 客户端发送用户账号密码&客户端信息到idp，idp验证客户端注册信息&用户信息后，返回token？
                 // https://oauth.example.com/token?grant_type=password&username=USERNAME&password=PASSWORD&client_id=CLIENT_ID
-                OidcParameterContanst.PasswordFlow=> Results.BadRequest(),
-                _ => Results.BadRequest(OidcExceptionContanst.GrantType_NotFound)
+                OidcParameterConstant.PasswordFlow => await PasswordFlow(parameter, tokenService, clientStore, userStore),
+                //OidcParameterConstant.Implicit => ImplicitFlow(parameter, tokenService, clientStore, userStore),
+                _ => Results.BadRequest(OidcExceptionConstant.GrantType_IsRequired)
             };
         }
 
@@ -36,8 +44,26 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             });
         }
 
+        /// <summary>
+        /// refresh 的参数是从url或是body获取？
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <param name="tokenService"></param>
+        /// <returns></returns>
         static async Task<IResult> RefreshToken(TokenEndpointParameter parameter,TokenService tokenService)
         {
+            // query 获取参数
+            /*
+             https://github.com/login/oauth/access_token?
+  client_id=a5ce5a6c7e8c39567ca0&
+  client_secret=xxxx&
+  redirect_uri=https://coding.net/api/oauth/github/callback&
+  grant_type=refresh_token&
+  refresh_token=5d633d136b6d56a41829b73a424803ec
+             */
+
+            // 默认从body 获取参数
+
             var verify_result =await tokenService.VerifyRefreshToken(parameter);
 
             if (!verify_result.IsValid)
@@ -46,7 +72,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             return Results.Json(new
             {
                 access_token= verify_result.AccessToken,
-                token_type = OidcParameterContanst.Bearer,
+                token_type = OidcParameterConstant.Bearer,
                 //expires_in = DateTime.Now.AddSeconds(15),
                 refresh_token = verify_result.RefreshToken,
             });
@@ -55,17 +81,17 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         static IResult AuthorizationCode(TokenEndpointParameter parameter, TokenService tokenService, AuthorizationCodeEncrtptService codeEncrtptService)
         {
             // 验证code 以换取token
-            var code = parameter.Query.Get(OidcParameterContanst.AuthorizationFlow_Code);
-            var code_verifier = parameter.Query.Get(OidcParameterContanst.AuthorizationFlow_Verifier);
+            var code = parameter.Query.Get(OidcParameterConstant.AuthorizationFlow_Code);
+            var code_verifier = parameter.Query.Get(OidcParameterConstant.AuthorizationFlow_Verifier);
             if (!codeEncrtptService.VerifyCode(code, code_verifier, out var auth))
             {
-                return Results.BadRequest(OidcExceptionContanst.AuthorizationCode_Invalid);
+                return Results.BadRequest(OidcExceptionConstant.AuthorizationCode_Invalid);
             }
 
             // access token 默认带上用户账号
             var access_token_claims = new List<Claim>
                 {
-                    new(OidcParameterContanst.Scope,auth!.Scope),
+                    new(OidcParameterConstant.Scope,auth!.Scope),
                     new (JwtRegisteredClaimNames.Sub,auth.UserCode!),
                 };
             var access_token = tokenService.GeneratorAccessToken(parameter, access_token_claims);
@@ -85,19 +111,112 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
 
             var json = new JsonObject
             {
-                { OidcParameterContanst.AccessToken, access_token }
+                { OidcParameterConstant.AccessToken, access_token }
             };
             // authorization_code 模式返回access_token 和 id_token TODO:
 
             // id token 会过期吗?
             var id_token = tokenService.GeneratorIdToken(parameter, idtoken_claims);
-            json.Add(OidcParameterContanst.IdToken, id_token);
+            json.Add(OidcParameterConstant.IdToken, id_token);
 
-            if(auth.Scope?.Contains(OidcParameterContanst.OfflineAccess) ??false)
+            if(auth.Scope?.Contains(OidcParameterConstant.OfflineAccess) ??false)
             {
                 var refresh_token = tokenService.GeneratorRefreshToken(access_token!);
-                json.Add(OidcParameterContanst.RefreshToken, refresh_token);
+                json.Add(OidcParameterConstant.RefreshToken, refresh_token);
             }
+            return Results.Json(json);
+        }
+
+        static IResult ImplicitFlow(TokenEndpointParameter parameter, TokenService tokenService, IClientStore clientStore, IUserStore userStore)
+        {
+            return Results.BadRequest();
+        }
+
+        /// <summary>
+        /// password flow does't verify client id ?
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <param name="tokenService"></param>
+        /// <param name="clientStore"></param>
+        /// <param name="userStore"></param>
+        /// <returns></returns>
+        static async Task<IResult> PasswordFlow(TokenEndpointParameter parameter, TokenService tokenService, IClientStore clientStore,IUserStore userStore)
+        {
+
+            //OidcParameterInValidationException.NotNullOrEmpty(nameof(parameter.ClientID), parameter.ClientID);
+
+            //var client = await clientStore.GetClient(parameter.ClientID);
+            //if(client==null||!(client.ClientSecret?.Equals(parameter.ClientSecret)??false))
+            //{
+            //    return Results.BadRequest(OidcExceptionConstant.ClientId_Invalid);
+            //}
+
+            var user_id = parameter.Query["username"];
+            if (string.IsNullOrWhiteSpace(user_id)) 
+            {
+                return Results.BadRequest(OidcExceptionConstant.UserName_IsRequired);
+            }
+
+            var pwd = parameter.Query["password"];
+            if (string.IsNullOrWhiteSpace(pwd))
+            {
+                return Results.BadRequest(OidcExceptionConstant.Password_IsRequired);
+            }
+
+            if(!(await userStore.CheckUser(user_id,pwd)))
+            {
+                return Results.BadRequest(OidcExceptionConstant.Password_Invalid);
+            }
+
+
+            var access_token_claims = new List<Claim>();
+            var scope = parameter.Query["scope"];
+
+            if (!string.IsNullOrWhiteSpace(scope))
+                access_token_claims.Add(new(OidcParameterConstant.Scope, scope));
+
+            // 添加 user claims 到 access_token TODO:
+
+            var access_token = tokenService.GeneratorAccessToken(parameter, access_token_claims);
+            var json = new JsonObject
+            {
+                { OidcParameterConstant.AccessToken, access_token }
+            };
+
+            // refresh token
+            if (scope?.Contains(OidcParameterConstant.OfflineAccess)??false)
+            {
+                // 添加 refresh token
+                var refresh_token = tokenService.GeneratorRefreshToken(access_token!);
+                json.Add(OidcParameterConstant.RefreshToken, refresh_token);
+            }
+
+            return Results.Json(json);
+        }
+
+        static async Task<IResult> ClientCredentialsFlow(TokenEndpointParameter parameter, TokenService tokenService, IClientStore clientStore)
+        {
+            OidcParameterInValidationException.NotNullOrEmpty(nameof(parameter.ClientID), parameter.ClientID);
+
+
+            var client = await clientStore.GetClient(parameter.ClientID);
+            if (client == null || !(client.ClientSecret?.Equals(parameter.ClientSecret) ?? false))
+            {
+                return Results.BadRequest(OidcExceptionConstant.ClientId_Invalid);
+            }
+
+            var access_token_claims = new List<Claim>();
+            var scope = parameter.Query["scope"];
+
+            if (!string.IsNullOrWhiteSpace(scope))
+                access_token_claims.Add(new(OidcParameterConstant.Scope, scope));
+
+            var access_token = tokenService.GeneratorAccessToken(parameter, access_token_claims);
+            var json = new JsonObject
+            {
+                { OidcParameterConstant.AccessToken, access_token }
+            };
+
             return Results.Json(json);
         }
     }

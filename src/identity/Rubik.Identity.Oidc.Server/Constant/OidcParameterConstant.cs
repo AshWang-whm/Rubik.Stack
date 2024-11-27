@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 
 namespace Rubik.Identity.Oidc.Core.Contants
 {
-    internal class OidcParameterContanst
+    internal class OidcParameterConstant
     {
+        public const string ClientID = "client_id";
+        public const string GrantType = "grant_type";
+        public const string ClientSecret = "client_secret";
         public const string AccessToken = "access_token";
+
+        public const string Implicit = "implicit";
 
         public const string IdToken = "id_token";
 

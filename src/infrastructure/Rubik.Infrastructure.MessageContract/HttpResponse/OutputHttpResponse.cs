@@ -61,7 +61,7 @@ namespace Rubik.Infrastructure.Contract.HttpResponse
             };
         }
 
-        public static OutputHttpResponse<T> NotOk(T? data = default, string? msg = null, bool success = false)
+        public static OutputHttpResponse<T> NotOk(string? msg = null, T? data = default,  bool success = false)
         {
             return new OutputHttpResponse<T>()
             {
@@ -97,7 +97,7 @@ namespace Rubik.Infrastructure.Contract.HttpResponse
             };
         }
 
-        public static OutputHttpPageResponse<T> NotOk(IEnumerable<T>? data = default, long total = 0, string? msg = null, bool success = true)
+        public static OutputHttpPageResponse<T> NotOk(string? msg = null, IEnumerable<T>? data = default, long total = 0,  bool success = true)
         {
             return new OutputHttpPageResponse<T>()
             {
@@ -113,7 +113,7 @@ namespace Rubik.Infrastructure.Contract.HttpResponse
     {
         public static IOutputHttpResponse<T> Result<T>(T data, string? msg, bool success) where T : class
         {
-            return success ? OutputHttpResponse<T>.Ok(data, msg) : OutputHttpResponse<T>.NotOk(data, msg);
+            return success ? OutputHttpResponse<T>.Ok(data, msg) : OutputHttpResponse<T>.NotOk(msg,data);
         }
 
         public static IOutputHttpResponse<T> Ok<T>(T? data = default, string? msg = null) where T : class
@@ -122,7 +122,7 @@ namespace Rubik.Infrastructure.Contract.HttpResponse
         }
         public static IOutputHttpResponse<T> NotOk<T>(T? data = default, string? msg = null) where T : class
         {
-            return OutputHttpResponse<T>.NotOk(data, msg);
+            return OutputHttpResponse<T>.NotOk(msg,data);
         }
 
         public static IOutputHttpResponse Ok(string? msg = null) => OutputHttpResponse.Ok(msg);

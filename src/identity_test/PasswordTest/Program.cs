@@ -22,6 +22,7 @@ while (true)
     var token = await client.RequestPasswordTokenAsync(new PasswordTokenRequest
     {
         Address = disco.TokenEndpoint,
+        // ClientID 和 Secret 未发送到 auth server ??
         ClientId = "console_password_test",
         ClientSecret = "client_password_test_client_password_test",
         Scope = "openid profile scope1",

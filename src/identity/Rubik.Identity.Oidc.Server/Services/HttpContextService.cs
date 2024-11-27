@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Rubik.Identity.Oidc.Core.Contants;
 using Rubik.Identity.Oidc.Core.Exceptions;
 using System.Collections.Specialized;
 using System.Security.Claims;
@@ -73,13 +74,13 @@ namespace Rubik.Identity.Oidc.Core.Services
             var query = HttpUtility.ParseQueryString(Encoding.UTF8.GetString(body));
 
             // authorzation_code 和 refresh_token 区分获取token和刷新token
-            var grant_type = query.Get("grant_type");
-            var clientid = query.Get("client_id");
+            var grant_type = query.Get(OidcParameterConstant.GrantType);
+            var clientid = query.Get(OidcParameterConstant.ClientID);
+            
             // 与客户端配置对比，验证客户端密钥，密钥不参与token生成 todo:
-            var clientsecret = query.Get("client_secret");
+            var clientsecret = query.Get(OidcParameterConstant.ClientSecret);
 
             OidcParameterInValidationException.NotNullOrEmpty(nameof(grant_type), grant_type);
-            OidcParameterInValidationException.NotNullOrEmpty(nameof(clientid), clientid);
 
             return new TokenEndpointParameter
             {
