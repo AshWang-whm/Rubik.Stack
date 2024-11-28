@@ -29,7 +29,7 @@ namespace Rubik.Identity.Oidc.Core.Services
         /// </summary>
         /// <returns></returns>
         /// <exception cref="OidcParameterInValidationException"></exception>
-        public AuthorizationCodeParameter ToCodeQueryParameter(bool sid = true)
+        public AuthorizationEndpointParameter ToCodeQueryParameter(bool sid = true)
         {
             var code_challenge = GetQueryParameterNotNull(AuthorizeRequest.CodeChallenge);
 
@@ -45,7 +45,7 @@ namespace Rubik.Identity.Oidc.Core.Services
 
             var redirect_uri = GetQueryParameterNotNull(AuthorizeRequest.RedirectUri);
 
-            var parameter= new AuthorizationCodeParameter
+            var parameter= new AuthorizationEndpointParameter
             {
                 ClientID = client_id!,
                 CodeChallenge = code_challenge!,
@@ -56,6 +56,7 @@ namespace Rubik.Identity.Oidc.Core.Services
                 CodeChallengeMethod = code_challenge_method,
             };
 
+            // 默认从cookies中获取一个用户id
             if (sid)
             {
                 parameter.UserCode= httpContext.HttpContext!.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Sid)?.Value;
@@ -65,7 +66,7 @@ namespace Rubik.Identity.Oidc.Core.Services
         }
 
         /// <summary>
-        /// 获取token endpoint 参数
+        /// 获取token endpoint 参数,只会从Body获取，Url可以吗？
         /// </summary>
         /// <returns></returns>
         public async Task<TokenEndpointParameter> RequestBodyToTokenEndpointParameter()
@@ -92,7 +93,7 @@ namespace Rubik.Identity.Oidc.Core.Services
         }
     }
 
-    public class AuthorizationCodeParameter
+    public class AuthorizationEndpointParameter
     {
         public required string ClientID { get; set; }
         public string? UserCode { get; set; }

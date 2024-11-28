@@ -54,7 +54,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
 
         }
 
-        static IResult CodeResult(AuthorizationCodeParameter codeParameter,AuthorizationCodeEncrtptService codeEncrtptService,HttpContextService contextService)
+        static IResult CodeResult(AuthorizationEndpointParameter codeParameter,AuthorizationCodeEncrtptService codeEncrtptService,HttpContextService contextService)
         {
             var code = codeEncrtptService.GenerateCode(codeParameter);
             return Results.Redirect($"{codeParameter.RedirectUri}?code={code}&state={codeParameter.State}");
@@ -67,7 +67,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         /// <param name="contextService"></param>
         /// <param name="rsaKeys"></param>
         /// <returns></returns>
-        static IResult TokenResult(AuthorizationCodeParameter codeParameter,HttpContextService contextService, JwkRsaKeys rsaKeys)
+        static IResult TokenResult(AuthorizationEndpointParameter codeParameter,HttpContextService contextService, JwkRsaKeys rsaKeys)
         {
             var token = Token(codeParameter, contextService, rsaKeys);
 
@@ -87,7 +87,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         /// <param name="contextService"></param>
         /// <param name="rsaKeys"></param>
         /// <returns></returns>
-        static IResult IdTokenResult(AuthorizationCodeParameter codeParameter, HttpContextService contextService, JwkRsaKeys rsaKeys)
+        static IResult IdTokenResult(AuthorizationEndpointParameter codeParameter, HttpContextService contextService, JwkRsaKeys rsaKeys)
         {
             var id_token = IdToken(codeParameter, rsaKeys);
             var keys = new List<KeyValuePair<string, string>>
@@ -97,7 +97,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             return GenerateResult(codeParameter,contextService, keys);
         }
 
-        static IResult IdTokenTokenResult(AuthorizationCodeParameter parameter,HttpContextService contextService, JwkRsaKeys rsaKeys)
+        static IResult IdTokenTokenResult(AuthorizationEndpointParameter parameter,HttpContextService contextService, JwkRsaKeys rsaKeys)
         {
             var token = Token(parameter, contextService, rsaKeys);
 
@@ -111,7 +111,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             return GenerateResult(parameter, contextService, keys);
         }
 
-        static string Token(AuthorizationCodeParameter parameter, HttpContextService contextService, JwkRsaKeys rsaKeys)
+        static string Token(AuthorizationEndpointParameter parameter, HttpContextService contextService, JwkRsaKeys rsaKeys)
         {
             // 根据scope 获取用户信息： 类似 ApiResource TODO：
             var claims = TokenClaims(parameter);
@@ -124,7 +124,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         /// <param name="contextService"></param>
         /// <param name="rsaKeys"></param>
         /// <returns></returns>
-        static string IdToken(AuthorizationCodeParameter parameter, JwkRsaKeys rsaKeys, string? token = null)
+        static string IdToken(AuthorizationEndpointParameter parameter, JwkRsaKeys rsaKeys, string? token = null)
         {
             var claims = IdTokenClaims(parameter);
             if (token != null)
@@ -134,19 +134,19 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             return GenerateToken(parameter, claims, rsaKeys);
         }
 
-        static List<Claim> TokenClaims(AuthorizationCodeParameter parameter)
+        static List<Claim> TokenClaims(AuthorizationEndpointParameter parameter)
         {
             // 根据scope 获取用户信息： 类似 ApiResource TODO：
             var claims = new List<Claim>
             {
                 new (JwtRegisteredClaimNames.Sid,parameter.UserCode!),
-                new ("scope",parameter.Scope),
+                new (OidcParameterConstant.Scope,parameter.Scope),
             };
 
             return claims;
         }
 
-        static List<Claim> IdTokenClaims(AuthorizationCodeParameter parameter)
+        static List<Claim> IdTokenClaims(AuthorizationEndpointParameter parameter)
         {
             // 根据scope 获取用户信息： 类似 IdentityResource TODO：
             var claims = new List<Claim>
@@ -162,7 +162,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             return claims;
         }
 
-        static string GenerateToken(AuthorizationCodeParameter parameter, IEnumerable<Claim> claims, JwkRsaKeys rsaKeys)
+        static string GenerateToken(AuthorizationEndpointParameter parameter, IEnumerable<Claim> claims, JwkRsaKeys rsaKeys)
         {
             var access_token_options = new JwtSecurityToken(
                 issuer: OidcServer.DiscoveryConfig.Issuer,
@@ -181,7 +181,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         /// </summary>
         /// <param name="contextService"></param>
         /// <returns></returns>
-        static IResult GenerateResult(AuthorizationCodeParameter parameter,HttpContextService contextService, IEnumerable<KeyValuePair<string, string>>? inputs)
+        static IResult GenerateResult(AuthorizationEndpointParameter parameter,HttpContextService contextService, IEnumerable<KeyValuePair<string, string>>? inputs)
         {
             if (inputs == null)
                 return Results.BadRequest();

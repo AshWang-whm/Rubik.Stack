@@ -18,13 +18,13 @@ namespace Rubik.Identity.Oidc.Core.Services
             return code;
         }
 
-        public string GenerateCode(AuthorizationCodeParameter parameter) 
+        public string GenerateCode(AuthorizationEndpointParameter parameter) 
         {
             var code = dataProtector.Protect(JsonSerializer.Serialize(parameter));
             return code;
         }
 
-        public bool VerifyCode(string? code,string? verify,out AuthorizationCodeParameter? challengeModel)
+        public bool VerifyCode(string? code,string? verify,out AuthorizationEndpointParameter? challengeModel)
         {
             challengeModel = null;
 
@@ -33,7 +33,7 @@ namespace Rubik.Identity.Oidc.Core.Services
 
             var plaintext = dataProtector.Unprotect(code!);
 
-            challengeModel = JsonSerializer.Deserialize<AuthorizationCodeParameter>(plaintext);
+            challengeModel = JsonSerializer.Deserialize<AuthorizationEndpointParameter>(plaintext);
             if (challengeModel == null)
                 return false;
 
