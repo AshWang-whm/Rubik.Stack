@@ -5,7 +5,7 @@
 <Table @ref="Table" TItem="TbOrganization" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total" 
        @bind-SelectedRows="SelectedRows" TreeChildren="TreeChildren" HidePagination>
     <TitleTemplate>
-        <Flex Justify="start" Gap="10">
+        <Flex Justify="FlexJustify.Start" Gap="FlexGap.Large">
             <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
             <Button Type="@ButtonType.Primary" OnClick="OnNew">新增</Button>
             <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选组织机构?" OnConfirm="OnDeleteSelectedRow">

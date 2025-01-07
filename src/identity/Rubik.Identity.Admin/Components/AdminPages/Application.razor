@@ -4,7 +4,7 @@
 <Table @ref="Table" TItem="TbApplication" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
        @bind-SelectedRows="SelectedRows" HidePagination>
     <TitleTemplate>
-        <Flex Justify="start" Gap="10">
+        <Flex Justify="AntDesign.FlexJustify.Start" Gap="AntDesign.FlexGap.Large">
             <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
             <Button Type="@ButtonType.Primary" OnClick="OnNew">新增</Button>
             <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选应用?" OnConfirm="OnDeleteSelectedRow">
@@ -62,7 +62,7 @@
                 </FormItem>
             }
             <FormItem Label="ResponseType">
-                <EnumSelect @bind-Value="@Editor!.ResponseType" Mode="multiple" />
+                <EnumSelect @bind-Value="@Editor!.ResponseType" Mode="AntDesign.SelectMode.Multiple" />
             </FormItem>
             <FormItem Label="Scope">
                 @*<Select Mode="tags" @bind-Value="@Editor.Scope" TItem="string" TItemValue="string" EnableSearch DataSource="Scopes"></Select>*@
