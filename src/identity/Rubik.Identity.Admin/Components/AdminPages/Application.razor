@@ -1,5 +1,5 @@
 ﻿@page "/application"
-@inherits BasePage<TbApplication>
+@inherits BaseEditorPage<TbApplication>
 
 <Table @ref="Table" TItem="TbApplication" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
        @bind-SelectedRows="SelectedRows" HidePagination>
@@ -26,10 +26,6 @@
         <ActionColumn Title="Action">
             <Button Type="@ButtonType.Primary" OnClick="async () =>OnEdit(context)">编辑</Button>
             <Button Type="@ButtonType.Primary" Color="@Color.Green6" OnClick="@(async() => OnShowAppModal<ApplicationPermission>(context,"权限"))">应用菜单</Button>
-            <Button Type="@ButtonType.Primary" Color="Color.Magenta5" OnClick="@(async() => OnShowAppModal<ApplicationRole>(context,"角色"))">应用角色</Button>
-            @*<Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前应用?" OnConfirm="async () => await OnDelete(context)">
-            <Button Type="@ButtonType.Primary" Danger>删除</Button>
-        </Popconfirm>*@
         </ActionColumn>
     </ColumnDefinitions>
 </Table>

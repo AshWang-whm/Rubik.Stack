@@ -5,7 +5,7 @@ using Rubik.Identity.Share.Entity;
 
 namespace Rubik.Identity.Admin.Components.AdminPages
 {
-    public partial class OrganizationJob : BasePage<TbOrganizationJob>
+    public partial class OrganizationJob : BaseEditorPage<TbOrganizationJob>
     {
 
         [Parameter]

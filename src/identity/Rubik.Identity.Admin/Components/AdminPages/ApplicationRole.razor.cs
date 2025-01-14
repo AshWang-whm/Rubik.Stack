@@ -6,7 +6,7 @@ using Rubik.Identity.Share.Entity;
 
 namespace Rubik.Identity.Admin.Components.AdminPages
 {
-    public partial class ApplicationRole : BaseTreePage<TbApplicationRole>
+    public partial class ApplicationRole : BaseTreeEditorPage<TbApplicationRole>
     {
         [Parameter]
         public int ApplicationID { get; set; }

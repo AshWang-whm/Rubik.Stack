@@ -1,5 +1,5 @@
 ﻿@page "/organization"
-@inherits BaseTreePage<TbOrganization>
+@inherits BaseTreeEditorPage<TbOrganization>
 
 
 <Table @ref="Table" TItem="TbOrganization" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total" 

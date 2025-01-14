@@ -1,0 +1,47 @@
+﻿@inherits BaseTreeQueryPage<TbApplicationPermission>
+
+<GridRow Gutter="16">
+    <GridCol Span="4">
+        <Table @ref="ApplicationTable" TItem="TbApplication" Bordered DataSource="ApplicationList" @bind-Total="ApplicationTotal"
+               OnRowClick="ApplicationTableRowClick">
+            <TitleTemplate>
+                <Flex Justify="AntDesign.FlexJustify.Start" Gap="AntDesign.FlexGap.Large">
+                    <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
+                </Flex>
+            </TitleTemplate>
+
+            <ColumnDefinitions>
+                <PropertyColumn Property="item => item.Name" Filterable="true" />
+            </ColumnDefinitions>
+        </Table>
+    </GridCol>
+
+    <GridCol Span="20">
+        <Table @ref="Table" TItem="TbApplicationPermission" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
+               @bind-SelectedRows="SelectedRows" TreeChildren="TreeChildren" HidePagination OnExpand="OnExpand">
+            <TitleTemplate>
+                <Flex Justify="FlexJustify.Start" Gap="FlexGap.Large">
+                    <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
+                    <Button Type="@ButtonType.Primary" Color="@Color.Magenta6" OnClick="OnSavePermission">保存权限</Button>
+                </Flex>
+            </TitleTemplate>
+
+            <ColumnDefinitions>
+                <Selection />
+
+                <PropertyColumn Property="item => item.Name" Filterable="true" />
+                <PropertyColumn Property="item => item.Code" />
+                <PropertyColumn Property="item => item.PermissionType" />
+                <PropertyColumn Property="item => item.Sort" />
+
+                <ActionColumn Title="Action">
+                </ActionColumn>
+            </ColumnDefinitions>
+        </Table>
+    </GridCol>
+</GridRow>
+
+
+<Modal Title="选择">
+
+</Modal>

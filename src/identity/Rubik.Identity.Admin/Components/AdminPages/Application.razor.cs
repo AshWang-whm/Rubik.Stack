@@ -6,7 +6,7 @@ using Rubik.Identity.Share.Entity;
 
 namespace Rubik.Identity.Admin.Components.AdminPages
 {
-    public partial class Application:BasePage<TbApplication>
+    public partial class Application: BaseEditorPage<TbApplication>
     {
         [Inject]
         ModalService? ModalService { get; set; }

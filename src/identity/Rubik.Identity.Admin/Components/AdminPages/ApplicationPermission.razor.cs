@@ -2,15 +2,22 @@
 using Microsoft.AspNetCore.Components;
 using Rubik.Identity.Admin.Components.BasePages;
 using Rubik.Identity.Share.Entity;
+using System.Linq.Expressions;
 
 namespace Rubik.Identity.Admin.Components.AdminPages
 {
-    public partial class ApplicationPermission : BaseTreePage<TbApplicationPermission>
+    public partial class ApplicationPermission : BaseTreeEditorPage<TbApplicationPermission>
     {
         [Parameter]
         public int ApplicationID { get; set; }
 
         EventCallback<PermissionType> PermissionTypeChangeCallback { get; set; }
+
+        protected override void OnInitialized()
+        {
+            ExtraWhereExpression = (a) => a.ApplicationID == ApplicationID;
+            base.OnInitialized();
+        }
 
         public override async Task Query(QueryModel<TbApplicationPermission> query)
         {
@@ -20,7 +27,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             var source = await FreeSql.Select<TbApplicationPermission>()
                 .WhereIf(exp != null, exp)
                 .WhereIf(exp == null, a => a.ParentID == null)
-                .Where(a=>a.ApplicationID==ApplicationID)
+                .Where(a => a.ApplicationID == ApplicationID)
                 .Where(a => a.IsDelete == false)
                 .Count(out var total)
                 .ToListAsync();

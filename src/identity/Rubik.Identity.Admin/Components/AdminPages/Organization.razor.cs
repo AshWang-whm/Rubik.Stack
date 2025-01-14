@@ -6,55 +6,35 @@ using Rubik.Identity.Share.Entity;
 
 namespace Rubik.Identity.Admin.Components.AdminPages
 {
-    public partial class Organization : BaseTreePage<TbOrganization>
+    public partial class Organization : BaseTreeEditorPage<TbOrganization>
     {
         [Inject]
         ModalService? ModalService { get; set; }
 
-        public override async Task Query(QueryModel<TbOrganization> query)
-        {
-            var exp = query.GetFilterExpressionOrNull();
-            // 顶级的数据作为total数据分页统计
-            var source = await FreeSql.Select<TbOrganization>()
-                .WhereIf(exp != null, exp)
-                .WhereIf(exp == null, a => a.ParentID == null)
-                .Where(a => a.IsDelete == false)
-                .Count(out var total)
-                .ToListAsync();
+        //public override async Task Query(QueryModel<TbOrganization> query)
+        //{
+        //    var exp = query.GetFilterExpressionOrNull();
+        //    // 顶级的数据作为total数据分页统计
+        //    var source = await FreeSql.Select<TbOrganization>()
+        //        .WhereIf(exp != null, exp)
+        //        .WhereIf(exp == null, a => a.ParentID == null)
+        //        .Where(a => a.IsDelete == false)
+        //        .Count(out var total)
+        //        .ToListAsync();
 
-            // 递归查询子节点
-            var ids = source.Select(a => a.ID).ToList();
+        //    // 递归查询子节点
+        //    var ids = source.Select(a => a.ID).ToList();
 
-            DataSource = ids.Count==0 ? source: await FreeSql.Select<TbOrganization>()
-                    .Where(a => a.IsDelete == false)
-                    .Where(a => ids.Contains(a.ID))
-                    .Distinct()
-                    .AsTreeCte()
-                    .OrderBy(a => a.Sort)
-                    .ToTreeListAsync();
+        //    DataSource = ids.Count==0 ? source: await FreeSql.Select<TbOrganization>()
+        //            .Where(a => a.IsDelete == false)
+        //            .Where(a => ids.Contains(a.ID))
+        //            .Distinct()
+        //            .AsTreeCte()
+        //            .OrderBy(a => a.Sort)
+        //            .ToTreeListAsync();
 
-            Total = (int)total;
-        }
-
-        protected override async Task<bool> BeforeSave()
-        {
-            if(string.IsNullOrWhiteSpace(Editor.Code))
-            {
-                await MessageService.Error("[Code] 不允许为空!");
-                return false;
-            }
-
-            var exist = await FreeSql.Select<TbApplication>()
-                .Where(a => a.Code == Editor.Code && a.IsDelete == false)
-                .AnyAsync();
-            if (exist)
-            {
-                await MessageService.Error($"[Code]:{Editor.Code} 也存在!");
-                return false;
-            }
-
-            return true;
-        }
+        //    Total = (int)total;
+        //}
 
         void OnShowOrganizePositionModal(TbOrganization org)
         {

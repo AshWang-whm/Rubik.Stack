@@ -1,5 +1,5 @@
 ﻿@page "/position"
-@inherits BaseTreePage<TbPosition>
+@inherits BaseTreeEditorPage<TbPosition>
 
 
 <Table @ref="Table" TItem="TbPosition" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
