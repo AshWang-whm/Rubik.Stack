@@ -29,6 +29,8 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         int? SelectedJob = null;
         bool ShowOrgModal { get; set; } = false;
 
+        string? OrgTreeSelectKey { get; set; }
+
         readonly UserCompanyInfo UserCompanyInfo = new();
 
         public EventCallback<TbOrganization> UserOrgainzationSelectedEventCallback { get; set; }
@@ -37,15 +39,37 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         {
             var user_exp = query.GetFilterExpressionOrNull();
 
-            var table_exp = user_exp.ExpressionConvertToMultiGenerics<TbUser,TbRelationOrganizeUser>();
+            var table_exp = user_exp.ExpressionConvertToMultiGenerics<TbUser,TbRelationOrganizeUser, TbOrganization>();
 
-            DataSource = await FreeSql.Select<TbUser,TbRelationOrganizeUser>()
-                .LeftJoin((a,b)=>a.ID==b.UserID)
+            List<int> all_org_ids = [];
+            if (SelectedOrganization != 0)
+            {
+                all_org_ids = await FreeSql.Select<TbOrganization>()
+                    .Where(a=>a.ID==SelectedOrganization)
+                    .AsTreeCte()
+                    .ToListAsync(a => a.ID);
+            }
+
+            DataSource = await FreeSql.Select<TbUser,TbRelationOrganizeUser,TbOrganization>()
+                .LeftJoin((a,b,c)=>a.ID==b.UserID)
+                .LeftJoin((a,b,c)=>b.OrganizationID==c.ID)
                 .WhereIf(user_exp != null, table_exp)
-                .WhereIf(SelectedOrganization!=0, (a,b)=>b.OrganizationID== SelectedOrganization)
-                .Where((a,b) => a.IsDelete == false)
+                .WhereIf(SelectedOrganization!=0, (a,b,c)=> all_org_ids.Contains(b.OrganizationID))
+                .Where((a,b,c) => a.IsDelete == false)
                 .Count(out var total)
-                .ToListAsync();
+                .OrderBy((a,b,c)=>a.Sort)
+                .ToListAsync((a,b,c)=>new TbUser
+                {
+                    ID=a.ID,
+                    Name=a.Name,
+                    Department=c.Name,
+                    Code=a.Code,
+                    Email=a.Email,
+                    Gender=a.Gender,
+                    EntryDate=a.EntryDate,
+                    ModifyDate=a.ModifyDate,
+                    ModifyUser=a.ModifyUser
+                });
 
             Total = (int)total;
         }
@@ -258,12 +282,12 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             await FreeSql.Delete<TbRelationRoleUser>()
                 .Where(a => userids.Contains(a.UserID))
                 .ExecuteAffrowsAsync();
-            await MessageService!.Success("删除用户角色成功!",2);
+            await MessageService!.Success("删除用户角色成功!",1);
         }
 
-        async Task OnComfirmOrg()
+        async Task OnComfirmChangeOrg()
         {
-            var user_ids = SelectedRows.Select(a => a.ID).ToArray();
+            var user_ids = SelectedRows.Select(a => a.ID).Distinct().ToArray();
 
             var uow = FreeSql.CreateUnitOfWork();
             try
@@ -275,13 +299,17 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                 var new_org_relations = user_ids.Select(a => new TbRelationOrganizeUser
                 {
                     UserID=a,
-                    OrganizationID= SelectedOrganization
+                    OrganizationID = SelectedOrganization
                 });
                 await uow.Orm.Insert(new_org_relations).ExecuteAffrowsAsync();
 
                 uow.Commit();
 
-                Table!.ReloadData();
+                foreach (var item in SelectedRows)
+                {
+                    DataSource.Remove(item);
+                }
+                await InvokeAsync(StateHasChanged);
             }
             catch (Exception ex)
             {
@@ -292,7 +320,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 
         void OnShowRoleSetup()
         {
-            var users = SelectedRows.Select(a => a.ID).ToList();
+            var users = SelectedRows.Select(a => a.ID).Distinct().ToList();
             ModalRef? @ref = null;
 
             void buildModal(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)

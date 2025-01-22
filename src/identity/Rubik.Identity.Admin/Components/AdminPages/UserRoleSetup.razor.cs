@@ -2,6 +2,8 @@
 using Rubik.Identity.Share.Entity;
 using AntDesign;
 using Rubik.Infrastructure.Entity.BaseEntity;
+using static OneOf.Types.TrueFalseOrNull;
+using FreeSql.DataAnnotations;
 
 namespace Rubik.Identity.Admin.Components.AdminPages
 {
@@ -19,79 +21,68 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         [Inject]
         public required IMessageService MessageService { get; set; }
 
-        protected List<AppRoleTreeEntity> DataSource = [];
+        protected List<TbRole> DataSource = [];
 
-        protected TreeNode<AppRoleTreeEntity>[] SelectedNodes = [];
+        protected TreeNode<TbRole>[] SelectedNodes = [];
 
         protected string[] CheckedKeys = [];
+
+        /// <summary>
+        /// 初始化的所选角色
+        /// </summary>
+        protected List<string> CopyCheckedKeys = [];
 
         protected override async Task OnInitializedAsync()
         {
             if(ModalRef != null)
                 ModalRef.OnOk = OnSave;
 
-            // 获取应用，角色
-            var apps = await FreeSql!.Select<TbApplication>()
-                .Where(a => a.IsDelete == false)
-                .OrderBy(a => a.Sort)
-                .ToListAsync(a => new TbApplication
-                {
-                    ID = a.ID,
-                    Name = a.Name
-                });
+            var source = await FreeSql.Select<TbRole>()
+                .Where(a => a.ParentID == null&&a.IsDelete == false)
+                .Count(out var total)
+                .ToListAsync();
 
-            var roles = await FreeSql.Select<TbApplicationRole>()
-                .Where(a => a.IsDelete == false)
-                .ToListAsync(a => new TbApplicationRole
-                {
-                    ID = a.ID,
-                    Name = a.Name,
-                    ParentID = a.ParentID,
-                    ApplicationID = a.ApplicationID,
-                });
+            // 递归查询子节点
+            var ids = source.Select(a => a.ID).ToList();
 
-            DataSource = apps.Select(a => new AppRoleTreeEntity
-            {
-                ID = a.ID,
-                Name = a.Name,
-                Check=false
-                // 区分app和role
-            }).ToList();
-
-            foreach (var app in DataSource)
-            {
-                var app_top_nodes = roles.Where(a => a.ApplicationID == app.ID && a.ParentID == null)
-                    .Select(a => new AppRoleTreeEntity
-                    {
-                        ID = a.ID,
-                        Name = a.Name,
-                    }).ToList();
-
-                RoleRecursion(app_top_nodes, roles);
-
-                app.Children = app_top_nodes;
-            }
+            DataSource = ids.Count == 0 ? source : await FreeSql.Select<TbRole>()
+                    .Where(a => a.IsDelete == false)
+                    .Where(a => ids.Contains(a.ID))
+                    .Distinct()
+                    .AsTreeCte()
+                    .OrderBy(a => a.Sort)
+                    .ToTreeListAsync();
 
             // 单个用户显示权限
             if (Users.Count == 1)
             {
-                CheckedKeys = [.. (await FreeSql.Select<TbRelationRoleUser>()
+                CheckedKeys = [..(await FreeSql.Select<TbRelationRoleUser>()
                     .Where(a => Users.Contains(a.UserID))
-                    .ToListAsync(a=>a.RoleID.ToString()))];
+                    .ToListAsync(a => a.RoleID.ToString()))];
+
+                CopyCheckedKeys.AddRange(CheckedKeys);
             }
         }
 
         async Task OnSave()
         {
+            if (AreListsEqual(CheckedKeys, CopyCheckedKeys))
+            {
+                await ModalRef!.CloseAsync();
+                await MessageService.Success("没有要保存的数据", 1);
+                return;
+            }
+
             var uow = FreeSql!.CreateUnitOfWork();
             try
             {
+
                 // 清除角色绑定数据
                 await uow.Orm.Delete<TbRelationRoleUser>()
                     .Where(a => Users.Contains(a.UserID))
                     .ExecuteAffrowsAsync();
 
-                // 绑定用户&角色数据   判断有无变化？ TODO：
+                // 绑定用户&角色数据   多人同时设置？判断有无变化？ TODO：
                 if (CheckedKeys.Length != 0)
                 {
                     var role_user = CheckedKeys.Select(int.Parse).SelectMany(a => Users.Select(s => new TbRelationRoleUser
@@ -114,38 +105,16 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             }
         }
 
-        static void RoleRecursion(List<AppRoleTreeEntity> parents,IEnumerable<TbApplicationRole> source)
+        static bool AreListsEqual(IEnumerable<string> list1, IEnumerable<string> list2)
         {
-            foreach (var parent in parents)
+            // 检查元素数量是否相等
+            if (list1.Count() != list2.Count())
             {
-                var nodes = source.Where(a => a.ParentID == parent.ID)
-                    .Select(a => new AppRoleTreeEntity
-                    {
-                        ID = a.ID,
-                        Name = a.Name,
-                        ParentID = a.ParentID,
-                    }).ToList();
-
-                RoleRecursion(nodes, source);
-
-                parent.Children = nodes;
+                return false;
             }
+
+            // 使用 SequenceEqual 比较排序后的列表
+            return list1.OrderBy(x => x).SequenceEqual(list2.OrderBy(x => x));
         }
-
     }
-
-    public class AppRoleTreeEntity: ITreeEntity<AppRoleTreeEntity>
-    {
-        public int ID { get; set; }
-
-        public string? Key => ID.ToString();
-
-        public bool Check { get; set; } = true;
-
-        public string? Name { get; set; }
-        public int? ParentID { get; set; }
-        public AppRoleTreeEntity? Parent { get; set; }
-        public List<AppRoleTreeEntity> Children { get; set; } = [];
-    }
-
 }

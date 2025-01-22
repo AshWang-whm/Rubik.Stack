@@ -4,7 +4,7 @@
 <GridRow Gutter="16">
     <GridCol Span="4">
         <Tree TItem="TbOrganization" ShowIcon="true" DataSource="TreeOrganization" TitleExpression="a=>a.DataItem.Name" ChildrenExpression="a=>a.DataItem.Children"
-              HideUnmatched="true" DefaultExpandAll BlockNode OnClick="(e)=>OnOrgClick(e)">
+              HideUnmatched="true" DefaultExpandAll BlockNode OnClick="(e)=>OnOrgClick(e)" @bind-SelectedKey="OrgTreeSelectKey" KeyExpression="a=>a.DataItem.ID.ToString()">
         </Tree>
     </GridCol>
 
@@ -25,13 +25,13 @@
                         <Button Type="@ButtonType.Primary" Color="Color.Magenta6">重置密码</Button>
                     </Popconfirm>
 
-                    <Button Color="Color.Volcano4" OnClick="OnShowRoleSetup" Disabled="!SelectedRows.Any()">系统角色</Button>
+                    <Button Color="Color.Volcano4" OnClick="OnShowRoleSetup" Disabled="!SelectedRows.Any()">角色管理</Button>
 
                     <Popconfirm Disabled="@(!SelectedRows.Any())" Placement="@Placement.Bottom" Title="您确定要重置所选用户角色?" OnConfirm="OnClearUserRole">
                         <Button Type="@ButtonType.Primary" Color="Color.Cyan6">重置角色</Button>
                     </Popconfirm>
 
-                    <Button Color="Color.Lime6" OnClick="()=> { ShowOrgModal = true; }">转岗</Button>
+                    <Button Color="Color.Lime6" OnClick="()=> { ShowOrgModal = true; }">转部门</Button>
 
                 </Flex>
             </TitleTemplate>
@@ -39,6 +39,7 @@
             <ColumnDefinitions>
                 <Selection />
 
+                <PropertyColumn Property="item => item.Department"  Title="部门" />
                 <PropertyColumn Property="item => item.Name" Filterable="true" Title="姓名" />
                 <PropertyColumn Property="item => item.Code" Title="工号" Filterable="true" />
                 <PropertyColumn Property="item => item.Email" Title="邮箱" />
@@ -60,7 +61,7 @@
     </GridCol>
 </GridRow>
 
-<Modal Title="选择组织" @bind-Visible="ShowOrgModal" OnOk="OnComfirmOrg" Centered="true">
+<Modal Title="选择组织" @bind-Visible="ShowOrgModal" OnOk="OnComfirmChangeOrg" Centered="true">
     <Tree TItem="TbOrganization" ShowIcon="true" DataSource="TreeOrganization" TitleExpression="a=>a.DataItem.Name" ChildrenExpression="a=>a.DataItem.Children"
           HideUnmatched="true" DefaultExpandAll BlockNode OnClick="(e)=>OnOrgClick(e,false)">
     </Tree>

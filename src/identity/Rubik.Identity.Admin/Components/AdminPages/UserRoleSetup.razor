@@ -1,7 +1,7 @@
 ﻿
 
-<Tree TItem="AppRoleTreeEntity" ShowIcon="true" DataSource="DataSource" HideUnmatched="true" DefaultExpandAll BlockNode CheckStrictly Checkable="true" Selectable="true"
-      TitleExpression="a=>a.DataItem.Name" ChildrenExpression="a=>a.DataItem.Children" KeyExpression="a=>a.DataItem.Key" CheckableExpression="a=>a.DataItem.Check"
-      @bind-SelectedNodes="SelectedNodes" @bind-CheckedKeys="CheckedKeys" CheckOnClickNode="true" 
-      >
+<Tree TItem="TbRole" ShowIcon="true" DataSource="DataSource" HideUnmatched="true" DefaultExpandAll BlockNode CheckStrictly Checkable="true" Selectable="true"
+      TitleExpression="a=>a.DataItem.Name" ChildrenExpression="a=>a.DataItem.Children" KeyExpression="a=>a.DataItem.ID.ToString()" CheckableExpression="a=>true"
+      @bind-SelectedNodes="SelectedNodes" @bind-CheckedKeys="CheckedKeys" CheckOnClickNode="true" >
+
 </Tree>

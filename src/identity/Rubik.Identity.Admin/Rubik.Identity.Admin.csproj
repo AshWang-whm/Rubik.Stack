@@ -19,9 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AntDesign" Version="1.1.1" />
-    <PackageReference Include="AntDesign.ProLayout" Version="1.1.0" />
-    <PackageReference Include="FreeSql.Extensions.Linq" Version="3.5.102" />
+    <PackageReference Include="AntDesign" Version="1.1.3" />
+    <PackageReference Include="AntDesign.ProLayout" Version="1.1.2" />
+    <PackageReference Include="FreeSql.Extensions.Linq" Version="3.5.104" />
   </ItemGroup>
 
 </Project>
