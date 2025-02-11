@@ -88,9 +88,9 @@
             </FormItem>
 
             <FormItem Label="职位">
-                <TreeSelect DataSource="TreePosition" @bind-Values="@SelectedPositions" TreeCheckable="true" Placeholder="请选择用户职位" AllowClear="true"
-                            TitleExpression="a=>a.DataItem.Name" ItemValue="a=>a.ID" ChildrenExpression="a=>a.DataItem.Children" TreeCheckStrictly="true" TreeDefaultExpandAll="true"
-                            KeyExpression="a=>a.DataItem.ID.ToString()">
+                <TreeSelect DataSource="TreePosition" @bind-Values="@SelectedPositions" TreeCheckable Placeholder="请选择用户职位" AllowClear Multiple
+                            TitleExpression="a=>a.DataItem.Name" ItemValue="a=>a.ID.ToString()" ChildrenExpression="a=>a.DataItem.Children" TreeCheckStrictly TreeDefaultExpandAll
+                            KeyExpression="a=>a.DataItem.ID.ToString()" IsLeafExpression="a=>a.DataItem.Children==null">
                 </TreeSelect>
             </FormItem>
 

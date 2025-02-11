@@ -23,7 +23,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         /// <summary>
         /// 选择的职位ID
         /// </summary>
-        IEnumerable<int> SelectedPositions = [];
+        IEnumerable<string> SelectedPositions = new List<string>();
 
         List<TbOrganizationJob> OrgainzationJobList = [];
         int? SelectedJob = null;
@@ -158,10 +158,10 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                 .ToListAsync((a, b, c, d) => new { b.OrganizationID, c.PositionID, d.JobID });
 
             SelectedOrganization = user_org_position.FirstOrDefault()?.OrganizationID??0;
-            SelectedPositions = user_org_position.Select(a => a.PositionID);
+            SelectedPositions = [.. user_org_position.Select(a => a.PositionID.ToString())];
             SelectedJob = user_org_position.FirstOrDefault()?.JobID ;
 
-            UserCompanyInfo.PositionID = SelectedPositions.Distinct().ToList();
+            UserCompanyInfo.PositionID = [.. SelectedPositions.Distinct()];
             UserCompanyInfo.OrganizationID = SelectedOrganization;
             UserCompanyInfo.JobID = SelectedJob;
 
@@ -246,8 +246,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                             .ExecuteAffrowsAsync();
                 }
 
-
-                if (UserCompanyInfo.PositionID.Except(SelectedPositions).Any())
+                if (SelectedPositions.Any())
                 {
                     if (!isnew)
                     {
@@ -258,7 +257,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                     // 绑定职位
                     var positions = SelectedPositions.Select(a => new TbRelationPositionUser
                     {
-                        PositionID = a,
+                        PositionID = int.Parse(a),
                         UserID = Editor.ID
                     });
                     await uow.Orm.Insert(positions).ExecuteAffrowsAsync();
@@ -351,7 +350,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
     {
         public int OrganizationID { get; set; }
 
-        public List<int> PositionID { get; set; } = [];
+        public List<string> PositionID { get; set; } = [];
 
         public int? JobID { get; set; }
     }
