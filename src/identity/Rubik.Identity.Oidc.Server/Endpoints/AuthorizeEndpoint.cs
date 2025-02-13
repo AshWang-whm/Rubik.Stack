@@ -36,8 +36,10 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             var client = await clientStore.GetClient(parameter.ClientID);
             if (client == null)
                 return Results.BadRequest(OidcExceptionConstant.ClientId_Invalid);
-            if (client.ResponseType != response_type)
+
+            if (client.ResponseType?.Split(' ').Except(response_type.Split(' ')).Any()??true)
                 return Results.BadRequest(OidcExceptionConstant.ResponseType_Invalid);
+
             if (client.ScopeArr?.Except(parameter.ScopeArr ?? []).Any()??true)
                 return Results.BadRequest(OidcExceptionConstant.Scope_Invalid);
 
@@ -152,7 +154,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             var claims = new List<Claim>
             {
                 new(JwtRegisteredClaimNames.Iat,DateTime.Now.Ticks.ToString()),
-                new(JwtRegisteredClaimNames.Sid,parameter.UserCode!)
+                new(JwtRegisteredClaimNames.Sub,parameter.UserCode!)
             };
 
             // client 端没发送nonce就不需要添加
@@ -162,8 +164,9 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             return claims;
         }
 
-        static string GenerateToken(AuthorizationEndpointParameter parameter, IEnumerable<Claim> claims, JwkRsaKeys rsaKeys)
+        static string GenerateToken(AuthorizationEndpointParameter parameter, List<Claim> claims, JwkRsaKeys rsaKeys)
         {
+            //claims.Add(new Claim(JwtRegisteredClaimNames.Iss, OidcServer.DiscoveryConfig.Issuer));
             var access_token_options = new JwtSecurityToken(
                 issuer: OidcServer.DiscoveryConfig.Issuer,
                 audience: parameter.ClientID,

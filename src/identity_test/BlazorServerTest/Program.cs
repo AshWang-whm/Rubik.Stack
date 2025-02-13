@@ -25,7 +25,10 @@ builder.Services.AddAuthentication("oidc")
 
                 o.CallbackPath = "/oidc/callback";
                 o.Authority = "http://localhost:5000";
-                o.ClaimsIssuer = "rubik.oidc";
+                o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidIssuer = "rubik.oidc"
+                };
 
                 o.ResponseType = OpenIdConnectResponseType.Code;
 

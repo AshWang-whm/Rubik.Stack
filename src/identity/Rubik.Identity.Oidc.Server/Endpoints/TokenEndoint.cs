@@ -93,14 +93,16 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 {
                     new(OidcParameterConstant.Scope,auth!.Scope),
                     new (JwtRegisteredClaimNames.Sub,auth.UserCode!),
+                    //new(JwtRegisteredClaimNames.Iss,"rubik.oidc")
                 };
             var access_token = tokenService.GeneratorAccessToken(parameter, access_token_claims);
 
-            // 通过sid & scope 读取用户其他信息 todo：
+            // 通过sub & scope 读取用户其他信息 todo：
             var idtoken_claims = new List<Claim>()
             {
                 //sub&iat is required
                 new (JwtRegisteredClaimNames.Sub,auth.UserCode!),
+                new (JwtRegisteredClaimNames.Name,auth.UserCode!),
                 new (JwtRegisteredClaimNames.Iat,DateTime.Now.Ticks.ToString()),
             };
 

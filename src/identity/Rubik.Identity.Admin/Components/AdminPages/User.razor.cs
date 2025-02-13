@@ -247,6 +247,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                 }
 
                 if (SelectedPositions.Any())
+                
                 {
                     if (!isnew)
                     {

@@ -1,14 +1,35 @@
 ﻿<Router AppAssembly="typeof(Program).Assembly">
-    <Found Context="routeData">
-        <CascadingValue Value="routeData">
-            <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
-        </CascadingValue>
-        <FocusOnNavigate RouteData="routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <LayoutView Layout="@typeof(Layout.MainLayout)">
-            <Result Status="ResultStatus.Http404" />
-        </LayoutView>
-    </NotFound>
-</Router>
+        <Found Context="routeData">
+            <CascadingValue Value="routeData">
+                <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+            </CascadingValue>
+            <FocusOnNavigate RouteData="routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(Layout.MainLayout)">
+                <Result Status="ResultStatus.Http404" />
+            </LayoutView>
+        </NotFound>
+    </Router>
+
+@*<Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>
+    <Router AppAssembly="typeof(Program).Assembly">
+        <Found Context="routeData">
+            <Microsoft.AspNetCore.Components.Authorization.AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+                <NotAuthorized>
+                    <p>Not Authorized</p>
+                </NotAuthorized>
+            </Microsoft.AspNetCore.Components.Authorization.AuthorizeRouteView>
+            <FocusOnNavigate RouteData="routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(Layout.MainLayout)">
+                <Result Status="ResultStatus.Http404" />
+            </LayoutView>
+        </NotFound>
+    </Router>
+</Microsoft.AspNetCore.Components.Authorization.CascadingAuthenticationState>*@
+
+
 <AntContainer />
+
