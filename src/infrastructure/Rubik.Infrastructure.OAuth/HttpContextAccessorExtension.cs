@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubik.Infrastructure.OAuth
+namespace Rubik.Identity.UserIdentity
 {
     public static class HttpContextAccessorExtension
     {
@@ -20,9 +20,9 @@ namespace Rubik.Infrastructure.OAuth
         public static string? CurrentUserDept(this IHttpContextAccessor httpContextAccessor)
             => httpContextAccessor?.HttpContext?.User?.Claims.FirstOrDefault(a => a.Type == JwtIdentityClaimConstants.Dept)?.Value;
 
-        public static bool CheckRole(this IHttpContextAccessor httpContextAccessor, string role, string separator = ",") => CheckRoles(httpContextAccessor, role.Split(separator));
+        public static bool CheckRole(this IHttpContextAccessor httpContextAccessor, string role, string separator = ",") => httpContextAccessor.CheckRoles(role.Split(separator));
 
-        public static bool CheckRoles(this IHttpContextAccessor httpContextAccessor, params string[] roles) => CheckClaims(httpContextAccessor, JwtIdentityClaimConstants.Role, roles);
+        public static bool CheckRoles(this IHttpContextAccessor httpContextAccessor, params string[] roles) => httpContextAccessor.CheckClaims(JwtIdentityClaimConstants.Role, roles);
 
         /// <summary>
         /// 包含

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubik.Infrastructure.OAuth
+namespace Rubik.Identity.UserIdentity
 {
-    public class Identity(IHttpContextAccessor httpContextAccessor)
+    public class UserIdentityAccessor(IHttpContextAccessor httpContextAccessor)
     {
         public string? UserCode => httpContextAccessor.CurrentUserCode();
         public string? UserName => httpContextAccessor.CurrentUserName();

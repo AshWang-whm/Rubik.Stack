@@ -8,15 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\infrastructure\Rubik.Infrastructure.OAuth\Rubik.Infrastructure.OAuth.csproj" />
+    <ProjectReference Include="..\..\infrastructure\Rubik.Infrastructure.OAuth\Rubik.Identity.UserIdentity.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Rubik.Infrastructure.Utils.Common\Rubik.Infrastructure.Utils.Common.csproj" />
+    <ProjectReference Include="..\..\share\Rubik.Share.Entity.FreesqlExtension\Rubik.Identity.FreesqlExtension.csproj" />
+    <ProjectReference Include="..\..\share\Rubik.Share.Extension\Rubik.Infrastructure.WebExtension.csproj" />
+    <ProjectReference Include="..\Rubik.Identity.OidcReferenceAuthentication\Rubik.Identity.OidcReferenceAuthentication.csproj" />
     <ProjectReference Include="..\Rubik.Identity.Share.Entity\Rubik.Identity.Share.Entity.csproj" />
     <ProjectReference Include="..\Rubik.Identity.Share.Extension\Rubik.Identity.Share.Extension.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
-    <Folder Include="Apis\" />
   </ItemGroup>
 
   <ItemGroup>

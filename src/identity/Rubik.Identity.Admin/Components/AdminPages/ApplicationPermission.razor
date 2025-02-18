@@ -27,7 +27,13 @@
 
         <ActionColumn Title="Action">
             <Button Type="@ButtonType.Primary" OnClick="async () =>OnEdit(context)">编辑</Button>
-            <Button Type="@ButtonType.Primary" Color="@Color.Green6" OnClick="async ()=>OnEdit(new TbApplicationPermission() { ParentID=context.ID,Parent=context })">添加子菜单</Button>
+            @{
+                if (context.PermissionType != PermissionType.Node)
+                {
+                    <Button Type="@ButtonType.Primary" Color="@Color.Green6" OnClick="async ()=>OnEdit(new TbApplicationPermission() { ParentID=context.ID,Parent=context })">添加子菜单</Button>
+                }
+            }
+
             <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前菜单?" OnConfirm="async () => await OnDelete(context)">
                 <Button Type="@ButtonType.Primary" Danger>删除</Button>
             </Popconfirm>

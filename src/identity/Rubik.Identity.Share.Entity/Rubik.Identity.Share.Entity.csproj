@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\share\Rubik.Share.Entity.FreesqlExtension\Rubik.Share.Entity.FreesqlExtension.csproj" />
+    <ProjectReference Include="..\..\infrastructure\Rubik.Infrastructure.Orm.Freesql\Rubik.Infrastructure.Orm.Freesql.csproj" />
   </ItemGroup>
 
 </Project>

@@ -67,13 +67,18 @@ namespace JwtTest
         /// 自定义验证中间件，直接远程访问oidc server token接口进行验证
         /// </summary>
         /// <param name="builder"></param>
-        public static void AddOidcReferenceAuthencation(this WebApplicationBuilder builder)
+        /// <param name="options"></param>
+        public static void AddOidcReferenceAuthencation(this WebApplicationBuilder builder,string? scheme = null, Action<OidcReferenceAuthenticationOptions>? options = null)
         {
+            scheme ??= OidcReferenceDefaults.AuthenticationScheme;
+
             builder.Services
                 .AddAuthorization()
-                .AddAuthentication(OidcReferenceDefaults.AuthenticationScheme)
+                .AddAuthentication(scheme)
                 .AddOidcReferenceAuthencation(o =>
                 {
+                    options?.Invoke(o);
+
                     o.Authority = "http://localhost:5000";
                     o.Events = new OidcReferenceEvents
                     {
@@ -85,5 +90,11 @@ namespace JwtTest
                     };
                 });
         }
+
+        public static void AddOidcReferenceAuthencation(this WebApplicationBuilder builder,  Action<OidcReferenceAuthenticationOptions>? options = null)
+        {
+            builder.AddOidcReferenceAuthencation(OidcReferenceDefaults.AuthenticationScheme, options);
+        }
+
     }
 }

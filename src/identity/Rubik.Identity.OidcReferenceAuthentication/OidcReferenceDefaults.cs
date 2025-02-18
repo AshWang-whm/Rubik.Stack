@@ -6,9 +6,9 @@ namespace Rubik.Identity.OidcReferenceAuthentication
 {
     public class OidcReferenceDefaults
     {
-        public static string AuthenticationScheme { get; set; } = "OidcReference";
+        public static string AuthenticationScheme = "OidcReference";
 
-        public static string ReferenceHttpClient { get; set; } = "OidcReferenceHttpClient";
+        public static string ReferenceHttpClient = "OidcReferenceHttpClient";
 
     }
 }

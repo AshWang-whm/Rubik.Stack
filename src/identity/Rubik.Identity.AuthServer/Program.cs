@@ -1,6 +1,6 @@
-using Rubik.Share.Entity.FreesqlExtension;
-using Rubik.Share.Extension;
 using Rubik.Identity.Oidc.Core.Extensions;
+using Rubik.Infrastructure.Orm.Freesql;
+using Rubik.Infrastructure.WebExtension;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,16 +14,7 @@ builder.AddOidcServer()
 
 builder.AddEnvironmentJsonFile();
 
-builder.Services.AddHttpContextAccessor();
-
-var fsql = builder.AddFreesql("identity", FreeSql.DataType.PostgreSQL, cmd =>
-{
-#if DEBUG
-    System.Diagnostics.Debug.WriteLine(cmd.CommandText);
-#endif
-    // ²¹³ä aop
-});
-
+builder.Services.AddFreesqlOrm(builder.Configuration.GetConnectionString("identity")!);
 
 var app = builder.Build();
 

@@ -1,7 +1,7 @@
 ﻿using FreeSql;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Rubik.Infrastructure.Freesql
+namespace Rubik.Infrastructure.Orm.Freesql
 {
     public static class IocExtension
     {
@@ -11,10 +11,17 @@ namespace Rubik.Infrastructure.Freesql
         /// <param name="builder"></param>
         /// <param name="conkey"></param>
         /// <param name="dataType"></param>
-        public static IFreeSql AddFreesqlOrm(this IServiceCollection services, string connectionstring, DataType dataType = DataType.MySql
+        public static IFreeSql AddFreesqlOrm(this IServiceCollection services, string connectionstring, DataType dataType = DataType.PostgreSQL
             ,Action<System.Data.Common.DbCommand>? executing=null
             ,EventHandler<FreeSql.Aop.AuditValueEventArgs>? aop=null)
         {
+            executing ??= (cmd) =>
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine(cmd.CommandText);
+#endif
+            };
+
             var fsql = new FreeSqlBuilder()
                     .UseConnectionString(dataType, connectionstring)
             .UseMonitorCommand(cmd =>
@@ -34,10 +41,17 @@ namespace Rubik.Infrastructure.Freesql
         /// <param name="builder"></param>
         /// <param name="conkey"></param>
         /// <param name="dataType"></param>
-        public static IFreeSql<TFlag> AddFreesqlOrm<TFlag>(this IServiceCollection services, string connectionstring, DataType dataType = DataType.MySql
+        public static IFreeSql<TFlag> AddFreesqlOrm<TFlag>(this IServiceCollection services, string connectionstring, DataType dataType = DataType.PostgreSQL
             , Action<System.Data.Common.DbCommand>? executing = null
             , EventHandler<FreeSql.Aop.AuditValueEventArgs>? aop = null)
         {
+            executing ??= (cmd) =>
+            {
+#if DEBUG
+                System.Diagnostics.Debug.WriteLine(cmd.CommandText);
+#endif
+            };
+
             var fsql = new FreeSqlBuilder()
                     .UseConnectionString(dataType, connectionstring)
             .UseMonitorCommand(cmd =>
@@ -49,8 +63,6 @@ namespace Rubik.Infrastructure.Freesql
             services.AddSingleton(fsql);
             return fsql;
         }
-
-
 
     }
 }

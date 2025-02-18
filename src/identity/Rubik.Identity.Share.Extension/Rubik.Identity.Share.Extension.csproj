@@ -8,8 +8,4 @@
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\share\Rubik.Share.Entity.FreesqlExtension\Rubik.Share.Entity.FreesqlExtension.csproj" />
-    <ProjectReference Include="..\..\share\Rubik.Share.Extension\Rubik.Share.Extension.csproj" />
-  </ItemGroup>
 </Project>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Rubik.Infrastructure.Entity.BaseEntity;
+using System.ComponentModel;
 
 namespace Rubik.Identity.Share.Entity
 {

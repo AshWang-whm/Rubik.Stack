@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\share\Rubik.Share.Extension\Rubik.Share.Extension.csproj" />
+    <ProjectReference Include="..\..\share\Rubik.Share.Extension\Rubik.Infrastructure.WebExtension.csproj" />
     <ProjectReference Include="..\Rubik.LowCode.Share.Entity\Rubik.LowCode.Share.Entity.csproj" />
   </ItemGroup>
 

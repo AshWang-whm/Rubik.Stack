@@ -3,7 +3,7 @@ using AntDesign.TableModels;
 using Microsoft.AspNetCore.Components;
 using Rubik.Identity.Admin.Components.BasePages;
 using Rubik.Identity.Share.Entity;
-using Rubik.Share.Extension;
+using Rubik.Infrastructure.Utils.Common.ExpressionTrees;
 using System;
 
 namespace Rubik.Identity.Admin.Components.AdminPages

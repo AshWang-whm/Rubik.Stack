@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubik.Share.Extension
+namespace Rubik.Infrastructure.Utils.Common.ExpressionTrees
 {
     public static class ExpressionExtension
     {
@@ -29,7 +29,7 @@ namespace Rubik.Share.Extension
             exp1??= Expression.Lambda<Func<T1, bool>>(Expression.Constant(true, typeof(bool)), Expression.Parameter(typeof(T1)));
 
             var exp2= Expression.Lambda<Func<T2, bool>>(Expression.Constant(true, typeof(bool)), Expression.Parameter(typeof(T2)));
-            return ExpressionCombine(exp1, exp2);
+            return exp1.ExpressionCombine(exp2);
         }
 
         public static Expression<Func<T1, T2,T3, bool>> ExpressionConvertToMultiGenerics<T1, T2,T3>(this Expression<Func<T1, bool>> exp1)
@@ -40,7 +40,7 @@ namespace Rubik.Share.Extension
 
             var exp3 = Expression.Lambda<Func<T3, bool>>(Expression.Constant(true, typeof(bool)), Expression.Parameter(typeof(T3)));
 
-            return ExpressionCombine(exp1, exp2, exp3);
+            return exp1.ExpressionCombine(exp2, exp3);
         }
     }
 }

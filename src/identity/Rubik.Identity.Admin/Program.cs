@@ -1,9 +1,10 @@
 using Rubik.Identity.Admin.Components;
-using Rubik.Infrastructure.OAuth;
-using Rubik.Share.Entity.FreesqlExtension;
-using Rubik.Share.Extension;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Rubik.Identity.FreesqlExtension;
+using Rubik.Infrastructure.WebExtension;
+using Rubik.Identity.OidcReferenceAuthentication;
+using Rubik.Identity.Admin.Apis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,9 +14,7 @@ builder.Services.AddRazorComponents()
 
 builder.AddEnvironmentJsonFile();
 
-builder.Services.AddHttpContextAccessor();
-
-var fsql = builder.AddFreesql("identity", FreeSql.DataType.PostgreSQL, cmd =>
+var fsql = builder.AddFreesqlWithIdentityAop("identity", FreeSql.DataType.PostgreSQL, cmd =>
 {
 #if DEBUG
     System.Diagnostics.Debug.WriteLine(cmd.CommandText);
@@ -27,6 +26,7 @@ var fsql = builder.AddFreesql("identity", FreeSql.DataType.PostgreSQL, cmd =>
 
 builder.Services.AddAntDesign();
 
+// 当前系统登录认证
 builder.Services.AddAuthentication("oidc")
             .AddCookie("cookie", o =>
             {
@@ -79,9 +79,36 @@ builder.Services.AddAuthentication("oidc")
                 o.Scope.Add("openid");
                 o.Scope.Add("profile");
                 o.Scope.Add("offline_access");
+            })
+            .AddOidcReferenceAuthencation(OidcReferenceDefaults.AuthenticationScheme, opt =>
+            {
+                opt.Authority = "http://localhost:5000";
+                opt.Events = new OidcReferenceEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["access_token"];
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
-builder.Services.AddUserIdentity();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("admin", policy =>
+    {
+        policy.AddAuthenticationSchemes("oidc")
+            .RequireAuthenticatedUser();
+    })
+    .AddPolicy("api", policy =>
+    {
+        // 添加验证scope 包含app_admin ?
+        policy.AddAuthenticationSchemes(OidcReferenceDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .RequireAssertion(context =>
+        {
+            return context.CheckClaimValue("scope", "app_admin");
+        });
+    });
 
 var app = builder.Build();
 
@@ -99,8 +126,11 @@ app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// 外部权限接口使用jwt token验证
+app.MapGet("/api/admin/permissions/{sys}", AdminApis.UserPermissions).RequireAuthorization("api");
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()
-    .RequireAuthorization();
+    .RequireAuthorization("admin");
 
 app.Run();

@@ -9,6 +9,7 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\infrastructure\Rubik.Infrastructure.OAuth\Rubik.Identity.UserIdentity.csproj" />
     <ProjectReference Include="..\..\infrastructure\Rubik.Infrastructure.Orm.Freesql\Rubik.Infrastructure.Orm.Freesql.csproj" />
   </ItemGroup>
 </Project>

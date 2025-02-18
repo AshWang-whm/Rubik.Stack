@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubik.Infrastructure.OAuth
+namespace Rubik.Identity.UserIdentity
 {
     public class JwtIdentityClaimConstants
     {

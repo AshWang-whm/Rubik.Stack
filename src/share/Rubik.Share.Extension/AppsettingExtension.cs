@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Rubik.Infrastructure.WebExtension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubik.Share.Extension
+namespace Rubik.Infrastructure.WebExtension
 {
     public static class AppsettingExtension
     {
