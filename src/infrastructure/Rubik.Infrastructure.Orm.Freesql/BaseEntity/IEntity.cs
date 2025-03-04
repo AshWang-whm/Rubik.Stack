@@ -33,7 +33,7 @@ namespace Rubik.Infrastructure.Entity.BaseEntity
     /// <summary>
     /// 包括 INewEntity,IDeleteEtity
     /// </summary>
-    public interface IRecordEntity:INewEntity,IDeleteEtity
+    public interface IRecordEntity:INewEntity,IModifyEntity,IDeleteEtity
     {
 
     }
@@ -42,7 +42,7 @@ namespace Rubik.Infrastructure.Entity.BaseEntity
     /// <summary>
     /// 包括 INewEntity, IModifyEntity,IDeleteEtity
     /// </summary>
-    public interface IFullEntity : IRecordEntity,IModifyEntity
+    public interface IFullEntity : INewEntity, IDeleteEtity, IModifyEntity
     {
 
     }

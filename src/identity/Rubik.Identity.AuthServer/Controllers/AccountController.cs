@@ -53,7 +53,6 @@ namespace Rubik.Identity.AuthServer.Controllers
 
             await HttpContext.SignInAsync("oidc.cookie", principal);
 
-            //return Redirect(input.ReturnUrl!);
             return Json(new LoginResult {Code=1});
         }
     }

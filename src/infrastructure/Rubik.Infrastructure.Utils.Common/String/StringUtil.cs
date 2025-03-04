@@ -11,10 +11,10 @@ namespace Rubik.Infrastructure.Utils.Common.String
         public static bool IsNotNull(this string? str)
             => !IsNull(str);
 
-        public static string StringJoin(this IEnumerable<string> list, string separator) 
-            => string.Join(separator, list);
+        public static string StringJoin(this IEnumerable<string?> list, string separator=",") 
+            => string.Join(separator, list.Where(a=>a.IsNotNull()));
 
-        public static string StringJoin(this IEnumerable<string> list, char separator)
-            => string.Join(separator, list);
+        public static string StringJoin(this IEnumerable<string?> list, char separator)
+            => string.Join(separator, list.Where(a => a.IsNotNull()));
     }
 }

@@ -30,6 +30,12 @@ namespace Rubik.Infrastructure.Entity.BaseEntity
 
         [Column(Position =-3,IsNullable =false)]
         public bool IsDelete { get; set; } = false;
+
+        [Column(Position = -5, IsNullable = true)]
+        public string? ModifyUser { get; set; }
+
+        [Column(Position = -6, IsNullable = false, DbType = "timestamp")]
+        public DateTime? ModifyDate { get; set; }
     }
 
 

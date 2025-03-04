@@ -36,6 +36,10 @@ builder.Services.AddAuthentication("oidc")
                 o.Scope.Add("profile");
                 o.Scope.Add("scope1");
                 o.Scope.Add("offline_access");
+                o.Scope.Add("role");
+                o.Scope.Add("job");
+                o.Scope.Add("pos");
+                o.Scope.Add("dept");
             });
 
 builder.Services.AddHttpClient();

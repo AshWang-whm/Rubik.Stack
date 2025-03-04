@@ -7,6 +7,7 @@ using Rubik.Identity.Oidc.Core.Stores;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json.Nodes;
+using System.Threading.Tasks;
 
 namespace Rubik.Identity.Oidc.Core.Endpoints
 {
@@ -22,7 +23,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             return parameter.GrantType switch
             {
                 OidcParameterConstant.RefreshToken => await RefreshToken(parameter, tokenService),
-                OidcParameterConstant.Authorization_Code => AuthorizationCode(parameter, tokenService, codeEncrtptService),
+                OidcParameterConstant.Authorization_Code => await AuthorizationCode(parameter, tokenService, codeEncrtptService, userStore),
                 // 客户端自行验证用户信息成功后，再向idp申请颁发token？
                 // https://oauth.example.com/token?grant_type=client_credentials&client_id=CLIENT_ID&client_secret=CLIENT_SECRET
                 OidcParameterConstant.ClientCredentialsFlow => await ClientCredentialsFlow(parameter, tokenService, clientStore),
@@ -78,7 +79,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             });
         }
 
-        static IResult AuthorizationCode(TokenEndpointParameter parameter, TokenService tokenService, AuthorizationCodeEncrtptService codeEncrtptService)
+        static async Task<IResult> AuthorizationCode(TokenEndpointParameter parameter, TokenService tokenService, AuthorizationCodeEncrtptService codeEncrtptService, IUserStore userStore)
         {
             // 验证code 以换取token
             var code = parameter.Query.Get(OidcParameterConstant.AuthorizationFlow_Code);
@@ -87,6 +88,8 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             {
                 return Results.BadRequest(OidcExceptionConstant.AuthorizationCode_Invalid);
             }
+            // 抓取用户信息claims
+            var user_profile_claims = await userStore.MapperUserClaims(auth!.UserCode!,auth.ClientID,auth.Scope);
 
             // access token 默认带上用户账号
             var access_token_claims = new List<Claim>
@@ -95,14 +98,14 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                     new (JwtRegisteredClaimNames.Sub,auth.UserCode!),
                     //new(JwtRegisteredClaimNames.Iss,"rubik.oidc")
                 };
-            var access_token = tokenService.GeneratorAccessToken(parameter, access_token_claims);
+            // 用户信息+默认claism = access token 
+            var access_token = tokenService.GeneratorAccessToken(parameter, access_token_claims.Union(user_profile_claims));
 
             // 通过sub & scope 读取用户其他信息 todo：
             var idtoken_claims = new List<Claim>()
             {
                 //sub&iat is required
                 new (JwtRegisteredClaimNames.Sub,auth.UserCode!),
-                new (JwtRegisteredClaimNames.Name,auth.UserCode!),
                 new (JwtRegisteredClaimNames.Iat,DateTime.Now.Ticks.ToString()),
             };
 
@@ -144,15 +147,6 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         /// <returns></returns>
         static async Task<IResult> PasswordFlow(TokenEndpointParameter parameter, TokenService tokenService, IClientStore clientStore,IUserStore userStore)
         {
-
-            //OidcParameterInValidationException.NotNullOrEmpty(nameof(parameter.ClientID), parameter.ClientID);
-
-            //var client = await clientStore.GetClient(parameter.ClientID);
-            //if(client==null||!(client.ClientSecret?.Equals(parameter.ClientSecret)??false))
-            //{
-            //    return Results.BadRequest(OidcExceptionConstant.ClientId_Invalid);
-            //}
-
             var user_id = parameter.Query["username"];
             if (string.IsNullOrWhiteSpace(user_id)) 
             {
@@ -178,7 +172,6 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 access_token_claims.Add(new(OidcParameterConstant.Scope, scope));
 
             // 添加 user claims 到 access_token TODO:
-
             var access_token = tokenService.GeneratorAccessToken(parameter, access_token_claims);
             var json = new JsonObject
             {
@@ -199,7 +192,6 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         static async Task<IResult> ClientCredentialsFlow(TokenEndpointParameter parameter, TokenService tokenService, IClientStore clientStore)
         {
             OidcParameterInValidationException.NotNullOrEmpty(nameof(parameter.ClientID), parameter.ClientID);
-
 
             var client = await clientStore.GetClient(parameter.ClientID);
             if (client == null || !(client.ClientSecret?.Equals(parameter.ClientSecret) ?? false))

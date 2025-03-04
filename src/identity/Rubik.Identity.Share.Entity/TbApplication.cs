@@ -28,7 +28,7 @@
         MVC,
         Client,
         FrontEnd,
-        ApiResource,
+        Api,
     }
 
     [Flags]
