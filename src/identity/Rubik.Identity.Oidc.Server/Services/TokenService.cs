@@ -22,7 +22,7 @@ namespace Rubik.Identity.Oidc.Core.Services
         /// <returns></returns>
         public string? GeneratorAccessToken(TokenEndpointParameter parameter, IEnumerable<Claim>? claims)
         {
-            var id_token_options = new JwtSecurityToken(
+            var access_token_options = new JwtSecurityToken(
                 issuer: discovery.Issuer,
                 audience: parameter.ClientID,
                 claims: claims,
@@ -30,7 +30,7 @@ namespace Rubik.Identity.Oidc.Core.Services
                 signingCredentials: jwkKeys.SigningCredentials
                 );
 
-            var token = jwkKeys.TokenHandler.WriteToken(id_token_options);
+            var token = jwkKeys.TokenHandler.WriteToken(access_token_options);
             return token;
         }
 
@@ -40,7 +40,7 @@ namespace Rubik.Identity.Oidc.Core.Services
             return MD5Util.GetMd5Hash(access_token);
         }
 
-        public string GeneratorIdToken(TokenEndpointParameter parameter, List<Claim>? claims)
+        public string GeneratorIdToken(TokenEndpointParameter parameter, IEnumerable<Claim>? claims)
         {
             var id_token_options = new JwtSecurityToken(
                 issuer: discovery.Issuer,

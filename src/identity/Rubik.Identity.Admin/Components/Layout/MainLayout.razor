@@ -3,6 +3,7 @@
 
 <BasicLayout MenuData="_menuData"
              MenuAccordion
+             Collapsed="@collapsed"
              Title="权限管理平台">
     <HeaderContentRender>
         <Space Size="@("24")">
@@ -11,6 +12,16 @@
             </SpaceItem>
         </Space>
     </HeaderContentRender>
+    <RightContentRender>
+        <Space>
+            <SpaceItem>
+                <p>欢迎:@userIdentityAccessor?.UserCode , @userIdentityAccessor?.UserName</p>
+            </SpaceItem>
+            <SpaceItem>
+                <Icon Type="logout" OnClick="Logout"></Icon>
+            </SpaceItem>
+        </Space>
+    </RightContentRender>
     <ChildContent>
         <ReuseTabs />
     </ChildContent>
@@ -22,7 +33,12 @@
 
 @code
 {
-    
+    [Inject]
+    Rubik.Identity.UserIdentity.UserIdentityAccessor?  userIdentityAccessor { get; set; }
+
+    [Inject]
+    NavigationManager? navigationManager { get; set; }
+
     MenuDataItem[] _menuData = new MenuDataItem[]
 {
         new MenuDataItem
@@ -74,6 +90,11 @@
     void Toggle()
     {
         collapsed = !collapsed;
+    }
+
+    private void Logout()
+    {
+        navigationManager!.NavigateTo("/logout", true);
     }
 
 }

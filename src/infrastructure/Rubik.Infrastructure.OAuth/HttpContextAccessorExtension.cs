@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +13,12 @@ namespace Rubik.Identity.UserIdentity
         public static string? CurrentUserName(this IHttpContextAccessor httpContextAccessor)
                 => httpContextAccessor?.HttpContext?.User?.Claims.FirstOrDefault(a => a.Type == JwtIdentityClaimConstants.Name)?.Value;
         public static string? CurrentUserCode(this IHttpContextAccessor httpContextAccessor)
-                => httpContextAccessor?.HttpContext?.User?.Claims.FirstOrDefault(a => a.Type == JwtIdentityClaimConstants.Code)?.Value;
+        {
+            var oidc_id = httpContextAccessor?.HttpContext?.User?.Claims.FirstOrDefault(a => a.Type == ClaimTypes.NameIdentifier);
+            if (oidc_id != null)
+                return oidc_id.Value;
+            return httpContextAccessor?.HttpContext?.User?.Claims.FirstOrDefault(a => a.Type == JwtIdentityClaimConstants.Sub)?.Value;
+        }
 
         public static string? CurrentUserRole(this IHttpContextAccessor httpContextAccessor)
             => httpContextAccessor?.HttpContext?.User?.Claims.FirstOrDefault(a => a.Type == JwtIdentityClaimConstants.Role)?.Value;

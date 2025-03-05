@@ -96,16 +96,14 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 {
                     new(OidcParameterConstant.Scope,auth!.Scope),
                     new (JwtRegisteredClaimNames.Sub,auth.UserCode!),
-                    //new(JwtRegisteredClaimNames.Iss,"rubik.oidc")
                 };
-            // 用户信息+默认claism = access token 
-            var access_token = tokenService.GeneratorAccessToken(parameter, access_token_claims.Union(user_profile_claims));
+            // 用户信息+默认claim = access token 
+            var access_token = tokenService.GeneratorAccessToken(parameter, access_token_claims);
 
             // 通过sub & scope 读取用户其他信息 todo：
             var idtoken_claims = new List<Claim>()
             {
-                //sub&iat is required
-                new (JwtRegisteredClaimNames.Sub,auth.UserCode!),
+                //iat is required
                 new (JwtRegisteredClaimNames.Iat,DateTime.Now.Ticks.ToString()),
             };
 
@@ -118,13 +116,13 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             {
                 { OidcParameterConstant.AccessToken, access_token }
             };
-            // authorization_code 模式返回access_token 和 id_token TODO:
+            //// authorization_code 模式返回access_token 和 id_token TODO:
 
-            // id token 会过期吗?
-            var id_token = tokenService.GeneratorIdToken(parameter, idtoken_claims);
+            // id token
+            var id_token = tokenService.GeneratorIdToken(parameter, idtoken_claims.Union(user_profile_claims));
             json.Add(OidcParameterConstant.IdToken, id_token);
 
-            if(auth.Scope?.Contains(OidcParameterConstant.OfflineAccess) ??false)
+            if (auth.Scope?.Contains(OidcParameterConstant.OfflineAccess) ??false)
             {
                 var refresh_token = tokenService.GeneratorRefreshToken(access_token!);
                 json.Add(OidcParameterConstant.RefreshToken, refresh_token);

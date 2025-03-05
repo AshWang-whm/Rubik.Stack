@@ -1,9 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubik.Identity.UserIdentity
 {
@@ -17,5 +12,6 @@ namespace Rubik.Identity.UserIdentity
         public string? Department => httpContextAccessor.CurrentUserDept();
 
         public bool CheckClaims(string type, string value) => httpContextAccessor.CheckClaims(type, value.Split(','));
+
     }
 }

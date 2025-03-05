@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Rubik.Identity.Admin.Apis;
 using Rubik.Identity.Admin.Components;
+using Rubik.Identity.FreesqlExtension;
+using Rubik.Identity.OidcReferenceAuthentication;
+using Rubik.Infrastructure.WebExtension;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Rubik.Identity.FreesqlExtension;
-using Rubik.Infrastructure.WebExtension;
-using Rubik.Identity.OidcReferenceAuthentication;
-using Rubik.Identity.Admin.Apis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,14 +31,14 @@ builder.Services.AddAntDesign();
 
 // 当前系统登录认证
 builder.Services.AddAuthentication("oidc")
-            .AddCookie("cookie", o =>
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, o =>
             {
                 o.SlidingExpiration = true;
                 o.ExpireTimeSpan = TimeSpan.FromMinutes(10);
             })
             .AddOpenIdConnect("oidc", o =>
             {
-                o.SignInScheme = "cookie";
+                o.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 o.RequireHttpsMetadata = false;
                 o.ClientId = "app_admin";
                 // 仅发送到idp验证用
@@ -54,22 +57,6 @@ builder.Services.AddAuthentication("oidc")
                 {
                     OnTokenValidated = async context =>
                     {
-                        // 获取 ID Token
-                        if (context.SecurityToken is JwtSecurityToken idToken)
-                        {
-                            // 解析 ID Token 中的用户信息
-
-                            // 创建新的 ClaimsIdentity
-                            var identity = new ClaimsIdentity(idToken.Claims, context.Principal!.Identity!.AuthenticationType);
-
-                            // 创建新的 ClaimsPrincipal
-                            var principal = new ClaimsPrincipal(identity);
-
-                            // 替换 HttpContext.User
-                            context.Principal = principal;
-                            context.Success();
-                        }
-
                         await Task.CompletedTask;
                     }
                 };
@@ -128,6 +115,15 @@ app.UseAuthorization();
 
 // 外部权限接口使用jwt token验证
 app.MapGet("/api/admin/permissions/{sys}", AdminApis.UserPermissions).RequireAuthorization("api");
+app.MapGet("/logout", async context =>
+{
+    var cookieKeys = context.Request.Cookies.Keys;
+    foreach (var key in cookieKeys)
+    {
+        context.Response.Cookies.Delete(key);
+    }
+    context.Response.Redirect("/");
+});
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode()

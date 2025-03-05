@@ -13,7 +13,7 @@ namespace Rubik.Identity.UserIdentity
         /// <summary>
         /// sub
         /// </summary>
-        public const string Code = JwtRegisteredClaimNames.Sub;
+        public const string Sub = JwtRegisteredClaimNames.Sub;
 
         /// <summary>
         /// name
@@ -26,5 +26,9 @@ namespace Rubik.Identity.UserIdentity
         /// role
         /// </summary>
         public const string Role = "role";
+
+        public const string Job = "job";
+
+        public const string Position = "pos";
     }
 }
