@@ -46,7 +46,7 @@
             <FormItem Label="App Type">
                 <RadioGroup @bind-Value="@Editor.OidcAppType" TValue="OidcAppType" OnChange="OidcAppTypeChangeCallback">
                     <Radio RadioButton Value="@OidcAppType.MVC">MVC</Radio>
-                    <Radio RadioButton Value="@OidcAppType.Api">Api</Radio>
+                    @*<Radio RadioButton Value="@OidcAppType.Api">Api</Radio>*@
                     <Radio RadioButton Value="@OidcAppType.Client">Client</Radio>
                     <Radio RadioButton Value="@OidcAppType.FrontEnd">FrontEnd</Radio>
                 </RadioGroup>

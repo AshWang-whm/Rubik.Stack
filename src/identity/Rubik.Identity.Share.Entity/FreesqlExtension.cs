@@ -16,7 +16,8 @@ namespace Rubik.Identity.Share.Entity
                 typeof(TbApplication), typeof(TbApplicationPermission),typeof(TbApplicationRole),
                 typeof(TbOrganization),typeof(TbOrganizationJob),typeof(TbPosition),
                 typeof(TbRelationOrganizeUser),typeof(TbRelationRolePermission),typeof(TbRelationRoleUser),typeof(TbRelationPositionUser),typeof(TbRelationJobUser),
-                typeof(TbUser),typeof(TbRole)
+                typeof(TbUser),typeof(TbRole),
+                typeof(TbApiResource),typeof(TbApiScope)
             ];
             foreach (var type in types)
             {

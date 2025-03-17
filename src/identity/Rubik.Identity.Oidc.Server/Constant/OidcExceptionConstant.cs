@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rubik.Identity.Oidc.Core.Contants
 {
-    internal class OidcExceptionConstant
+    public class OidcExceptionConstant
     {
         public const string RefreshToken_Invalid = "refresh token is not valided!";
 
@@ -29,5 +29,7 @@ namespace Rubik.Identity.Oidc.Core.Contants
         public const string Password_IsRequired = "password id required!";
 
         public const string Password_Invalid = "password is invalid!";
+
+        public const string ApiResource_Invalid = "api resource is invalid!";
     }
 }

@@ -1,13 +1,9 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Rubik.Identity.Admin.Apis;
 using Rubik.Identity.Admin.Components;
 using Rubik.Identity.FreesqlExtension;
 using Rubik.Identity.OidcReferenceAuthentication;
 using Rubik.Infrastructure.WebExtension;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 

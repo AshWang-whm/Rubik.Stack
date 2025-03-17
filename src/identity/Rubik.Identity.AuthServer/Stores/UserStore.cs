@@ -25,7 +25,7 @@ namespace Rubik.Identity.AuthServer.Stores
             return user.Password== pwd;
         }
 
-        public async Task<List<Claim>> MapperUserClaims(string usercode, string ClientID, string scopes)
+        public async Task<List<Claim>> GetUserClaims(string usercode, string ClientID, IEnumerable<string?> claimtypes)
         {
             // 抓取内置的scope & 用户数据
             var claims = new List<Claim>();
@@ -37,7 +37,7 @@ namespace Rubik.Identity.AuthServer.Stores
             claims.Add(new Claim(JwtIdentityClaimConstants.Name, userinfo.Name!));
             claims.Add(new Claim(JwtIdentityClaimConstants.Sub, userinfo.Code!));
 
-            if (scopes.Contains(JwtIdentityClaimConstants.Role))
+            if (claimtypes.Contains(JwtIdentityClaimConstants.Role))
             {
                 var roles = await freeSql.Select<TbUser, TbRelationRoleUser, TbRole,TbRelationRolePermission,TbApplicationPermission,TbApplication>()
                     .LeftJoin((a, b, c,d,e,f) => a.ID == b.UserID)
@@ -49,7 +49,7 @@ namespace Rubik.Identity.AuthServer.Stores
                     .ToListAsync((a,b,c, d, e, f) => c.Code);
                 claims.Add(new Claim(JwtIdentityClaimConstants.Role, roles?.StringJoin()??""));
             }
-            if(scopes.Contains(JwtIdentityClaimConstants.Job))
+            if(claimtypes.Contains(JwtIdentityClaimConstants.Job))
             {
                 var jobs = await freeSql.Select<TbUser, TbRelationJobUser, TbOrganizationJob>()
                     .LeftJoin((a, b, c) => a.ID == b.UserID)
@@ -58,7 +58,7 @@ namespace Rubik.Identity.AuthServer.Stores
                     .ToListAsync((a,b,c)=>c.Code);
                 claims.Add(new Claim(JwtIdentityClaimConstants.Job, jobs?.StringJoin() ?? ""));
             }
-            if (scopes.Contains(JwtIdentityClaimConstants.Position))
+            if (claimtypes.Contains(JwtIdentityClaimConstants.Position))
             {
                 var pos = await freeSql.Select<TbUser,TbRelationPositionUser,TbPosition>()
                     .LeftJoin((a, b, c) => a.ID == b.UserID)
@@ -67,7 +67,7 @@ namespace Rubik.Identity.AuthServer.Stores
                     .ToListAsync((a, b, c) => c.Code);
                 claims.Add(new Claim(JwtIdentityClaimConstants.Position, pos?.StringJoin() ?? ""));
             }
-            if (scopes.Contains(JwtIdentityClaimConstants.Dept))
+            if (claimtypes.Contains(JwtIdentityClaimConstants.Dept))
             {
                 var depts = await freeSql.Select<TbUser,TbRelationOrganizeUser,TbOrganization>()
                     .LeftJoin((a, b, c) => a.ID == b.UserID)
