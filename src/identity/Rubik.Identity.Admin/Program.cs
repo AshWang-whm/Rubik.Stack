@@ -51,7 +51,7 @@ builder.Services.AddAuthentication("oidc")
 
                 o.Events = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents
                 {
-                    OnTokenValidated = async context =>
+                    OnTokenResponseReceived = async context =>
                     {
                         await Task.CompletedTask;
                     }
@@ -62,6 +62,8 @@ builder.Services.AddAuthentication("oidc")
                 o.Scope.Add("openid");
                 o.Scope.Add("profile");
                 o.Scope.Add("offline_access");
+
+                o.Scope.Add("api.test.scope1");
             })
             .AddOidcReferenceAuthencation(OidcReferenceDefaults.AuthenticationScheme, opt =>
             {

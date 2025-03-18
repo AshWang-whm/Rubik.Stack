@@ -10,6 +10,7 @@ namespace Rubik.Identity.Share.Entity
     public class TbApiResource: BaseFullEntity
     {
 
-
+        [Column(IsIgnore =true)]
+        public string? Scopes { get; set; }
     }
 }

@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BootstrapBlazor" Version="9.2.8" />
-    <PackageReference Include="FreeSql.Extensions.ZeroEntity" Version="3.5.104" />
+    <PackageReference Include="BootstrapBlazor" Version="9.4.9" />
+    <PackageReference Include="FreeSql.Extensions.ZeroEntity" Version="3.5.108" />
   </ItemGroup>
 
   <ItemGroup>

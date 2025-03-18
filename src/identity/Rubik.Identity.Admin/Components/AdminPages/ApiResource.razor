@@ -1,8 +1,114 @@
 ﻿@page "/apiresource"
 @inherits BaseEditorPage<TbApiResource>
 
-<h3>ApiResource</h3>
+<Table @ref="Table" TItem="TbApiResource" OnChange="Query" Bordered RemoteDataSource DataSource="DataSource" @bind-Total="Total"
+       @bind-SelectedRows="SelectedRows">
+    <TitleTemplate>
+        <Flex Justify="FlexJustify.Start" Gap="FlexGap.Large">
+            <Button Type="@ButtonType.Primary" Color="@Color.Green5" OnClick="OnRefresh">刷新</Button>
+            <Button Type="@ButtonType.Primary" OnClick="OnNew">新增</Button>
+            <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选ApiResource?" OnConfirm="OnDeleteSelectedRow">
+                <Button Type="@ButtonType.Primary" Danger>删除</Button>
+            </Popconfirm>
+        </Flex>
+    </TitleTemplate>
+
+    <ColumnDefinitions>
+        <Selection />
+
+        <PropertyColumn Property="item => item.Name" Filterable="true" />
+        <PropertyColumn Property="item => item.Code" />
+        <PropertyColumn Property="item => item.Scopes" />
+        <PropertyColumn Property="item => item.Sort" />
+
+        <PropertyColumn Property="item => item.ModifyDate" />
+        <PropertyColumn Property="item => item.ModifyUser" />
+
+        <ActionColumn Title="Action">
+            <Button Type="@ButtonType.Primary" OnClick="async () =>await OnEditApiScope(context)">编辑</Button>
+            <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前数据?" OnConfirm="async () => await OnDelete(context)">
+                <Button Type="@ButtonType.Primary" Danger>删除</Button>
+            </Popconfirm>
+        </ActionColumn>
+    </ColumnDefinitions>
+</Table>
+
+<Modal Visible="EditorModalVisiable_ApiScope" OnOk="OnSaveScope" OnCancel="() => { EditorModalVisiable_ApiScope = false; }" Draggable="true" Title="编辑Api Scope" Width="@("50vw")">
+    <Form Model="@Editor_ApiScope" LabelColSpan="4" WrapperColSpan="20">
+        <FormItem Label="Name">
+            <Input @bind-Value="@Editor_ApiScope!.Name" />
+        </FormItem>
+        <FormItem Label="Code">
+            <Input @bind-Value="@Editor_ApiScope!.Code" />
+        </FormItem>
+        <FormItem Label="Claims">
+            <Select @bind-Values="@Editor_ApiScope_ClaimValues" TItem="string" TItemValue="string" Mode="SelectMode.Multiple">
+                <SelectOptions>
+                    @foreach (var item in ClaimTypes)
+                    {
+                        <SelectOption TItemValue="string" TItem="string" Value="@item" Label="@item"/>
+                    }
+                </SelectOptions>
+            </Select>
+        </FormItem>
+        <FormItem Label="Sort">
+            <Input @bind-Value="@Editor_ApiScope.Sort" />
+        </FormItem>
+    </Form>
+</Modal>
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
 
 @code {
+    protected override RenderFragment EditorForm =>
+        @<div>
+    <GridRow>
+        <GridCol Span="24">
+            <FormItem Label="Name">
+                <Input @bind-Value="@Editor!.Name" />
+            </FormItem>
+            <FormItem Label="Code">
+                <Input @bind-Value="@Editor!.Code" />
+            </FormItem>
+            <FormItem Label="Sort">
+                <Input @bind-Value="@Editor.Sort" />
+            </FormItem>
+        </GridCol>
+        <Divider Text="编辑Api Scope"/>
+        <GridCol Span="24">
+            <Table DataSource="DataSource_ApiScope" TItem="TbApiScope" Bordered @bind-SelectedRows="SelectedRows_ApiScope">
+                <TitleTemplate>
+                    <Flex Justify="FlexJustify.Start" Gap="FlexGap.Large">
+                        <Button Type="@ButtonType.Primary" OnClick="()=> OnEditScope(new TbApiScope() { ApiID=Editor.ID })">新增</Button>
+                        <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除所选Api Scope?" OnConfirm="async()=>await OnDeleteApiScope(SelectedRows_ApiScope)">
+                            <Button Type="@ButtonType.Primary" Danger>删除</Button>
+                        </Popconfirm>
+                    </Flex>
+                </TitleTemplate>
+
+                <ColumnDefinitions>
+                    <Selection />
+                    <PropertyColumn Property="item=>item.Name" />
+                    <PropertyColumn Property="item=>item.Code" />
+                    <PropertyColumn Property="item=>item.Claims" />
+                    <PropertyColumn Property="item => item.ModifyDate" />
+                    <PropertyColumn Property="item => item.ModifyUser" />
+                    <ActionColumn Title="Action">
+                        <Button Type="@ButtonType.Primary" OnClick="async () =>await OnEditScope(context)">编辑</Button>
+
+                        <Popconfirm Placement="@Placement.Bottom" Title="您确定要删除当前Scope?" OnConfirm="async () => await OnDeleteApiScope([context])">
+                            <Button Type="@ButtonType.Primary" Danger>删除</Button>
+                        </Popconfirm>
+                    </ActionColumn>
+                </ColumnDefinitions>
+
+                
+            </Table>
+        </GridCol>
+    </GridRow>
+        </div>;
 
 }

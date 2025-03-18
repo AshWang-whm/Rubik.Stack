@@ -115,7 +115,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
 
             if(api_resources.Count>0)
             {
-                access_token_claims.Add(new Claim(OidcParameterConstant.Scope, string.Join(' ', api_resources.Select(a => a.Code))));
+                access_token_claims.Add(new Claim(OidcParameterConstant.Scope, string.Join(' ', api_resources.SelectMany(a => a.Scopes.Select(s=>s.Scope)))));
             }
 
             // 用户信息+默认claim = access token
@@ -148,7 +148,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 idtoken_claims.AddRange(scope_id_token_claims);
 
                 // id token
-                var id_token = tokenService.GeneratorIdToken(parameter, idtoken_claims.Union(user_profile_claims));
+                var id_token = tokenService.GeneratorIdToken(parameter, idtoken_claims);
                 json.Add(OidcParameterConstant.IdToken, id_token);
             }
 

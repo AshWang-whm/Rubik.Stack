@@ -12,7 +12,7 @@ namespace Rubik.Identity.AuthServer.Stores
             var scopes = scope.Split(' ',StringSplitOptions.RemoveEmptyEntries);
             var apis = await freeSql.Select<TbApiResource, TbApiScope>()
                 .LeftJoin((a, b) => a.ID == b.ApiID)
-                .Where((a, b) => scopes.Contains(a.Code))
+                .Where((a, b) => scopes.Contains(b.Code))
                 .ToListAsync((a,b)=>new
                 {
                     ApiResourceName = a.Name,
@@ -26,7 +26,7 @@ namespace Rubik.Identity.AuthServer.Stores
                 {
                     Name = group.First().ApiResourceName,
                     Code = group.First().ApiResourceCode,
-                    Scopes = [.. group.Select(a => new ApiScopeEntity { Name = a.Scope, Claims = a.Claims })]
+                    Scopes = [.. group.Select(a => new ApiScopeEntity { Scope = a.Scope, Claims = a.Claims })]
                 }).ToList();
         }
     }

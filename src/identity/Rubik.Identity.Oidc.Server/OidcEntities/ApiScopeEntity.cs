@@ -8,7 +8,7 @@ namespace Rubik.Identity.Oidc.Core.OidcEntities
 {
     public class ApiScopeEntity
     {
-        public string? Name { get; set; }
+        public string? Scope { get; set; }
 
         public string? Claims { get; set; }
     }

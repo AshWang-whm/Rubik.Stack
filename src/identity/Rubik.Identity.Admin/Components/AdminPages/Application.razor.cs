@@ -25,6 +25,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                 .ToListAsync();
 
             Total = (int)total;
+
         }
 
         void OnShowAppModal<TPage>(TbApplication app,string title)
