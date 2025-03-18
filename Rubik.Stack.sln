@@ -75,6 +75,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWasmTest", "src\ident
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PasswordTest", "src\identity_test\PasswordTest\PasswordTest.csproj", "{7159D563-B88B-4607-A97E-4341B8EB0A13}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.Infrastructure.Utils.ZipCompressor", "src\infrastructure\utils\Rubik.Infrastructure.Utils.ZipCompressor\Rubik.Infrastructure.Utils.ZipCompressor.csproj", "{0A0A705E-6CCD-406C-8DAF-0BBDBCA5B8F1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -189,6 +191,10 @@ Global
 		{7159D563-B88B-4607-A97E-4341B8EB0A13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7159D563-B88B-4607-A97E-4341B8EB0A13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7159D563-B88B-4607-A97E-4341B8EB0A13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A0A705E-6CCD-406C-8DAF-0BBDBCA5B8F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A0A705E-6CCD-406C-8DAF-0BBDBCA5B8F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A0A705E-6CCD-406C-8DAF-0BBDBCA5B8F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A0A705E-6CCD-406C-8DAF-0BBDBCA5B8F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -229,6 +235,7 @@ Global
 		{7A013CF9-8B17-4BB0-B605-8DF745B8FA90} = {E8E558F9-169C-474F-8277-910C003CE8BA}
 		{D8194363-7638-4110-AA2B-2AD726155AE0} = {E8E558F9-169C-474F-8277-910C003CE8BA}
 		{7159D563-B88B-4607-A97E-4341B8EB0A13} = {E8E558F9-169C-474F-8277-910C003CE8BA}
+		{0A0A705E-6CCD-406C-8DAF-0BBDBCA5B8F1} = {E7C61496-0D12-4AF8-9BAB-ED588D4A5F63}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {013ABA53-F0DF-4706-8106-0FA069C82488}

@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="x64\**" />
+    <Compile Remove="x86\**" />
+    <EmbeddedResource Remove="x64\**" />
+    <EmbeddedResource Remove="x86\**" />
+    <None Remove="x64\**" />
+    <None Remove="x86\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Avd.Infrastructure.ZipCompressor.targets">
+      <PackagePath>build</PackagePath>
+      <Pack>true</Pack>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpSevenZip" Version="2.0.21" />
+  </ItemGroup>
+
+</Project>
