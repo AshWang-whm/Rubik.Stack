@@ -1,6 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Rubik.Identity.Oidc.Core.Configs;
 using Rubik.Identity.Oidc.Core.Contants;
+using Rubik.Identity.Oidc.Core.Dtos;
 using Rubik.Identity.Oidc.Core.Extensions;
 using Rubik.Identity.Oidc.Core.OidcEntities;
 using Rubik.Identity.Oidc.Core.RsaKey;
@@ -20,7 +21,7 @@ namespace Rubik.Identity.Oidc.Core.Services
         /// <param name="claims"></param>
         /// <param name="exp"></param>
         /// <returns></returns>
-        public string? GeneratorAccessToken(TokenEndpointParameter parameter, IEnumerable<Claim>? claims)
+        public string? GenerateToken(OidcQueryParameterDto parameter, IEnumerable<Claim>? claims)
         {
             var access_token_options = new JwtSecurityToken(
                 issuer: discovery.Issuer,
@@ -34,27 +35,13 @@ namespace Rubik.Identity.Oidc.Core.Services
             return token;
         }
 
-        public string GeneratorRefreshToken(string access_token)
+        public static string GeneratorRefreshToken(string access_token)
         {
             // 简单md5 加密 access_token 当作 refresh token
             return MD5Util.GetMd5Hash(access_token);
         }
 
-        public string GeneratorIdToken(TokenEndpointParameter parameter, IEnumerable<Claim>? claims)
-        {
-            var id_token_options = new JwtSecurityToken(
-                issuer: discovery.Issuer,
-                audience: parameter.ClientID,
-                claims: claims,
-                expires: ExpDateByDay(),
-                signingCredentials: jwkKeys.SigningCredentials
-                );
-
-            var token = jwkKeys.TokenHandler.WriteToken(id_token_options);
-            return token;
-        }
-
-        public async Task<RefreshTokenValidationResultEntity> VerifyRefreshToken(TokenEndpointParameter parameter)
+        public async Task<RefreshTokenValidationResultEntity> VerifyRefreshToken(OidcQueryParameterDto parameter)
         {
             // 验证md5 签名， refresh token 过期时间默认小于 access_token 过期时间的+3天
             var access_token = parameter.Query[OidcParameterConstant.AccessToken];
@@ -74,7 +61,7 @@ namespace Rubik.Identity.Oidc.Core.Services
             // 生成新的access_token 和 refresh token
             var old_access_token= jwkKeys.TokenHandler.ReadJwtToken(access_token);
 
-            var new_access_token = GeneratorAccessToken(parameter, old_access_token.Claims);
+            var new_access_token = GenerateToken(parameter, old_access_token.Claims);
             var new_refresh_token = GeneratorRefreshToken(new_access_token!);
 
             return new RefreshTokenValidationResultEntity 

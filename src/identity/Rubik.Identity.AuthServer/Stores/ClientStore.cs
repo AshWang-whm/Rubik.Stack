@@ -20,7 +20,7 @@ namespace Rubik.Identity.AuthServer.Stores
                 ClientID= app.Code,
                 CallbackPath = app.CallbackPath,
                 ClientSecret = app.ClientSecret,
-                ResponseType=app.ResponseType.ToString(),
+                ResponseType=app.ResponseType.ToString()!.Replace(",",""),
                 Scope = app.Scope,
             };
         }

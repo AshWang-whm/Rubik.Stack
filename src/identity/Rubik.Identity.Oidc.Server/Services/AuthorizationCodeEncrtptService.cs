@@ -11,13 +11,6 @@ namespace Rubik.Identity.Oidc.Core.Services
     {
         private readonly IDataProtector dataProtector = protectionProvider.CreateProtector("oidc");
 
-        public string GeneratorCode()
-        {
-            var code_query = httpContextService.ToCodeQueryParameter();
-            var code = dataProtector.Protect(JsonSerializer.Serialize(code_query));
-            return code;
-        }
-
         public string GenerateCode(AuthorizationEndpointParameter parameter) 
         {
             var code = dataProtector.Protect(JsonSerializer.Serialize(parameter));

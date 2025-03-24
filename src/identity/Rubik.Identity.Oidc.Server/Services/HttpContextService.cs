@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Rubik.Identity.Oidc.Core.Contants;
+using Rubik.Identity.Oidc.Core.Dtos;
 using Rubik.Identity.Oidc.Core.Exceptions;
-using System.Collections.Specialized;
 using System.Security.Claims;
 using System.Text;
 using System.Web;
@@ -29,17 +29,24 @@ namespace Rubik.Identity.Oidc.Core.Services
         /// </summary>
         /// <returns></returns>
         /// <exception cref="OidcParameterInValidationException"></exception>
-        public AuthorizationEndpointParameter ToCodeQueryParameter(bool sid = true)
+        public AuthorizationEndpointParameter ToCodeQueryParameter(string response_type,bool sid = true)
         {
-            var code_challenge = GetQueryParameterNotNull(AuthorizeRequest.CodeChallenge);
 
-            var code_challenge_method = GetQueryParameterNotNull(AuthorizeRequest.CodeChallengeMethod);
+            var code_challenge = GetQueryParamter(AuthorizeRequest.CodeChallenge);
+
+            var code_challenge_method = GetQueryParamter(AuthorizeRequest.CodeChallengeMethod);
+            var state = GetQueryParameterNotNull(AuthorizeRequest.State);
+
+            if (response_type.Contains("code"))
+            {
+                OidcParameterInValidationException.NotNullOrEmpty(AuthorizeRequest.CodeChallenge, code_challenge);
+                OidcParameterInValidationException.NotNullOrEmpty(AuthorizeRequest.CodeChallengeMethod, code_challenge_method);
+            }
 
             var client_id = GetQueryParameterNotNull(AuthorizeRequest.ClientId);
 
             var scope = GetQueryParameterNotNull(AuthorizeRequest.Scope);
 
-            var state = GetQueryParameterNotNull(AuthorizeRequest.State);
 
             var nonce = GetQueryParameterNotNull(AuthorizeRequest.Nonce);
 
@@ -48,10 +55,10 @@ namespace Rubik.Identity.Oidc.Core.Services
             var parameter= new AuthorizationEndpointParameter
             {
                 ClientID = client_id!,
-                CodeChallenge = code_challenge!,
+                CodeChallenge = code_challenge,
                 Scope = scope!,
-                State = state!,
-                Nonce = nonce!,
+                State = state,
+                Nonce = nonce,
                 RedirectUri = redirect_uri!,
                 CodeChallengeMethod = code_challenge_method,
             };
@@ -69,7 +76,7 @@ namespace Rubik.Identity.Oidc.Core.Services
         /// 获取token endpoint 参数,只会从Body获取，Url可以吗？
         /// </summary>
         /// <returns></returns>
-        public async Task<TokenEndpointParameter> RequestBodyToTokenEndpointParameter()
+        internal async Task<OidcQueryParameterDto> RequestBodyToTokenEndpointParameter()
         {
             var body = (await httpContext.HttpContext!.Request.BodyReader.ReadAsync()).Buffer;
             var query = HttpUtility.ParseQueryString(Encoding.UTF8.GetString(body));
@@ -83,7 +90,7 @@ namespace Rubik.Identity.Oidc.Core.Services
 
             OidcParameterInValidationException.NotNullOrEmpty(nameof(grant_type), grant_type);
 
-            return new TokenEndpointParameter
+            return new OidcQueryParameterDto
             {
                 ClientID = clientid!,
                 GrantType = grant_type!,
@@ -97,13 +104,13 @@ namespace Rubik.Identity.Oidc.Core.Services
     {
         public required string ClientID { get; set; }
         public string? UserCode { get; set; }
-        public required string CodeChallenge{ get; set; }
+        public string? CodeChallenge{ get; set; }
         public required string Scope { get; set; }
         public string[]? ScopeArr => Scope?.Split(' ');
 
-        public required string State { get; set; }
+        public string? State { get; set; }
 
-        public required string Nonce { get; set; }
+        public string? Nonce { get; set; }
 
         public required string RedirectUri { get; set; }
 
@@ -115,14 +122,4 @@ namespace Rubik.Identity.Oidc.Core.Services
         public DateTime Expire = DateTime.Now.AddMinutes(3);
     }
 
-    public class TokenEndpointParameter
-    {
-        public required string GrantType { get; set; }
-
-        public required string ClientID { get; set; }
-
-        public string? ClientSecret { get; set; }
-
-        public required NameValueCollection Query { get; set; }
-    }
 }

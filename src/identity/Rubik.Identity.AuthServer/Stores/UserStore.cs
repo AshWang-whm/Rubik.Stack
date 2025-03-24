@@ -25,7 +25,7 @@ namespace Rubik.Identity.AuthServer.Stores
             return user.Password== pwd;
         }
 
-        public async Task<List<Claim>> GetUserClaims(string usercode, string ClientID, IEnumerable<string?> claimtypes)
+        public async Task<List<Claim>> GetUserClaims(string usercode, string clientid, IEnumerable<string?> claimtypes)
         {
             // 抓取内置的scope & 用户数据
             var claims = new List<Claim>();
@@ -45,7 +45,7 @@ namespace Rubik.Identity.AuthServer.Stores
                     .LeftJoin((a, b, c, d, e, f) => c.ID==d.RoleID)
                     .LeftJoin((a, b, c, d, e, f) => d.PermissionID==e.ID)
                     .LeftJoin((a, b, c, d, e, f) => e.ApplicationID==f.ID)
-                    .Where((a, b, c, d, e, f) => f.Code==ClientID&&a.Code==usercode)
+                    .Where((a, b, c, d, e, f) => f.Code==clientid&&a.Code==usercode)
                     .ToListAsync((a,b,c, d, e, f) => c.Code);
                 claims.Add(new Claim(JwtIdentityClaimConstants.Role, roles?.StringJoin()??""));
             }

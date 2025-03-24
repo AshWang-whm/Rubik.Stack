@@ -57,7 +57,9 @@ builder.Services.AddAuthentication("oidc")
                     }
                 };
 
-                o.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.Code;
+                o.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.IdTokenToken
+                ;
+                //o.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.Code;
 
                 o.Scope.Add("openid");
                 o.Scope.Add("profile");

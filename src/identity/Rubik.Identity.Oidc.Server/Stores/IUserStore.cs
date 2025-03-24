@@ -14,6 +14,6 @@ namespace Rubik.Identity.Oidc.Core.Stores
 
         public Task<bool> CheckUser(string username,string password);
 
-        public Task<List<Claim>> GetUserClaims(string usercode, string ClientID, IEnumerable<string?> claimtypes);
+        public Task<List<Claim>> GetUserClaims(string usercode, string clientid, IEnumerable<string?> claimtypes);
     }
 }

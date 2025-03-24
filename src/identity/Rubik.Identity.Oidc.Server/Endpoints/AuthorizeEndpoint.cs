@@ -7,6 +7,8 @@ using Rubik.Identity.Oidc.Core.RsaKey;
 using Rubik.Identity.Oidc.Core.Services;
 using Rubik.Identity.Oidc.Core.Stores;
 using Rubik.Identity.Oidc.Core.Contants;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Rubik.Identity.Oidc.Core.Dtos;
 
 namespace Rubik.Identity.Oidc.Core.Endpoints
 {
@@ -21,42 +23,57 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         const string QUERY_PARAMETER_FORMAT = @"{0}={1}";
         const string FORM_INPUT_FORMAT = @"<input type=""hidden"" name=""{0}"" value=""{1}""/>";
 
-        public static async Task<IResult> Authorize(AuthorizationCodeEncrtptService codeEncrtptService,HttpContextService contextService, JwkRsaKeys rsaKeys, IClientStore clientStore)
+        public static async Task<IResult> Authorize(AuthorizationCodeEncrtptService codeEncrtptService,
+            HttpContextService contextService, 
+            JwkRsaKeys rsaKeys,
+            GrantTypeHandleService grantTypeHandleService,
+            IClientStore clientStore)
         {
-            // 验证
-            var response_type = contextService.GetQueryParameterNotNull(AuthorizeRequest.ResponseType);
-            // code => authorization code flow
-            // id_token / token => implicit flow
-            // code & (id_token / token) => hybrid flow
-
-            // 验证scope 等一系列操作 todo:
-            var parameter = contextService.ToCodeQueryParameter();
-
-            // 验证client id
-            var client = await clientStore.GetClient(parameter.ClientID);
-            if (client == null)
-                return Results.BadRequest(OidcExceptionConstant.ClientId_Invalid);
-
-            if (client.ResponseType?.Split(' ').Except(response_type.Split(' ')).Any()??true)
-                return Results.BadRequest(OidcExceptionConstant.ResponseType_Invalid);
-
-            if (client.ScopeArr?.Except(parameter.ScopeArr ?? []).Any()??true)
-                return Results.BadRequest(OidcExceptionConstant.Scope_Invalid);
-
-
-            var _httpresult = response_type switch
+            try
             {
-                ResponseTypes.Code => CodeResult(parameter,codeEncrtptService, contextService),
-                ResponseTypes.Token => TokenResult(parameter, contextService, rsaKeys),
-                ResponseTypes.IdToken => IdTokenResult(parameter, contextService, rsaKeys),
-                ResponseTypes.IdTokenToken => IdTokenTokenResult(parameter,contextService, rsaKeys),
-                _ => Results.BadRequest(TokenErrors.UnsupportedResponseType)
-            };
-            return _httpresult;
+                // 验证
+                var response_type = contextService.GetQueryParameterNotNull(AuthorizeRequest.ResponseType);
+                // code => authorization code flow
+                // id_token / token => implicit flow
+                // code & (id_token / token) => hybrid flow
+
+                // 验证scope 等一系列操作 todo:
+                var parameter = contextService.ToCodeQueryParameter(response_type);
+
+                // 验证client id
+                var client = await clientStore.GetClient(parameter.ClientID);
+                if (client == null)
+                    return Results.BadRequest(OidcExceptionConstant.ClientId_Invalid);
+
+                if (client.ResponseType?.Split(' ').Except(response_type.Split(' ')).Any() ?? true)
+                    return Results.BadRequest(OidcExceptionConstant.ResponseType_Invalid);
+
+                if (client.ScopeArr?.Except(parameter.ScopeArr ?? []).Any() ?? true)
+                    return Results.BadRequest(OidcExceptionConstant.Scope_Invalid);
+
+                // 实现 token / id token 的生成
+                // code 会跳转到 token endpoint 生成token
+                // refresh token 流程在这里还是token endpoint？
+                // 非 code 通过GrantTypeHandleService 生成token
+                var _httpresult = response_type switch
+                {
+                    ResponseTypes.Code => CodeResult(parameter, codeEncrtptService),
+                    ResponseTypes.Token or ResponseTypes.IdToken or ResponseTypes.IdTokenToken => await TokenResult(parameter, contextService, rsaKeys,null),
+                    //ResponseTypes.IdToken => IdTokenResult(parameter, contextService, rsaKeys),
+                    //ResponseTypes.IdTokenToken => IdTokenTokenResult(parameter, contextService, rsaKeys),
+                    _ => Results.BadRequest(TokenErrors.UnsupportedResponseType)
+                };
+                return _httpresult;
+            }
+            catch (Exception ex)
+            {
+                return Results.BadRequest(ex.Message);
+            }
+            
 
         }
 
-        static IResult CodeResult(AuthorizationEndpointParameter codeParameter,AuthorizationCodeEncrtptService codeEncrtptService,HttpContextService contextService)
+        static IResult CodeResult(AuthorizationEndpointParameter codeParameter,AuthorizationCodeEncrtptService codeEncrtptService)
         {
             var code = codeEncrtptService.GenerateCode(codeParameter);
             return Results.Redirect($"{codeParameter.RedirectUri}?code={code}&state={codeParameter.State}");
@@ -69,15 +86,22 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         /// <param name="contextService"></param>
         /// <param name="rsaKeys"></param>
         /// <returns></returns>
-        static IResult TokenResult(AuthorizationEndpointParameter codeParameter,HttpContextService contextService, JwkRsaKeys rsaKeys)
+        static async Task<IResult> TokenResult(AuthorizationEndpointParameter codeParameter,HttpContextService contextService, JwkRsaKeys rsaKeys, GrantTypeHandleService grantTypeHandleService)
         {
-            var token = Token(codeParameter, contextService, rsaKeys);
+            var token = Token(codeParameter, rsaKeys);
 
             var keys = new List<KeyValuePair<string, string>>
             {
                 new(AuthorizeResponse.AccessToken, token),
                 new(AuthorizeResponse.TokenType, TokenRequestTypes.Bearer)
             };
+
+            //var oidc_parameter = new OidcQueryParameterDto { 
+            //    ClientID = codeParameter.ClientID,
+            //    GrantType="",
+            //    Query=null
+            //};
+            //await grantTypeHandleService.GrantTypeHandler();
 
             return GenerateResult(codeParameter,contextService, keys);
         }
@@ -101,7 +125,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
 
         static IResult IdTokenTokenResult(AuthorizationEndpointParameter parameter,HttpContextService contextService, JwkRsaKeys rsaKeys)
         {
-            var token = Token(parameter, contextService, rsaKeys);
+            var token = Token(parameter, rsaKeys);
 
             var id_token = IdToken(parameter, rsaKeys, token);
             var keys = new List<KeyValuePair<string, string>>
@@ -113,7 +137,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             return GenerateResult(parameter, contextService, keys);
         }
 
-        static string Token(AuthorizationEndpointParameter parameter, HttpContextService contextService, JwkRsaKeys rsaKeys)
+        static string Token(AuthorizationEndpointParameter parameter, JwkRsaKeys rsaKeys)
         {
             // 根据scope 获取用户信息： 类似 ApiResource TODO：
             var claims = TokenClaims(parameter);

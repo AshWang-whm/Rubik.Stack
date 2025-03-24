@@ -29,7 +29,7 @@ namespace Rubik.Identity.Oidc.Core.Extensions
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSingleton<HttpContextService>();
             builder.Services.AddScoped<AuthorizationCodeEncrtptService>();
-            builder.Services.AddSingleton<TokenService>();
+            builder.Services.AddScoped<GrantTypeHandleService>();
 
             // stores
             builder.AutoInject();
