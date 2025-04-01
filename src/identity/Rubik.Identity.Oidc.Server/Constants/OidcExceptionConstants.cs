@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Rubik.Identity.Oidc.Core.Contants
 {
-    public class OidcExceptionConstant
+    public class OidcExceptionConstants
     {
         public const string RefreshToken_Invalid = "refresh token is not valided!";
 

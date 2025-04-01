@@ -1,5 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Rubik.Identity.Oidc.Core.Configs;
+using Rubik.Identity.Oidc.Core.Constants;
 using Rubik.Identity.Oidc.Core.Contants;
 using Rubik.Identity.Oidc.Core.Dtos;
 using Rubik.Identity.Oidc.Core.Extensions;
@@ -11,7 +12,7 @@ using System.Security.Claims;
 
 namespace Rubik.Identity.Oidc.Core.Services
 {
-    internal class TokenService(JwkRsaKeys jwkKeys,DiscoveryConfig discovery): ITokenStore
+    internal class TokenGenerateService(JwkRsaKeys jwkKeys,DiscoveryConfig discovery): ITokenStore
     {
         /// <summary>
         /// 生成 token,算法有限制,HmacSha256 能正常运行
@@ -21,7 +22,7 @@ namespace Rubik.Identity.Oidc.Core.Services
         /// <param name="claims"></param>
         /// <param name="exp"></param>
         /// <returns></returns>
-        public string? GenerateToken(OidcQueryParameterDto parameter, IEnumerable<Claim>? claims)
+        public string? GenerateToken(RequestOidcParameterDto parameter, IEnumerable<Claim>? claims)
         {
             var access_token_options = new JwtSecurityToken(
                 issuer: discovery.Issuer,
@@ -38,24 +39,24 @@ namespace Rubik.Identity.Oidc.Core.Services
         public static string GeneratorRefreshToken(string access_token)
         {
             // 简单md5 加密 access_token 当作 refresh token
-            return MD5Util.GetMd5Hash(access_token);
+            return Utils.GetMd5Hash(access_token);
         }
 
-        public async Task<RefreshTokenValidationResultEntity> VerifyRefreshToken(OidcQueryParameterDto parameter)
+        public async Task<RefreshTokenValidationResultEntity> VerifyRefreshToken(RequestOidcParameterDto parameter)
         {
             // 验证md5 签名， refresh token 过期时间默认小于 access_token 过期时间的+3天
-            var access_token = parameter.Query[OidcParameterConstant.AccessToken];
+            var access_token = parameter.Query[OidcParameterConstants.AccessToken];
             if (access_token == null)
-                return new  RefreshTokenValidationResultEntity { IsValid = false, Exception = OidcExceptionConstant.AccessToken_IsRequired };
+                return new  RefreshTokenValidationResultEntity { IsValid = false, Exception = OidcExceptionConstants.AccessToken_IsRequired };
 
-            var refresh_token = parameter.Query[OidcParameterConstant.RefreshToken];
+            var refresh_token = parameter.Query[OidcParameterConstants.RefreshToken];
             if (refresh_token == null)
-                return new RefreshTokenValidationResultEntity { IsValid = false, Exception = OidcExceptionConstant.RefreshToken_IsRequired };
+                return new RefreshTokenValidationResultEntity { IsValid = false, Exception = OidcExceptionConstants.RefreshToken_IsRequired };
 
-            var md5 = MD5Util.GetMd5Hash(access_token);
+            var md5 = Utils.GetMd5Hash(access_token);
             if(!md5.Equals(refresh_token))
             {
-                return new RefreshTokenValidationResultEntity { IsValid = false, Exception = OidcExceptionConstant.RefreshToken_Invalid };
+                return new RefreshTokenValidationResultEntity { IsValid = false, Exception = OidcExceptionConstants.RefreshToken_Invalid };
             }
 
             // 生成新的access_token 和 refresh token
@@ -71,7 +72,6 @@ namespace Rubik.Identity.Oidc.Core.Services
                 RefreshToken= new_refresh_token,
             };
         }
-
 
         public async Task<TokenValidationResult> VerifyAccessToken(string token)
         {
@@ -90,12 +90,9 @@ namespace Rubik.Identity.Oidc.Core.Services
             return result;
         }
 
-
         public DateTime ExpDateByDay(int days=3)
         {
             return DateTime.Now.AddDays(days);
         }
-
-
     }
 }

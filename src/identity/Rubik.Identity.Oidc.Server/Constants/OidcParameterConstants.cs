@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rubik.Identity.Oidc.Core.Contants
+namespace Rubik.Identity.Oidc.Core.Constants
 {
-    internal class OidcParameterConstant
+    internal class OidcParameterConstants
     {
         public const string ClientID = "client_id";
         public const string GrantType = "grant_type";
@@ -14,6 +14,8 @@ namespace Rubik.Identity.Oidc.Core.Contants
         public const string AccessToken = "access_token";
 
         public const string Implicit = "implicit";
+
+        public const string Token = "token";
 
         public const string IdToken = "id_token";
 
@@ -30,6 +32,8 @@ namespace Rubik.Identity.Oidc.Core.Contants
         public const string Scope = "scope";
 
         public const string OpenId = "openid";
+
+        public const string Profile = "profile";
 
         public const string Bearer = "Bearer";
 

@@ -7,17 +7,17 @@ using System.Text.Json;
 
 namespace Rubik.Identity.Oidc.Core.Services
 {
-    public class AuthorizationCodeEncrtptService(IDataProtectionProvider protectionProvider, HttpContextService httpContextService)
+    internal class AuthorizationCodeEncrtptService(IDataProtectionProvider protectionProvider, HttpContextService httpContextService)
     {
         private readonly IDataProtector dataProtector = protectionProvider.CreateProtector("oidc");
 
-        public string GenerateCode(AuthorizationEndpointParameter parameter) 
+        internal string GenerateCode(AuthorizationEndpointParameter parameter) 
         {
             var code = dataProtector.Protect(JsonSerializer.Serialize(parameter));
             return code;
         }
 
-        public bool VerifyCode(string? code,string? verify,out AuthorizationEndpointParameter? challengeModel)
+        internal bool VerifyCode(string? code,string? verify,out AuthorizationEndpointParameter? challengeModel)
         {
             challengeModel = null;
 

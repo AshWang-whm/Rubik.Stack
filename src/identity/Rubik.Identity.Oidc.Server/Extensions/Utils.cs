@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Rubik.Identity.Oidc.Core.Extensions
 {
-    internal static class MD5Util
+    internal static class Utils
     {
         public static string GetMd5Hash(string input)
         {
@@ -23,6 +24,19 @@ namespace Rubik.Identity.Oidc.Core.Extensions
             return sb.ToString();
         }
 
+        public static bool ArrayExcept(IEnumerable<string?>? left ,IEnumerable<string?>? right)
+        {
+            if (left == null || right == null)
+            {
+                return true;
+            }
+
+            if (left.Count() != right.Count())
+            {
+                return true;
+            }
+            return (left.Except(right).Any()) || (right.Except(left).Any());
+        }
     }
 
 

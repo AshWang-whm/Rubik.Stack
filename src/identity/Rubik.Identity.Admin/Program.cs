@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
 using Rubik.Identity.Admin.Apis;
 using Rubik.Identity.Admin.Components;
 using Rubik.Identity.FreesqlExtension;
@@ -42,6 +43,15 @@ builder.Services.AddAuthentication("oidc")
 
                 o.SaveTokens = true;
 
+                // fragment: 允许access/id token 在url query中返回，用于token,id token 的模式
+                // query ： 与fragment 相反， 用于code 模式
+                //o.ResponseMode = "fragment";
+                // 非code模式应该弃用pkce , false 时code模式不会发送 code_verifier 到token endpoint
+                o.UsePkce = true;
+                o.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.Code;
+                //o.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.Code;
+
+
                 o.CallbackPath = "/oidc/callback";
                 o.Authority = "http://localhost:5000";
                 o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
@@ -54,17 +64,22 @@ builder.Services.AddAuthentication("oidc")
                     OnTokenResponseReceived = async context =>
                     {
                         await Task.CompletedTask;
+                    },
+                    OnMessageReceived = async context =>
+                    {
+
+                        
+                    },
+                    OnRedirectToIdentityProvider = async context =>
+                    {
                     }
                 };
 
-                o.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.IdTokenToken
-                ;
-                //o.ResponseType = Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectResponseType.Code;
 
                 o.Scope.Add("openid");
                 o.Scope.Add("profile");
                 o.Scope.Add("offline_access");
-
+                // openid profile offline_access 
                 o.Scope.Add("api.test.scope1");
             })
             .AddOidcReferenceAuthencation(OidcReferenceDefaults.AuthenticationScheme, opt =>

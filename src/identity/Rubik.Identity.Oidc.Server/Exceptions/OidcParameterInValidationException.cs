@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace Rubik.Identity.Oidc.Core.Exceptions
 {
-    public class OidcParameterInValidationException(string msg) : Exception
+    public class OidcParameterInValidationException : Exception
     {
-        /// <summary>
-        /// 输出异常信息
-        /// </summary>
-        /// <returns></returns>
-        public string ToException()
+        public OidcParameterInValidationException():base()
         {
-            return msg;
+            
+        }
+
+        public OidcParameterInValidationException(string msg):base (msg) 
+        {
+            
         }
 
         public static void NotNullOrEmpty(string parameter,string? val)
