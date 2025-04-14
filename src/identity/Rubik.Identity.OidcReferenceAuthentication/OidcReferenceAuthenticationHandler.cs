@@ -49,13 +49,16 @@ namespace Rubik.Identity.OidcReferenceAuthentication
                 {
                     return AuthenticateResult.NoResult();
                 }
-                if (token?.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)??false)
+                if (token?.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase) ?? false)
                 {
                     token = token["Bearer ".Length..].Trim();
                 }
-            }            
+            }
 
-            var verify_result = await _httpClient.GetStringAsync(string.Format(Options.VerifyEndpointFormat, token));
+            var bearer_format = token!.StartsWith("Bearer") ? token : $"Bearer {token}";
+            _httpClient.DefaultRequestHeaders.Remove(HeaderNames.Authorization);
+            _httpClient.DefaultRequestHeaders.Add(HeaderNames.Authorization, bearer_format);
+            var verify_result = await _httpClient.GetStringAsync(Options.VerifyEndpoint);
             var result = JsonSerializer.Deserialize<TokenVerifyResult>(verify_result);
 
             if (result?.Result??false)

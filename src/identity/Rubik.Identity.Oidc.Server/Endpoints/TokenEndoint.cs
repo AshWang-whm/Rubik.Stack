@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using Rubik.Identity.Oidc.Core.Constants;
 using Rubik.Identity.Oidc.Core.Contants;
 using Rubik.Identity.Oidc.Core.Dtos;
@@ -45,13 +46,43 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             };
         }
 
-        public static async Task<IResult> VerifyReferenceToken([FromBody]string token,[FromServices]ITokenStore tokenService)
+        public static async Task<IResult> VerifyReferenceTokenFromBody([FromServices]IHttpContextAccessor httpContextAccessor,[FromServices]ITokenStore tokenService)
         {
-            var result = await tokenService.VerifyAccessToken(token);
+            var iftoken = httpContextAccessor!.HttpContext!.Request.Headers.TryGetValue("Authorization", out StringValues authorization);
+            if(!iftoken)
+            {
+                return Results.Json(new
+                {
+                    Result = false,
+                    Exception = "Authorization doesn't exist!"
+                });
+            }
+            var authorization_str = authorization.ToString();
+            if (!authorization_str.StartsWith("Bearer"))
+            {
+                return Results.Json(new
+                {
+                    Result = false,
+                    Exception = "Bearer Token doesn't exist!"
+                });
+            }
+            var token = authorization_str.Split(' ').Last();
+
+            var result = await tokenService.VerifyAccessToken(token!);
             return Results.Json(new
             {
                 Result=result.IsValid,
                 Exception=result.IsValid? null: result.Exception.Message
+            });
+        }
+
+        public static async Task<IResult> VerifyReferenceTokenFromQuery([FromQuery]string token, [FromServices] ITokenStore tokenService)
+        {
+            var result = await tokenService.VerifyAccessToken(token);
+            return Results.Json(new
+            {
+                Result = result.IsValid,
+                Exception = result.IsValid ? null : result.Exception.Message
             });
         }
 

@@ -14,7 +14,7 @@ namespace Rubik.Identity.OidcReferenceAuthentication
         /// </summary>
         public string VerifyEndpoint { get; set; } = "/oauth/verify";
 
-        internal string VerifyEndpointFormat => $"{VerifyEndpoint}{(VerifyEndpoint.EndsWith('/')?"":"/")}{{0}}";
+        //internal string VerifyEndpointFormat => $"{VerifyEndpoint}{(VerifyEndpoint.EndsWith('/')?"":"/")}{{0}}";
 
         public string? Authority { get; set; }
 

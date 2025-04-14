@@ -18,6 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.AddOidcReferenceAuthencation(opt =>
 {
     opt.Authority = "http://localhost:5000";
+
 });
 
 var app = builder.Build();
