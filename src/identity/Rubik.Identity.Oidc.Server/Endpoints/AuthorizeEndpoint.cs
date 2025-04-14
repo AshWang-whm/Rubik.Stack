@@ -85,7 +85,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         {
             var redirect_uri = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.RedirectUri);
             var state = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.State);
-            var nonce = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.Nonce);
+            var nonce = httpContextService.GetQueryParamter(AuthorizeRequest.Nonce);
             //var response_mode = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.ResponseMode);
             //var response_type = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.ResponseType);
 
@@ -95,16 +95,17 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             {
                 ClientID = oidc_parameter.ClientID,
                 Scope = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.Scope),
-                UserCode=httpContextService.GetSID(),
-                Nonce= httpContextService.GetQueryParameterNotNull(AuthorizeRequest.Nonce),
+                UserCode = httpContextService.GetSID(),
+                UserName = httpContextService.GetName(),
+                Nonce = nonce,
                 ResponseType = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.ResponseType)
             };
 
             var dict = await grantTypeHandleService.GenerateTokenDictionary(oidc_parameter, token_parameter);
             dict.Add(AuthorizeRequest.State, state);
-            dict.Add(AuthorizeRequest.Nonce, nonce);
-            //dict.Add(AuthorizeRequest.ResponseMode, response_mode);
-            //dict.Add(AuthorizeRequest.ResponseType, response_type);
+            dict.Add(AuthorizeResponse.TokenType, "Bearer");
+            if(!string.IsNullOrWhiteSpace(nonce))
+                dict.Add(AuthorizeRequest.Nonce, nonce);
 
             var query_result = string.Join("&" ,dict.Select(a => $"{a.Key}={HttpUtility.UrlEncode(a.Value)}"));
             string redirectUrl = $"{redirect_uri}?{query_result}";

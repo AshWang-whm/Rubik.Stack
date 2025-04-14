@@ -5,11 +5,21 @@ namespace Rubik.Identity.Oidc.Core.Configs
     public class DiscoveryConfig
     {
         public string Issuer { get; set; } = "rubik.oidc";
-        public string[] Responsetypes {get;set;}= ["code", "token", "id_token"];
+        public string[] Responsetypes {get;set;}= ["code",
+        "token",
+        "id_token",
+        "code token",
+        "code id_token",
+        "token id_token",
+        "code token id_token",];
         public string[] Claims {get;set;}= ["sid","name","code","dept"];
         public string[] Scopes {get;set;}= ["openid", "profile"];
         public string[] Subjects {get;set;}= ["pairwise", "public"];
         public string[] Algorithms { get; set; } = ["RS256"];
+
+        public string[] EncryptionAlgorithms { get; set; } = ["RSA - OAEP"];
+
+        public string[] EncryptionEnc { get; set; } = ["A256GCM"];
 
         public string AuthorizationEndpoint { get; set; } = "/oauth/authorize";
 

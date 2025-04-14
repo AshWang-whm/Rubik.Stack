@@ -30,6 +30,10 @@ namespace Rubik.Identity.Oidc.Core.Services
             if (challengeModel == null)
                 return false;
 
+            // code中不包含pkce 表示不需要验证 code_verify
+            if (challengeModel.CodeChallenge == null)
+                return true;
+
             var hash = SHA256.HashData(Encoding.ASCII.GetBytes(verify!));
             var verify_txt = Base64UrlTextEncoder.Encode(hash);
 

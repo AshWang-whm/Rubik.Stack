@@ -30,6 +30,11 @@ namespace Rubik.Identity.Oidc.Core.Services
             return httpContext.HttpContext!.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Sid)?.Value; 
         }
 
+        internal string? GetName()
+        {
+            return httpContext.HttpContext!.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Name)?.Value;
+        }
+
         /// <summary>
         /// 获取Code模式的url 参数
         /// </summary>
@@ -47,7 +52,7 @@ namespace Rubik.Identity.Oidc.Core.Services
             var scope = GetQueryParameterNotNull(AuthorizeRequest.Scope);
 
 
-            var nonce = GetQueryParameterNotNull(AuthorizeRequest.Nonce);
+            var nonce = GetQueryParamter(AuthorizeRequest.Nonce);
 
             var redirect_uri = GetQueryParameterNotNull(AuthorizeRequest.RedirectUri);
 

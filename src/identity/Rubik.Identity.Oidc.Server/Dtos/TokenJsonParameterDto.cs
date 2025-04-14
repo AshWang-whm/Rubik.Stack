@@ -11,6 +11,7 @@ namespace Rubik.Identity.Oidc.Core.Dtos
     {
         public required string ClientID { get; set; }
         public string? UserCode { get; set; }
+        public string? UserName { get; set; }
         public string? Nonce { get; set; }
         public required string Scope { get; set; }
         public required string ResponseType { get; set; }

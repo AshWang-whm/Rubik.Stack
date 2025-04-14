@@ -31,12 +31,14 @@ namespace Rubik.Identity.AuthServer.Endpoints
                     { OidcConstants.Discovery.ScopesSupported, config.Scopes },
                     { OidcConstants.Discovery.ResponseTypesSupported, config.Responsetypes },
                     { OidcConstants.Discovery.SubjectTypesSupported, config.Subjects },
-                    { OidcConstants.Discovery.IdTokenSigningAlgorithmsSupported, config.Algorithms }
+                    { OidcConstants.Discovery.IdTokenSigningAlgorithmsSupported, config.Algorithms },
+                    { OidcConstants.Discovery.IdTokenEncryptionEncValuesSupported, config.EncryptionEnc},
+                    { OidcConstants.Discovery.IdTokenEncryptionAlgorithmsSupported, config.EncryptionAlgorithms}
                 };
                 _discovertDoc = JsonSerializer.Serialize(doc);
             }
 
-            return Results.Text(_discovertDoc);
+            return Results.Text(_discovertDoc, "application/json");
         }
     }
 }

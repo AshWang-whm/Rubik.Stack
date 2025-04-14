@@ -7,7 +7,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
     {
         public static IResult GetJwks(JwkRsaKeys key)
         {
-            return Results.Content(key.JwkJson);
+            return Results.Content(key.JwkJson,"application/json");
         }
     }
 }

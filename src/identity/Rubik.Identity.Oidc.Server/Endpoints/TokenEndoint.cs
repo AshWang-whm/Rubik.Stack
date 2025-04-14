@@ -108,6 +108,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 UserCode= auth!.UserCode,
                 Nonce= auth!.Nonce,
                 ResponseType= auth!.ResponseType!,
+                UserName = auth.UserCode,
             };
 
             var json = await grantTypeHandleService.GenerateTokenDictionary(parameter, granttype_handle_parameter!);

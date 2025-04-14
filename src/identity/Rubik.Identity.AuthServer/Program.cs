@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using Rubik.Identity.Oidc.Core.Extensions;
 using Rubik.Infrastructure.Orm.Freesql;
 using Rubik.Infrastructure.WebExtension;
@@ -16,7 +17,19 @@ builder.AddEnvironmentJsonFile();
 
 builder.Services.AddFreesqlOrm(builder.Configuration.GetConnectionString("identity")!);
 
+// javascript test cors
+builder.Services.AddCors(opts =>
+{
+    opts.AddPolicy("javacript_test", cors =>
+    {
+        cors.AllowAnyOrigin();
+        cors.AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
+
+app.UseStaticFiles();
 
 app.UseOidcServer();
 
@@ -25,7 +38,8 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
-app.UseStaticFiles();
+
+app.UseCors("javacript_test");
 
 app.UseRouting();
 
