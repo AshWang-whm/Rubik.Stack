@@ -14,15 +14,17 @@ namespace Rubik.Identity.Oidc.Core.Dtos
 
         public required string ClientID { get; set; }
 
+        public string? ApiResource { get; set; }
+
         public string? ClientSecret { get; set; }
 
-        public string? Response_Type { get; set; }
+        public string? ResponseType { get; set; }
 
         public required NameValueCollection Query { get; set; }
 
-        public bool IsAccessToken => Response_Type?.Split(' ').Contains(OidcParameterConstants.Token) ?? false;
+        public bool IsAccessToken => ResponseType?.Split(' ').Contains(OidcParameterConstants.Token) ?? false;
 
-        public bool IsIdToken => Response_Type?.Split(' ').Contains(OidcParameterConstants.IdToken) ?? false;
+        public bool IsIdToken => ResponseType?.Split(' ').Contains(OidcParameterConstants.IdToken) ?? false;
 
     }
 }

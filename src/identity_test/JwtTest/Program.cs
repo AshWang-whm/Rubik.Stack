@@ -12,13 +12,12 @@ builder.Services.AddSwaggerGen();
 // 后端api只接入server做验证
 
 
-
 //builder.AddTestJwtAuthencation();
 
 builder.AddOidcReferenceAuthencation(opt =>
 {
     opt.Authority = "http://localhost:5000";
-
+    opt.Audience = "api.test";
 });
 
 var app = builder.Build();
@@ -29,6 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 var summaries = new[]
 {

@@ -37,7 +37,7 @@ namespace JwtTest
                         OnMessageReceived = ctx =>
                         {
                             // 从Authorize ， Cookies ， Url 3个其中之一获取access token
-                            ctx.Token = ctx.HttpContext.Request.Cookies["access_token"];
+                            //ctx.Token = ctx.HttpContext.Request.Cookies["access_token"];
                             return Task.CompletedTask;
                         },
                         OnTokenValidated = async ctx =>
@@ -78,16 +78,15 @@ namespace JwtTest
                 .AddOidcReferenceAuthencation(o =>
                 {
                     options?.Invoke(o);
-
                     o.Authority = "http://localhost:5000";
-                    o.Events = new OidcReferenceEvents
-                    {
-                        OnMessageReceived = context =>
-                        {
-                            context.Token = context.Request.Cookies["access_token"];
-                            return Task.CompletedTask;
-                        }
-                    };
+                    //o.Events = new OidcReferenceEvents
+                    //{
+                    //    OnMessageReceived = context =>
+                    //    {
+                    //        context.Token = context.Request.Cookies["access_token"];
+                    //        return Task.CompletedTask;
+                    //    }
+                    //};
                 });
         }
 

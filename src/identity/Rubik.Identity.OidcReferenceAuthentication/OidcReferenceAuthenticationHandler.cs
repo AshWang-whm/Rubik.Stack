@@ -10,6 +10,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Net.Http.Headers;
+using System.Web;
 
 namespace Rubik.Identity.OidcReferenceAuthentication
 {
@@ -55,10 +56,8 @@ namespace Rubik.Identity.OidcReferenceAuthentication
                 }
             }
 
-            var bearer_format = token!.StartsWith("Bearer") ? token : $"Bearer {token}";
-            _httpClient.DefaultRequestHeaders.Remove(HeaderNames.Authorization);
-            _httpClient.DefaultRequestHeaders.Add(HeaderNames.Authorization, bearer_format);
-            var verify_result = await _httpClient.GetStringAsync(Options.VerifyEndpoint);
+            var url = string.Format(Options.VerifyEndpointRestfulFormat, token);
+            var verify_result = await _httpClient.GetStringAsync(url);
             var result = JsonSerializer.Deserialize<TokenVerifyResult>(verify_result);
 
             if (result?.Result??false)
@@ -74,13 +73,14 @@ namespace Rubik.Identity.OidcReferenceAuthentication
                 // 需要设置authenticationType
                 var principal = new ClaimsPrincipal(identity);
 
-                if (Options.Events.OnTokenValidated != null) 
+                if (Events?.OnTokenValidated != null) 
                 {
                     var tokenValidatedContext = new TokenValidatedContext(Context, Scheme, Options)
                     {
                         Principal = principal,
                     };
                     await Events.TokenValidated(tokenValidatedContext);
+
                     if(tokenValidatedContext.Result!=null)
                         return tokenValidatedContext.Result;
                 }

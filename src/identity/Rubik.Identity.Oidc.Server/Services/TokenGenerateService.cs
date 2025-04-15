@@ -26,7 +26,7 @@ namespace Rubik.Identity.Oidc.Core.Services
         {
             var access_token_options = new JwtSecurityToken(
                 issuer: discovery.Issuer,
-                audience: parameter.ClientID,
+                audience: string.Join(' ',parameter.ClientID,parameter.ApiResource),
                 claims: claims,
                 expires: ExpDateByDay(),
                 signingCredentials: jwkKeys.SigningCredentials

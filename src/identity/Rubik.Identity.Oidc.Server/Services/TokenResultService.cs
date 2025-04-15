@@ -51,6 +51,7 @@ namespace Rubik.Identity.Oidc.Core.Services
                 if (api_resources.Count > 0)
                 {
                     access_token_claims.Add(new Claim(OidcParameterConstants.Scope, string.Join(' ', api_resources.SelectMany(a => a.Scopes.Select(s => s.Scope)))));
+                    oidcQueryParameter.ApiResource = string.Join(' ', api_resources.Select(a => a.Code));
                 }
 
                 // 用户信息+默认claim = access token

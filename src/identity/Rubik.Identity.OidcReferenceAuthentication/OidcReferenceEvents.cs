@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +11,7 @@ namespace Rubik.Identity.OidcReferenceAuthentication
     {
         public Func<MessageReceivedContext, Task> OnMessageReceived { get; set; } = context => Task.CompletedTask;
 
-        public Func<TokenValidatedContext, Task>? OnTokenValidated { get; set; }
+        public Func<TokenValidatedContext, Task>? OnTokenValidated { get; set; } = DefaultValidated;
 
         /// <summary>
         /// Invoked when a protocol message is first received.
@@ -19,8 +21,21 @@ namespace Rubik.Identity.OidcReferenceAuthentication
         /// <summary>
         /// Invoked after the security token has passed validation and a ClaimsIdentity has been generated.
         /// </summary>
-        public virtual Task TokenValidated(TokenValidatedContext context) => OnTokenValidated == null ? Task.CompletedTask:OnTokenValidated(context);
+        public virtual Task TokenValidated(TokenValidatedContext context) => OnTokenValidated == null ? DefaultValidated(context) : OnTokenValidated(context);
 
+        static Task DefaultValidated(TokenValidatedContext context)
+        {
+            if (context.Options.VerifyAudience)
+            {
+                var sub = context.Principal.Claims.FirstOrDefault(a=>a.Type== JwtRegisteredClaimNames.Aud)?.Value;
+                if (!sub?.Contains(context.Options.Audience)??true)
+                {
+                    context.Fail("Invalid Audience!");
+                    return Task.CompletedTask;
+                }
+            }
 
+            return Task.CompletedTask;
+        }
     }
 }

@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Rubik.Identity.Oidc.Core.Endpoints
 {
@@ -21,9 +22,6 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         public static async Task<IResult> GetToken([FromServices]ITokenStore tokenService,
             [FromServices] HttpContextService contextService,
             [FromServices] AuthorizationCodeEncrtptService codeEncrtptService,
-            //, IClientStore clientStore
-            //, IApiResourceStore apiResourceStore
-            //, IUserStore userStore,
             [FromServices] TokenResultService grantTypeHandleService)
         {
             var parameter =await contextService.RequestBodyToRequestOidcParameter();
@@ -46,7 +44,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             };
         }
 
-        public static async Task<IResult> VerifyReferenceTokenFromBody([FromServices]IHttpContextAccessor httpContextAccessor,[FromServices]ITokenStore tokenService)
+        public static async Task<IResult> VerifyReferenceTokenFromHeader([FromServices]IHttpContextAccessor httpContextAccessor,[FromServices]ITokenStore tokenService)
         {
             var iftoken = httpContextAccessor!.HttpContext!.Request.Headers.TryGetValue("Authorization", out StringValues authorization);
             if(!iftoken)
@@ -76,9 +74,10 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             });
         }
 
-        public static async Task<IResult> VerifyReferenceTokenFromQuery([FromQuery]string token, [FromServices] ITokenStore tokenService)
+        public static async Task<IResult> VerifyReferenceTokenFromQuery(string token, [FromServices]ITokenStore tokenService)
         {
-            var result = await tokenService.VerifyAccessToken(token);
+            var decode_token = HttpUtility.UrlDecode(token);
+            var result = await tokenService.VerifyAccessToken(decode_token);
             return Results.Json(new
             {
                 Result = result.IsValid,
