@@ -3,7 +3,6 @@ using Rubik.Identity.Oidc.Core.Dtos;
 using Rubik.Identity.Oidc.Core.Stores;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text.Json.Nodes;
 
 namespace Rubik.Identity.Oidc.Core.Services
 {

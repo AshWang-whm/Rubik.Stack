@@ -28,7 +28,7 @@ namespace Rubik.Identity.Oidc.Core.Configs
         public string TokenEndpoint { get; set; } = "/oauth/token";
 
         public string DiscoveryEndpoint { get; set; } = "/.well-known/openid-configuration";
-
+        public string EndSessionEndpoint { get; set; } = "/oauth/logout";
         public string JwksEndpoint { get; set; } = "/oauth/jwks";
 
         public string VerifyTokenEndpoint { get; set; } = "/oauth/verify";

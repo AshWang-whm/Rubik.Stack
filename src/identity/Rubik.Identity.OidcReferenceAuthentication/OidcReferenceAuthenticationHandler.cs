@@ -56,6 +56,7 @@ namespace Rubik.Identity.OidcReferenceAuthentication
                 }
             }
 
+
             var url = string.Format(Options.VerifyEndpointRestfulFormat, token);
             var verify_result = await _httpClient.GetStringAsync(url);
             var result = JsonSerializer.Deserialize<TokenVerifyResult>(verify_result);

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.FileProviders;
 using Rubik.Identity.Oidc.Core.Extensions;
 using Rubik.Infrastructure.Orm.Freesql;
 using Rubik.Infrastructure.WebExtension;

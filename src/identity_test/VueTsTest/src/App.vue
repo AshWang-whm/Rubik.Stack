@@ -39,6 +39,7 @@
   onMounted(async () => {
     try {
       const user = await userManager.getUser();
+      console.log(user);
       if (user) {
         isLoggedIn.value = true;
         userInfo.value = user;

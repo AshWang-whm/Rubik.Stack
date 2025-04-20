@@ -72,6 +72,8 @@ namespace JwtTest
         {
             scheme ??= OidcReferenceDefaults.AuthenticationScheme;
 
+            builder.Services.AddHttpContextAccessor();
+
             builder.Services
                 .AddAuthorization()
                 .AddAuthentication(scheme)
@@ -79,14 +81,14 @@ namespace JwtTest
                 {
                     options?.Invoke(o);
                     o.Authority = "http://localhost:5000";
-                    //o.Events = new OidcReferenceEvents
-                    //{
-                    //    OnMessageReceived = context =>
-                    //    {
-                    //        context.Token = context.Request.Cookies["access_token"];
-                    //        return Task.CompletedTask;
-                    //    }
-                    //};
+                    o.Events = new OidcReferenceEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            context.Token = context.Request.Cookies["access_token"];
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
         }
 

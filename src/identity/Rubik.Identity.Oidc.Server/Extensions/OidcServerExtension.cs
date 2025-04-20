@@ -12,12 +12,12 @@ namespace Rubik.Identity.Oidc.Core.Extensions
 {
     public static class OidcServerExtension
     {
-        public static WebApplicationBuilder AddOidcServer(this WebApplicationBuilder builder)
+        public static WebApplicationBuilder AddOidcServer(this WebApplicationBuilder builder,string scheme="oidc.cookie")
         {
             // Oidc 服务器端自己用cookie验证
             builder.Services.AddAuthorization();
-            builder.Services.AddAuthentication("oidc.cookie")
-                .AddCookie("oidc.cookie", o =>
+            builder.Services.AddAuthentication(scheme)
+                .AddCookie(scheme, o =>
                 {
                     o.LoginPath = "/Account/Login";
                 });
@@ -70,6 +70,7 @@ namespace Rubik.Identity.Oidc.Core.Extensions
             web.MapPost(OidcServer.DiscoveryConfig!.TokenEndpoint, TokenEndoint.GetToken);
             web.MapGet(OidcServer.DiscoveryConfig!.VerifyTokenEndpoint, TokenEndoint.VerifyReferenceTokenFromHeader);
             web.MapGet(OidcServer.DiscoveryConfig!.VerifyTokenRestEndpoint, TokenEndoint.VerifyReferenceTokenFromQuery);
+            web.MapGet(OidcServer.DiscoveryConfig!.EndSessionEndpoint, UserInfoEndpoint.Logout);
         }
 
         static void AutoInject(this WebApplicationBuilder builder)
