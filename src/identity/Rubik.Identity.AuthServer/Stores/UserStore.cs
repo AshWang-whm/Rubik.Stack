@@ -9,7 +9,7 @@ namespace Rubik.Identity.AuthServer.Stores
 {
     public class UserStore (IFreeSql freeSql) : IUserStore
     {
-        public async Task<bool> CheckUser(string username, string password)
+        public async Task<bool> GetUser(string username, string password)
         {
             var user = await freeSql.Select<TbUser>()
                 .Where(a => a.Code == username)

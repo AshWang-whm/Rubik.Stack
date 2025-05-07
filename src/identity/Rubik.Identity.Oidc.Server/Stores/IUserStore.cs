@@ -12,7 +12,7 @@ namespace Rubik.Identity.Oidc.Core.Stores
         /// <returns></returns>
         public Task<IEnumerable<string>> UserProfilesClaims();
 
-        public Task<bool> CheckUser(string username,string password);
+        public Task<bool> GetUser(string username,string password);
 
         public Task<List<Claim>> GetUserClaims(string usercode, string clientid, IEnumerable<string?> claimtypes);
     }

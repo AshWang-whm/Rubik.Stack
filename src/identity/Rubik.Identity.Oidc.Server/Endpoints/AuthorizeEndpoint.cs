@@ -2,15 +2,10 @@
 using Rubik.Identity.Oidc.Core.Contants;
 using Rubik.Identity.Oidc.Core.Dtos;
 using Rubik.Identity.Oidc.Core.Extensions;
-using Rubik.Identity.Oidc.Core.RsaKey;
 using Rubik.Identity.Oidc.Core.Services;
 using Rubik.Identity.Oidc.Core.Stores;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using System.Web;
 using static IdentityModel.OidcConstants;
-using static IdentityModel.OidcConstants.Algorithms;
 
 namespace Rubik.Identity.Oidc.Core.Endpoints
 {
@@ -86,8 +81,6 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             var redirect_uri = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.RedirectUri);
             var state = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.State);
             var nonce = httpContextService.GetQueryParamter(AuthorizeRequest.Nonce);
-            //var response_mode = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.ResponseMode);
-            //var response_type = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.ResponseType);
 
             var oidc_parameter = httpContextService.RequestQueryToRequestOidcParameter();
 

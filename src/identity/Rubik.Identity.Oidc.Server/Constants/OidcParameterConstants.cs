@@ -40,5 +40,9 @@ namespace Rubik.Identity.Oidc.Core.Constants
         public const string ClientCredentialsFlow="client_credentials";
 
         public const string PasswordFlow = "password";
+
+        public const string AuthorizationHeader = "Authorization";
+
+        public const string Basic = "Basic";
     }
 }

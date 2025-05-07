@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using Rubik.Identity.Oidc.Core.Constants;
+using Rubik.Identity.Oidc.Core.Contants;
 using Rubik.Identity.Oidc.Core.Dtos;
 using Rubik.Identity.Oidc.Core.Exceptions;
 using System.Security.Claims;
@@ -84,14 +86,37 @@ namespace Rubik.Identity.Oidc.Core.Services
         internal async Task<RequestOidcParameterDto> RequestBodyToRequestOidcParameter()
         {
             var body = (await httpContext.HttpContext!.Request.BodyReader.ReadAsync()).Buffer;
-            var query = HttpUtility.ParseQueryString(Encoding.UTF8.GetString(body));
+            var body_str = Encoding.UTF8.GetString(body);
+            var query = HttpUtility.ParseQueryString(body_str);
 
             // authorzation_code 和 refresh_token 区分获取token和刷新token
+            var if_basic = httpContext.HttpContext.Request.Headers.TryGetValue(OidcParameterConstants.AuthorizationHeader, out var basic);
+            string[] basic_array = [];
+            if (if_basic)
+            {
+                var basic_str = basic.ToString();
+                if(string.IsNullOrWhiteSpace(basic_str))
+                    throw new Exception(OidcExceptionConstants.Basic_Invalid);
+
+                if (!basic_str.Contains(OidcParameterConstants.Basic))
+                    throw new Exception(OidcExceptionConstants.Basic_Invalid);
+
+                var basic_data = (basic_str.Split(' ').Last()
+                    .Replace('-', '+')
+                    .Replace('_', '/')) ?? throw new Exception(OidcExceptionConstants.Basic_Invalid);
+
+
+                var basic_bytes = Convert.FromBase64String(basic_data!);
+                var basic_value = Encoding.UTF8.GetString(basic_bytes);
+                basic_array = basic_value.Split(':');
+                if (basic_array.Length != 2)
+                    throw new Exception(OidcExceptionConstants.Basic_Invalid);
+            }
+
             var grant_type = query.Get(OidcParameterConstants.GrantType);
-            var clientid = query.Get(OidcParameterConstants.ClientID);
+            var clientid = if_basic ? basic_array[0]: query.Get(OidcParameterConstants.ClientID);
             
-            // 与客户端配置对比，验证客户端密钥，密钥不参与token生成 todo:
-            var clientsecret = query.Get(OidcParameterConstants.ClientSecret);
+            var clientsecret = if_basic ? basic_array[1] : query.Get(OidcParameterConstants.ClientSecret);
 
             OidcParameterInValidationException.NotNullOrEmpty(nameof(grant_type), grant_type);
 

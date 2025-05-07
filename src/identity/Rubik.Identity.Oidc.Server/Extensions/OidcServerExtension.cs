@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Rubik.Identity.AuthServer.Endpoints;
 using Rubik.Identity.Oidc.Core.Attributes;
+using Rubik.Identity.Oidc.Core.Authentications;
 using Rubik.Identity.Oidc.Core.Configs;
 using Rubik.Identity.Oidc.Core.Endpoints;
 using Rubik.Identity.Oidc.Core.RsaKey;
@@ -16,11 +19,22 @@ namespace Rubik.Identity.Oidc.Core.Extensions
         {
             // Oidc 服务器端自己用cookie验证
             builder.Services.AddAuthorization();
+
             builder.Services.AddAuthentication(scheme)
                 .AddCookie(scheme, o =>
                 {
                     o.LoginPath = "/Account/Login";
+                })
+                .AddScheme<BearerAuthenticationOptions, BearerAuthenticationHandler>(BearerAuthenticationOptions.BearerScheme, null);
+
+            builder.Services.AddAuthorizationBuilder()
+                .AddPolicy(BearerAuthenticationOptions.BearerPolicy, policy =>
+                {
+                    policy.AddAuthenticationSchemes(BearerAuthenticationOptions.BearerScheme);
+                    policy.RequireAuthenticatedUser();
                 });
+
+
 
             // code 生成器
             builder.Services.AddDataProtection(opt=>opt.ApplicationDiscriminator="Rubik.Identity.AuthServer");
@@ -62,14 +76,19 @@ namespace Rubik.Identity.Oidc.Core.Extensions
 
         public static void UseOidcServer(this WebApplication web)
         {
+            web.UseRouting();
+
+            web.UseAuthentication();
+            web.UseAuthorization();
+
             OidcServer.WebApplication = web;
-            web.MapGet(OidcServer.DiscoveryConfig!.DiscoveryEndpoint, DiscoveryEndpoint.GetDiscoveryDoc);
-            web.MapGet(OidcServer.DiscoveryConfig!.JwksEndpoint, JwkEndpoint.GetJwks);
-            web.MapGet(OidcServer.DiscoveryConfig!.UserInfoEndpoint, UserInfoEndpoint.GetUserInfo).RequireAuthorization();
+            web.MapGet(OidcServer.DiscoveryConfig!.DiscoveryEndpoint, DiscoveryEndpoint.GetDiscoveryDoc).AllowAnonymous();
+            web.MapGet(OidcServer.DiscoveryConfig!.JwksEndpoint, JwkEndpoint.GetJwks).AllowAnonymous();
+            web.MapGet(OidcServer.DiscoveryConfig!.UserInfoEndpoint, UserInfoEndpoint.GetUserInfo).RequireAuthorization(BearerAuthenticationOptions.BearerPolicy);
             web.MapGet(OidcServer.DiscoveryConfig!.AuthorizationEndpoint, AuthorizeEndpoint.Authorize).RequireAuthorization();
-            web.MapPost(OidcServer.DiscoveryConfig!.TokenEndpoint, TokenEndoint.GetToken);
-            web.MapGet(OidcServer.DiscoveryConfig!.VerifyTokenEndpoint, TokenEndoint.VerifyReferenceTokenFromHeader);
-            web.MapGet(OidcServer.DiscoveryConfig!.VerifyTokenRestEndpoint, TokenEndoint.VerifyReferenceTokenFromQuery);
+            web.MapPost(OidcServer.DiscoveryConfig!.TokenEndpoint, TokenEndoint.GetToken).AllowAnonymous();
+            web.MapGet(OidcServer.DiscoveryConfig!.VerifyTokenEndpoint, TokenEndoint.VerifyReferenceTokenFromHeader).RequireAuthorization(BearerAuthenticationOptions.BearerPolicy);
+            web.MapGet(OidcServer.DiscoveryConfig!.VerifyTokenRestEndpoint, TokenEndoint.VerifyReferenceTokenFromQuery).AllowAnonymous();
             web.MapGet(OidcServer.DiscoveryConfig!.EndSessionEndpoint, UserInfoEndpoint.Logout);
         }
 

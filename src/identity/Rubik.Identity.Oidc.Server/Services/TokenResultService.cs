@@ -79,8 +79,10 @@ namespace Rubik.Identity.Oidc.Core.Services
                     //iat is required
                     new (JwtRegisteredClaimNames.Iat,DateTime.Now.Ticks.ToString()),
                     new (JwtRegisteredClaimNames.Sub,tokenJsonParameter.UserCode!),
-                    new (JwtRegisteredClaimNames.Name,tokenJsonParameter.UserName!),
                 };
+
+                if (!string.IsNullOrWhiteSpace(tokenJsonParameter.UserName))
+                    idtoken_claims.Add(new(JwtRegisteredClaimNames.Name, tokenJsonParameter.UserName!));
 
                 // client 端没发送nonce就不需要添加
                 // id token 默认需要验证nonce , client端可以配置不验证

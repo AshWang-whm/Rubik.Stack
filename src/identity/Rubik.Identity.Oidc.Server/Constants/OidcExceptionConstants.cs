@@ -8,6 +8,8 @@ namespace Rubik.Identity.Oidc.Core.Contants
 {
     public class OidcExceptionConstants
     {
+        public const string Basic_Invalid = "Basic authorization value format is invalid!";
+
         public const string RefreshToken_Invalid = "refresh token is not valided!";
 
         public const string RefreshToken_IsRequired = "refresh_token is required!";
@@ -19,6 +21,8 @@ namespace Rubik.Identity.Oidc.Core.Contants
         public const string GrantType_IsRequired = "grant type is invalid!";
 
         public const string ClientId_Invalid = "client_id is invalid!";
+
+        public const string ClientSercet_Invalid = "secret is invalid!";
 
         public const string ResponseType_Invalid = "response_type is invalid!";
 

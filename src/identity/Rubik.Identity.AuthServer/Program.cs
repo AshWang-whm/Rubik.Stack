@@ -30,19 +30,18 @@ var app = builder.Build();
 
 app.UseStaticFiles();
 
-app.UseOidcServer();
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
 
+app.UseOidcServer();
+
 app.UseCors("javacript_test");
 
-app.UseRouting();
-
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",

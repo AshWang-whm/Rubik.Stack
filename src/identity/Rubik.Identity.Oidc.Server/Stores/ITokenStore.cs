@@ -16,7 +16,7 @@ namespace Rubik.Identity.Oidc.Core.Stores
     [AutoInject(AutoInjectType.Scope)]
     public interface ITokenStore
     {
-        public string? GenerateToken(RequestOidcParameterDto parameter, IEnumerable<Claim>? claims);
+        public string? GenerateToken(RequestOidcParameterDto parameter, List<Claim>? claims);
 
         public Task<TokenValidationResult> VerifyAccessToken(string token);
         public Task<RefreshTokenValidationResultEntity> VerifyRefreshToken(RequestOidcParameterDto parameter);

@@ -27,8 +27,8 @@ namespace Rubik.Identity.OidcReferenceAuthentication
         {
             if (context.Options.VerifyAudience)
             {
-                var sub = context.Principal.Claims.FirstOrDefault(a=>a.Type== JwtRegisteredClaimNames.Aud)?.Value;
-                if (!sub?.Contains(context.Options.Audience)??true)
+                var subs = context.Principal.Claims.Where(a=>a.Type== JwtRegisteredClaimNames.Aud);
+                if (!subs?.Any(a=>a.Value==context.Options.Audience)??true)
                 {
                     context.Fail("Invalid Audience!");
                     return Task.CompletedTask;
