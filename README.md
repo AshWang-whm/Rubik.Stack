@@ -1,6 +1,6 @@
 # Rubik.Stack
 
-##### Organizational structure management system & Oidc single sign-on service (written with reference to OAuth2.0 & Oidc official document process, not all functions are implemented，onle code&implicit implemented)
+##### Organizational structure management system & Oidc single sign-on service (written with reference to OAuth2.0 & Oidc official document process, not all functions are implemented，onle code&implicit&password flow implemented)
 ##### The project framework mainly uses Blazor App, UI: AntDesign, Orm: Freesql, Database: PgSql
 ## Directory structure
 
@@ -25,7 +25,7 @@
 
 -------------------------------------------------------------------------------------------
 
-##### 组织架构管理系统&Oidc单点登录服务（参考OAuth2.0&Oidc官方文档流程编写，未实现全部功能,仅实现了code和implicit模式）
+##### 组织架构管理系统&Oidc单点登录服务（参考OAuth2.0&Oidc官方文档流程编写，未实现全部功能,仅实现了code,implicit,password模式）
 ##### 项目框架主要使用Blazor App，UI:AntDesign, Orm：Freesql，Database：PgSql
 ##目录结构
 + identity
