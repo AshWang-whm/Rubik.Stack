@@ -7,13 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BootstrapBlazor" Version="9.4.9" />
-    <PackageReference Include="BootstrapBlazor.FontAwesome" Version="9.0.2" />
+    <PackageReference Include="BootstrapBlazor" Version="9.6.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\share\Rubik.Share.Entity.FreesqlExtension\Rubik.Identity.FreesqlExtension.csproj" />
-    <ProjectReference Include="..\Rubik.LowCode.Service\Rubik.LowCode.Service.csproj" />
+    <ProjectReference Include="..\..\share\Rubik.Share.Extension\Rubik.Infrastructure.WebExtension.csproj" />
   </ItemGroup>
 
 </Project>

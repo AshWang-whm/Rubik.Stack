@@ -2,18 +2,19 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
+using Rubik.Identity.Oidc.Core.Services;
 using Rubik.Identity.Oidc.Core.Stores;
-using System;
 
 namespace Rubik.Identity.Oidc.Core.Endpoints
 {
     internal class UserInfoEndpoint
     {
-        public static async Task<IResult> GetUserInfo([FromServices]IHttpContextAccessor httpContextAccessor,[FromServices] ITokenStore tokenService)
+        public static async Task<IResult> GetUserInfo([FromServices] HttpContextService httpContextService
+            ,[FromServices]IUserStore userStore)
         {
-            // 获取用户信息
-            await Task.Delay(100);
+            var userid = httpContextService.GetSID();
+
+
 
             return Results.Json(new { });
         }

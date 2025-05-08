@@ -27,12 +27,12 @@ namespace Rubik.Identity.Oidc.Core.Services
             return val!;
         }
 
-        internal string? GetSID()
+        public string? GetSID()
         {
             return httpContext.HttpContext!.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Sid)?.Value; 
         }
 
-        internal string? GetName()
+        public string? GetName()
         {
             return httpContext.HttpContext!.User.Claims.FirstOrDefault(a => a.Type == ClaimTypes.Name)?.Value;
         }
@@ -83,7 +83,7 @@ namespace Rubik.Identity.Oidc.Core.Services
         /// 获取token endpoint 参数,只会从Body获取，Url可以吗？
         /// </summary>
         /// <returns></returns>
-        internal async Task<RequestOidcParameterDto> RequestBodyToRequestOidcParameter()
+        internal async Task<OidcRequestDto> RequestBodyToRequestOidcParameter()
         {
             var body = (await httpContext.HttpContext!.Request.BodyReader.ReadAsync()).Buffer;
             var body_str = Encoding.UTF8.GetString(body);
@@ -120,7 +120,7 @@ namespace Rubik.Identity.Oidc.Core.Services
 
             OidcParameterInValidationException.NotNullOrEmpty(nameof(grant_type), grant_type);
 
-            return new RequestOidcParameterDto
+            return new OidcRequestDto
             {
                 ClientID = clientid!,
                 GrantType = grant_type!,
@@ -129,10 +129,10 @@ namespace Rubik.Identity.Oidc.Core.Services
             };
         }
 
-        internal RequestOidcParameterDto RequestQueryToRequestOidcParameter()
+        internal OidcRequestDto RequestQueryToRequestOidcParameter()
         {
             var client_id = GetQueryParameterNotNull(AuthorizeRequest.ClientId);
-            return new RequestOidcParameterDto
+            return new OidcRequestDto
             {
                 ClientID= client_id,
                 Query = HttpUtility.ParseQueryString(httpContext.HttpContext!.Request.QueryString.Value??""),

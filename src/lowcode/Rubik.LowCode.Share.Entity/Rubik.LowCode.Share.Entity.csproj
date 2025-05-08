@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FreeSql.Provider.PostgreSQL" Version="3.5.108" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\share\Rubik.Share.Entity.FreesqlExtension\Rubik.Identity.FreesqlExtension.csproj" />
   </ItemGroup>
 

@@ -37,7 +37,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 // code & (id_token / token) => hybrid flow
 
                 // 验证client id
-                var client = await clientStore.GetClient(client_id!);
+                var client = await clientStore.FindClientByID(client_id!);
                 if (client == null)
                     return Results.BadRequest(OidcExceptionConstants.ClientId_Invalid);
 
@@ -84,7 +84,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
 
             var oidc_parameter = httpContextService.RequestQueryToRequestOidcParameter();
 
-            var token_parameter = new TokenJsonParameterDto
+            var token_parameter = new TokenGenDto
             {
                 ClientID = oidc_parameter.ClientID,
                 Scope = httpContextService.GetQueryParameterNotNull(AuthorizeRequest.Scope),

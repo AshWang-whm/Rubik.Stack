@@ -8,23 +8,14 @@ using System.Threading.Tasks;
 
 namespace Rubik.Identity.Oidc.Core.Dtos
 {
-    public class RequestOidcParameterDto
+    public class OidcRequestDto
     {
         public string? GrantType { get; set; }
 
         public required string ClientID { get; set; }
 
-        public string? ApiResource { get; set; }
-
         public string? ClientSecret { get; set; }
 
-        public string? ResponseType { get; set; }
-
         public required NameValueCollection Query { get; set; }
-
-        public bool IsAccessToken => ResponseType?.Split(' ').Contains(OidcParameterConstants.Token) ?? false;
-
-        public bool IsIdToken => ResponseType?.Split(' ').Contains(OidcParameterConstants.IdToken) ?? false;
-
     }
 }

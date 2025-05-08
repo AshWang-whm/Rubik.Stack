@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using IdentityModel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Rubik.Identity.Oidc.Core.Constants;
@@ -24,8 +25,6 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             [FromServices] TokenResultService grantTypeHandleService)
         {
             var parameter =await contextService.RequestBodyToRequestOidcParameter();
-
-            // 检查scope ？ 
 
             return parameter.GrantType switch
             {
@@ -91,7 +90,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         /// <param name="parameter"></param>
         /// <param name="tokenService"></param>
         /// <returns></returns>
-        static async Task<IResult> RefreshToken([FromBody] RequestOidcParameterDto parameter,[FromServices]ITokenStore tokenService)
+        static async Task<IResult> RefreshToken([FromBody] OidcRequestDto parameter,[FromServices]ITokenStore tokenService)
         {
             // query 获取参数
             /*
@@ -119,7 +118,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             });
         }
 
-        static async Task<IResult> AuthorizationCode(RequestOidcParameterDto parameter
+        static async Task<IResult> AuthorizationCode(OidcRequestDto parameter
             , AuthorizationCodeEncrtptService codeEncrtptService
             , TokenResultService grantTypeHandleService)
         {
@@ -131,13 +130,13 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 return Results.BadRequest(OidcExceptionConstants.AuthorizationCode_Invalid);
             }
 
-            var granttype_handle_parameter = new TokenJsonParameterDto
+            var granttype_handle_parameter = new TokenGenDto
             {
                 ClientID= auth!.ClientID,
                 Scope= auth!.Scope,
                 UserCode= auth!.UserCode,
                 Nonce= auth!.Nonce,
-                ResponseType= auth!.ResponseType!,
+                ResponseType= auth!.ResponseType,
                 UserName = auth.UserCode,
             };
 
@@ -154,7 +153,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
         /// <param name="clientStore"></param>
         /// <param name="userStore"></param>
         /// <returns></returns>
-        static async Task<IResult> PasswordFlow(RequestOidcParameterDto parameter, TokenResultService grantTypeHandleService, IClientStore clientStore,IUserStore userStore)
+        static async Task<IResult> PasswordFlow(OidcRequestDto parameter, TokenResultService grantTypeHandleService, IClientStore clientStore,IUserStore userStore)
         {
             var user_id = parameter.Query["username"];
             if (string.IsNullOrWhiteSpace(user_id)) 
@@ -168,12 +167,12 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 return Results.BadRequest(OidcExceptionConstants.Password_IsRequired);
             }
 
-            if(!(await userStore.GetUser(user_id,pwd)))
+            if(!(await userStore.ValidateUser(user_id,pwd)))
             {
                 return Results.BadRequest(OidcExceptionConstants.Password_Invalid);
             }
 
-            var client = await clientStore.GetClient(parameter.ClientID);
+            var client = await clientStore.FindClientByID(parameter.ClientID);
             if (client==null)
             {
                 return Results.BadRequest(OidcExceptionConstants.ClientId_Invalid);
@@ -193,12 +192,11 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 return Results.BadRequest(OidcExceptionConstants.Scope_Invalid);
 
             // password模式默认返回access token， 如果scope带有openid，则需要返回id token
-            var granttype_handle_parameter = new TokenJsonParameterDto
+            var granttype_handle_parameter = new TokenGenDto
             {
                 ClientID = client.ClientID!,
                 Scope = client.Scope!,
                 UserCode = user_id,
-                ResponseType = $"token {((client.ScopeArr?.Contains("openid")??false)?"id_token":null)}",
             };
 
             var json = await grantTypeHandleService.GenerateTokenDictionary(parameter, granttype_handle_parameter!);
@@ -206,23 +204,26 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             return Results.Json(json, contentType: "application/json");
         }
 
-        static async Task<IResult> ClientCredentialsFlow(RequestOidcParameterDto parameter, TokenGenerateService tokenService, IClientStore clientStore)
+        static async Task<IResult> ClientCredentialsFlow(OidcRequestDto parameter, TokenGenerateService tokenService, IClientStore clientStore)
         {
             OidcParameterInValidationException.NotNullOrEmpty(nameof(parameter.ClientID), parameter.ClientID);
 
-            var client = await clientStore.GetClient(parameter.ClientID);
+            var client = await clientStore.FindClientByID(parameter.ClientID);
             if (client == null || !(client.ClientSecret?.Equals(parameter.ClientSecret) ?? false))
             {
                 return Results.BadRequest(OidcExceptionConstants.ClientId_Invalid);
             }
 
-            var access_token_claims = new List<Claim>();
+            var access_token_claims = new List<Claim>()
+            {
+                new(JwtClaimTypes.Audience, parameter.ClientID)
+            };
             var scope = parameter.Query["scope"];
 
             if (!string.IsNullOrWhiteSpace(scope))
                 access_token_claims.Add(new(OidcParameterConstants.Scope, scope));
 
-            var access_token = tokenService.GenerateToken(parameter, access_token_claims);
+            var access_token = tokenService.GenerateToken(access_token_claims);
             var json = new JsonObject
             {
                 { OidcParameterConstants.AccessToken, access_token }

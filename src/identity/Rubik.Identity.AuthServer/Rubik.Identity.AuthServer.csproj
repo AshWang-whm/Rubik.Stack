@@ -17,12 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IdentityModel" Version="7.0.0" />
-    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.6.1" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.6.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\infrastructure\Rubik.Infrastructure.OAuth\Rubik.Identity.UserIdentity.csproj" />
     <ProjectReference Include="..\..\infrastructure\Rubik.Infrastructure.Orm.Freesql\Rubik.Infrastructure.Orm.Freesql.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Rubik.Infrastructure.Utils.Common\Rubik.Infrastructure.Utils.Common.csproj" />

@@ -23,23 +23,14 @@ namespace Rubik.Identity.Oidc.Core.Services
         /// <param name="claims"></param>
         /// <param name="exp"></param>
         /// <returns></returns>
-        public string? GenerateToken(RequestOidcParameterDto parameter, List<Claim>? claims)
+        public string? GenerateToken(IEnumerable<Claim>? claims)
         {
-            claims?.Add(new Claim(JwtClaimTypes.Audience, parameter.ClientID));
-
-            if(parameter.ApiResource != null)
-            {
-                claims?.Add(new Claim(JwtClaimTypes.Audience, parameter.ApiResource));
-            }
             var access_token_options = new JwtSecurityToken(
                 issuer: discovery.Issuer,
-                //audience: parameter.ApiResource==null? parameter.ClientID : string.Join(' ',parameter.ClientID,parameter.ApiResource),
                 claims: claims,
                 expires: ExpDateByDay(),
                 signingCredentials: jwkKeys.SigningCredentials
-                )
-            {
-            };
+                );
 
             var token = jwkKeys.TokenHandler.WriteToken(access_token_options);
             return token;
@@ -51,7 +42,7 @@ namespace Rubik.Identity.Oidc.Core.Services
             return Utils.GetMd5Hash(access_token);
         }
 
-        public async Task<RefreshTokenValidationResultEntity> VerifyRefreshToken(RequestOidcParameterDto parameter)
+        public async Task<RefreshTokenValidationResultEntity> VerifyRefreshToken(OidcRequestDto parameter)
         {
             // 验证md5 签名， refresh token 过期时间默认小于 access_token 过期时间的+3天
             var access_token = parameter.Query[OidcParameterConstants.AccessToken];
@@ -71,7 +62,7 @@ namespace Rubik.Identity.Oidc.Core.Services
             // 生成新的access_token 和 refresh token
             var old_access_token= jwkKeys.TokenHandler.ReadJwtToken(access_token);
 
-            var new_access_token = GenerateToken(parameter, old_access_token.Claims.ToList());
+            var new_access_token = GenerateToken(old_access_token.Claims);
             var new_refresh_token = GeneratorRefreshToken(new_access_token!);
 
             return new RefreshTokenValidationResultEntity 

@@ -12,19 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Yitter.IdGenerator" Version="1.0.14" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\share\Rubik.Share.Extension\Rubik.Infrastructure.WebExtension.csproj" />
-    <ProjectReference Include="..\Rubik.LowCode.Share.Entity\Rubik.LowCode.Share.Entity.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="SetupForm\" />
     <Folder Include="SetupPage\" />
     <Folder Include="FormValidation\" />

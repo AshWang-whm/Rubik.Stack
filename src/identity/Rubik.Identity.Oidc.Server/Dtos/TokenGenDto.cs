@@ -7,16 +7,18 @@ using System.Threading.Tasks;
 
 namespace Rubik.Identity.Oidc.Core.Dtos
 {
-    internal class TokenJsonParameterDto
+    internal class TokenGenDto
     {
         public required string ClientID { get; set; }
         public string? UserCode { get; set; }
         public string? UserName { get; set; }
         public string? Nonce { get; set; }
         public required string Scope { get; set; }
-        public required string ResponseType { get; set; }
+        public string? ResponseType { get; set; }
 
-        public string[] ResponseTypeArray => ResponseType.Split(' ');
+        public List<string> ApiResource { get; set; } = [];
+
+        public string[] ResponseTypeArray => ResponseType?.Split(' ')??[];
 
         public string[] ScopeArray => Scope?.Split(' ') ?? [];
 

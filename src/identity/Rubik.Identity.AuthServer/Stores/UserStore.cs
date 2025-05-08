@@ -1,4 +1,6 @@
-﻿using Rubik.Identity.Oidc.Core.Stores;
+﻿using Rubik.Identity.AuthServer.Models;
+using Rubik.Identity.Oidc.Core.Services;
+using Rubik.Identity.Oidc.Core.Stores;
 using Rubik.Identity.Share.Entity;
 using Rubik.Identity.Share.Extension;
 using Rubik.Identity.UserIdentity;
@@ -9,10 +11,10 @@ namespace Rubik.Identity.AuthServer.Stores
 {
     public class UserStore (IFreeSql freeSql) : IUserStore
     {
-        public async Task<bool> GetUser(string username, string password)
+        public async Task<bool> ValidateUser(string usercode, string password)
         {
             var user = await freeSql.Select<TbUser>()
-                .Where(a => a.Code == username)
+                .Where(a => a.Code == usercode)
                 .FirstAsync();
 
             if (user == null)
@@ -20,7 +22,7 @@ namespace Rubik.Identity.AuthServer.Stores
                 return false;
             }
 
-            var pwd = PasswordEncryptExtension.GeneratePasswordHash(username, password);
+            var pwd = PasswordEncryptExtension.GeneratePasswordHash(usercode, password);
 
             return user.Password== pwd;
         }
@@ -32,7 +34,7 @@ namespace Rubik.Identity.AuthServer.Stores
             // 默认带上code&name
             var userinfo = await freeSql.Select<TbUser>()
                 .Where(a => a.Code == usercode && a.IsDelete == false)
-                .FirstAsync() ?? throw new Exception($"[{usercode}] 不存在!");
+                .FirstAsync() ?? throw new Exception($"[{usercode}]不存在!");
 
             claims.Add(new Claim(JwtIdentityClaimConstants.Name, userinfo.Name!));
             claims.Add(new Claim(JwtIdentityClaimConstants.Sub, userinfo.Code!));
@@ -80,9 +82,16 @@ namespace Rubik.Identity.AuthServer.Stores
             return claims;
         }
 
-        public async Task<IEnumerable<string>> UserProfilesClaims()
+        public Task<IEnumerable<string>> UserProfilesClaims()
         {
-            return [JwtIdentityClaimConstants.Role, JwtIdentityClaimConstants.Job, JwtIdentityClaimConstants.Position, JwtIdentityClaimConstants.Dept];
+            return Task.FromResult<IEnumerable<string>>([JwtIdentityClaimConstants.Role, JwtIdentityClaimConstants.Job, JwtIdentityClaimConstants.Position, JwtIdentityClaimConstants.Dept]);
         }
+
+        //public async Task<UserInfoVO> GetUserInfo()
+        //{
+        //    var userid = httpContextService.
+        //    var user = await freeSql.Select<TbUser>()
+        //        .Where(a=>)
+        //}
     }
 }

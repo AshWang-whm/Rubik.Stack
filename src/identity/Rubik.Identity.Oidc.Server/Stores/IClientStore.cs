@@ -6,6 +6,6 @@ namespace Rubik.Identity.Oidc.Core.Stores
     [AutoInject(AutoInjectType.Scope)]
     public interface IClientStore
     {
-        public Task<ClientEntity?> GetClient(string client_id);
+        public Task<ClientEntity?> FindClientByID(string client_id);
     }
 }

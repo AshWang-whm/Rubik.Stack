@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\share\Rubik.Share.Entity.FreesqlExtension\Rubik.Identity.FreesqlExtension.csproj" />
+    <ProjectReference Include="..\..\share\Rubik.Share.Extension\Rubik.Infrastructure.WebExtension.csproj" />
     <ProjectReference Include="..\Rubik.LowCode.Service\Rubik.LowCode.Service.csproj" />
   </ItemGroup>
   
