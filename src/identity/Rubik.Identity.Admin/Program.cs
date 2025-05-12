@@ -56,7 +56,10 @@ builder.Services.AddAuthentication("oidc")
                 o.Authority = "http://localhost:5000";
                 o.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
-                    ValidIssuer = "rubik.oidc"
+                    ValidIssuer = "rubik.oidc",
+                    //ValidAudience="app_admin", // 单个aud
+                    ValidAudiences = ["app_admin"], // id token有多个aud情况下，验证其中1个
+                    ValidateAudience=true
                 };
 
                 o.Events = new Microsoft.AspNetCore.Authentication.OpenIdConnect.OpenIdConnectEvents

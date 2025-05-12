@@ -40,24 +40,31 @@ namespace Rubik.Identity.Oidc.Core.Services
             // 用户信息
             var user_profile_claims = await userStore.GetUserClaims(tokenGenDto!.UserCode!, tokenGenDto.ClientID, user_claims_types);
 
+            // 处理aud
+            var aud_claims = new List<Claim>
+            {
+                new(JwtClaimTypes.Audience, oidcRequestDto.ClientID),
+            };
+            foreach (var item in api_resources)
+            {
+                if (item.Code != null)
+                    aud_claims.Add(new Claim(JwtClaimTypes.Audience, item.Code));
+            }
+
             if (tokenGenDto.IsAccessToken)
             {
                 // access token 默认带上用户账号
                 var access_token_claims = new List<Claim>
                 {
                     new(JwtRegisteredClaimNames.Sub,tokenGenDto.UserCode!),
-                    new(JwtClaimTypes.Audience, oidcRequestDto.ClientID)
                 };
 
                 if (api_resources.Count > 0)
                 {
                     access_token_claims.Add(new Claim(OidcParameterConstants.Scope, string.Join(' ', api_resources.SelectMany(a => a.Scopes.Select(s => s.Scope)))));
-                    foreach (var item in api_resources)
-                    {
-                        if(item.Code!=null)
-                            access_token_claims.Add(new Claim(JwtClaimTypes.Audience, item.Code));
-                    }
                 }
+
+                access_token_claims.AddRange(aud_claims);
 
                 // 用户信息+默认claim = access token
                 var api_access_token_claims = user_profile_claims.Where(a => access_token_claims_types.Contains(a.Type));
@@ -98,6 +105,8 @@ namespace Rubik.Identity.Oidc.Core.Services
                 // id token
                 var scope_id_token_claims = user_profile_claims.Where(a => id_token_claims_types.Contains(a.Type));
                 idtoken_claims.AddRange(scope_id_token_claims);
+
+                idtoken_claims.AddRange(aud_claims);
 
                 // id token
                 var id_token = tokenStore.GenerateToken(idtoken_claims);
