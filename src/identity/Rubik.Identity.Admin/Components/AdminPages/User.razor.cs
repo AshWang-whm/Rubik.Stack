@@ -82,13 +82,14 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                     .Where(a => a.IsDelete == false&&a.ParentID==null)
                     .AsTreeCte()
                     .OrderBy(a => a.Sort)
-                    .Where(a=>a.OrganizationType== OrganizationType.Department)
+                    .Where(a=>a.OrganizationType== OrganizationType.Department&&a.IsDelete==false)
                     .ToTreeListAsync();
 
             TreePosition = await FreeSql.Select<TbPosition>()
                     .Where(a => a.IsDelete == false && a.ParentID == null)
                     .AsTreeCte()
                     .OrderBy(a => a.Sort)
+                    .Where(a=>a.IsDelete == false)
                     .ToTreeListAsync();
         }
 

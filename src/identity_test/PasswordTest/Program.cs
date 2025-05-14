@@ -26,8 +26,8 @@ while (true)
         ClientId = "console_password_test",
         ClientSecret = "client_password_test_client_password_test",
         Scope = "openid profile scope1",
-        UserName = "8024221",
-        Password = "8024221",
+        UserName = "admin",
+        Password = "admin",
         
         ClientCredentialStyle= ClientCredentialStyle.AuthorizationHeader,
     });

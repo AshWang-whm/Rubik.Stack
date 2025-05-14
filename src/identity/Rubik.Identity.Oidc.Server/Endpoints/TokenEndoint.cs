@@ -9,6 +9,7 @@ using Rubik.Identity.Oidc.Core.Exceptions;
 using Rubik.Identity.Oidc.Core.Extensions;
 using Rubik.Identity.Oidc.Core.Services;
 using Rubik.Identity.Oidc.Core.Stores;
+using Rubik.Identity.Oidc.Core.Vos;
 using System.Security.Claims;
 using System.Text.Json.Nodes;
 using System.Web;
@@ -39,7 +40,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
                 //OidcParameterConstant.PasswordFlow => await PasswordFlow(parameter, tokenService, clientStore, userStore),
                 //OidcParameterConstant.Implicit => await ImplicitFlow(parameter,grantTypeHandleService),
                 //OidcParameterConstant.Implicit => ImplicitFlow(parameter, tokenService, clientStore, userStore),
-                _ => Results.BadRequest(OidcExceptionConstants.GrantType_IsRequired)
+                _ => Results.BadRequest(new ErrorResponseVO(OidcExceptionConstants.GrantType_IsRequired))
             };
         }
 
@@ -158,38 +159,39 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             var user_id = parameter.Query["username"];
             if (string.IsNullOrWhiteSpace(user_id)) 
             {
-                return Results.BadRequest(OidcExceptionConstants.UserName_IsRequired);
+                
+                return Results.BadRequest(new ErrorResponseVO(OidcExceptionConstants.UserName_IsRequired ));
             }
 
             var pwd = parameter.Query["password"];
             if (string.IsNullOrWhiteSpace(pwd))
             {
-                return Results.BadRequest(OidcExceptionConstants.Password_IsRequired);
+                return Results.BadRequest(new ErrorResponseVO(OidcExceptionConstants.Password_IsRequired));
             }
 
             if(!(await userStore.ValidateUser(user_id,pwd)))
             {
-                return Results.BadRequest(OidcExceptionConstants.Password_Invalid);
+                return Results.BadRequest(new ErrorResponseVO(OidcExceptionConstants.Password_Invalid));
             }
 
             var client = await clientStore.FindClientByID(parameter.ClientID);
             if (client==null)
             {
-                return Results.BadRequest(OidcExceptionConstants.ClientId_Invalid);
+                return Results.BadRequest(new ErrorResponseVO(OidcExceptionConstants.ClientId_Invalid));
             }
             // 检查secret
             if(client.ClientSecret!=null&& client.ClientSecret != parameter.ClientSecret)
             {
-                return Results.BadRequest(OidcExceptionConstants.ClientSercet_Invalid);
+                return Results.BadRequest(new ErrorResponseVO(OidcExceptionConstants.ClientSercet_Invalid));
             }
 
             var scope = parameter.Query["scope"];
             if (string.IsNullOrWhiteSpace(scope))
-                return Results.BadRequest(OidcExceptionConstants.Scope_Invalid);
+                return Results.BadRequest(new ErrorResponseVO(OidcExceptionConstants.Scope_Invalid));
 
             var scope_array = scope.Split(' ');
             if (Utils.ArrayExcept(scope_array, client.ScopeArr))
-                return Results.BadRequest(OidcExceptionConstants.Scope_Invalid);
+                return Results.BadRequest(new ErrorResponseVO(OidcExceptionConstants.Scope_Invalid));
 
             // password模式默认返回access token， 如果scope带有openid，则需要返回id token
             var granttype_handle_parameter = new TokenGenDto
@@ -211,7 +213,7 @@ namespace Rubik.Identity.Oidc.Core.Endpoints
             var client = await clientStore.FindClientByID(parameter.ClientID);
             if (client == null || !(client.ClientSecret?.Equals(parameter.ClientSecret) ?? false))
             {
-                return Results.BadRequest(OidcExceptionConstants.ClientId_Invalid);
+                return Results.BadRequest(new ErrorResponseVO(OidcExceptionConstants.ClientId_Invalid));
             }
 
             var access_token_claims = new List<Claim>()

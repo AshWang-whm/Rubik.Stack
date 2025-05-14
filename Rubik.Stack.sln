@@ -82,6 +82,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "files", "files", "{E0802B0A-4536-46EA-8A5E-3CC87F308868}"
+	ProjectSection(SolutionItems) = preProject
+		C:\Users\UserName\Desktop\admin.identity.sql = C:\Users\UserName\Desktop\admin.identity.sql
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
