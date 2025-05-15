@@ -112,12 +112,12 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                     await uow.Orm.Insert(new_permissions).ExecuteAffrowsAsync();
 
                 uow.Commit();
-                await MessageService.Success("保存成功!");
+                await MessageService.SuccessAsync("保存成功!");
             }
             catch (Exception ex)
             {
                 uow.Rollback();
-                await MessageService.Error(ex.Message);
+                await MessageService.ErrorAsync(ex.Message);
             }
             
 

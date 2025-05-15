@@ -25,7 +25,7 @@ namespace Rubik.Identity.Admin.Components.BasePages
         {
             if (string.IsNullOrWhiteSpace(Editor.Code))
             {
-                await MessageService.Error("[Code] 不允许为空!");
+                await MessageService.ErrorAsync("[Code] 不允许为空!");
                 return false;
             }
 
@@ -40,14 +40,14 @@ namespace Rubik.Identity.Admin.Components.BasePages
 
         protected virtual async Task OnSubmitFailed(EditContext context)
         {
-            await MessageService.Error("提交失败");
+            await MessageService.ErrorAsync("提交失败");
         }
 
         protected virtual async Task OnSave()
         {
             if (Editor == null)
             {
-                await MessageService.Error("没有要保存的数据！");
+                await MessageService.ErrorAsync("没有要保存的数据！");
             }
             else
             {

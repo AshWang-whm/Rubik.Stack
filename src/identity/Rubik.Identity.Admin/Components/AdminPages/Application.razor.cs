@@ -8,9 +8,6 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 {
     public partial class Application: BaseEditorPage<TbApplication>
     {
-        [Inject]
-        ModalService? ModalService { get; set; }
-
         EventCallback<OidcAppType> OidcAppTypeChangeCallback { get; set; }
 
         List<string?> Scopes = [];

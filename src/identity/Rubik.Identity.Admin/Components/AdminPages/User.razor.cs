@@ -10,8 +10,6 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 {
     public partial class User: BaseEditorPage<TbUser>
     {
-        [Inject]
-        ModalService? ModalService { get; set; }
 
         List<TbOrganization> TreeOrganization = [];
         /// <summary>
@@ -97,7 +95,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         {
             if(SelectedOrganization == 0)
             {
-                await MessageService.Warning("请选择一个组织架构!");
+                await MessageService.WarningAsync("请选择一个组织架构!");
                 return;
             }
             SelectedPositions = [];
@@ -117,7 +115,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         {
             if (!SelectedRows.Any())
             {
-                await MessageService!.Error("请选择需要重置密码的用户!");
+                await MessageService!.ErrorAsync("请选择需要重置密码的用户!");
                 return;
             }
 
@@ -130,7 +128,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                     .Where(a => a.ID == row.ID)
                     .ExecuteAffrowsAsync();
             }
-            await MessageService!.Success("重置密码完成!",1);
+            await MessageService!.SuccessAsync("重置密码完成!",1);
             SelectedRows = [];
         }
 
@@ -173,7 +171,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         {
             if (string.IsNullOrWhiteSpace(Editor.Code))
             {
-                await MessageService.Error("[Code] 不允许为空!",2);
+                await MessageService.ErrorAsync("[Code] 不允许为空!",2);
                 return false;
             }
 
@@ -185,7 +183,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 
             if (exist)
             {
-                await MessageService.Error($"[Code]:{Editor.Code} 已存在!",2);
+                await MessageService.ErrorAsync($"[Code]:{Editor.Code} 已存在!",2);
                 return false;
             }
 
@@ -273,7 +271,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             catch (Exception ex)
             {
                 uow.Rollback();
-                await MessageService.Error(ex.Message,3);
+                await MessageService.ErrorAsync(ex.Message,3);
             }
         }
 
@@ -283,7 +281,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             await FreeSql.Delete<TbRelationRoleUser>()
                 .Where(a => userids.Contains(a.UserID))
                 .ExecuteAffrowsAsync();
-            await MessageService!.Success("删除用户角色成功!",1);
+            await MessageService!.SuccessAsync("删除用户角色成功!",1);
         }
 
         async Task OnComfirmChangeOrg()
@@ -315,7 +313,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             catch (Exception ex)
             {
                 uow.Rollback();
-                await MessageService.Error(ex.Message);
+                await MessageService.ErrorAsync(ex.Message);
             }
         }
 

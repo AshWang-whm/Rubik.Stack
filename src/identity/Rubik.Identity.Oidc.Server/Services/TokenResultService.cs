@@ -1,4 +1,4 @@
-﻿using IdentityModel;
+﻿using Duende.IdentityModel;
 using Rubik.Identity.Oidc.Core.Constants;
 using Rubik.Identity.Oidc.Core.Dtos;
 using Rubik.Identity.Oidc.Core.Stores;

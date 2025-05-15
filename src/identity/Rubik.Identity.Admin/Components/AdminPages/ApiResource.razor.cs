@@ -11,8 +11,6 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 {
     public partial class ApiResource:BaseEditorPage<TbApiResource>
     {
-        [Inject]
-        ModalService? ModalService { get; set; }
         List<TbApiScope> DataSource_ApiScope { get; set; } = [];
         IEnumerable<TbApiScope> SelectedRows_ApiScope { get; set; } = [];
 

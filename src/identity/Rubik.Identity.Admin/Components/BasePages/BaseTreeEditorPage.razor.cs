@@ -1,4 +1,5 @@
 ﻿
+using AntDesign;
 using AntDesign.TableModels;
 using Rubik.Identity.Share.Entity;
 using Rubik.Infrastructure.Entity.BaseEntity;
@@ -41,7 +42,7 @@ namespace Rubik.Identity.Admin.Components.BasePages
         {
             if (string.IsNullOrWhiteSpace(Editor.Code))
             {
-                await MessageService.Error("[Code] 不允许为空!");
+                await MessageService.ErrorAsync("[Code] 不允许为空!");
                 return false;
             }
 
@@ -50,7 +51,7 @@ namespace Rubik.Identity.Admin.Components.BasePages
                 .AnyAsync();
             if (exist)
             {
-                await MessageService.Error($"[Code]:{Editor.Code} 已存在!");
+                await MessageService.ErrorAsync($"[Code]:{Editor.Code} 已存在!");
                 return false;
             }
 
@@ -74,27 +75,68 @@ namespace Rubik.Identity.Admin.Components.BasePages
             }
             EditorModalVisiable = false;
             await InvokeAsync(StateHasChanged);
-            await MessageService.Success("保存成功", 1);
+            await MessageService.SuccessAsync("保存成功", 1);
         }
 
         protected override async Task OnDelete(params T[] source)
         {
             if (source.Length == 0)
             {
-                await MessageService.Warning("没有要删除的数据!");
+                await MessageService.WarningAsync("没有要删除的数据!");
                 return;
             }
 
-            await FreeSql.Update<T>()
-                .Set(a => a.IsDelete == true)
-                .SetSource(source)
-                .ExecuteAffrowsAsync();
-
+            bool iscomfirm = true;
             foreach (var item in source)
             {
-                item.Parent?.Children.Remove(item);
+                if(item.Children.Count>0)
+                {
+                    iscomfirm = await ModalService.ConfirmAsync(new ConfirmOptions()
+                    {
+                        Content = $"[{item.Name}]含有下级数据，是否要全部删除?",
+                        Title = "警告"
+                    });
+
+                    break;
+                }
             }
-            await InvokeAsync(StateHasChanged);
+            if (!iscomfirm)
+                return;
+
+            // 获取全部下级数据ID
+            var ids = source.Select(a => GetAllChildIds(a)).SelectMany(a => a).Distinct().ToList();
+
+            await FreeSql.Update<T>()
+                .Set(a => a.IsDelete == true)
+                .Where(a=> ids.Contains(a.ID))
+                .ExecuteAffrowsAsync();
+
+            await OnRefresh();
+            //await InvokeAsync(StateHasChanged);
+        }
+
+        static List<int> GetAllChildIds(T parent)
+        {
+            var allIds = new List<int>();
+            if (parent == null) return allIds;
+
+            CollectChildIdsRecursive(parent, allIds);
+            return allIds;
+        }
+
+        static void CollectChildIdsRecursive(T parent, List<int> collectedIds)
+        {
+            // 添加当前组织ID
+            collectedIds.Add(parent.ID);
+
+            // 递归处理子级组织
+            if (parent.Children != null && parent.Children.Count > 0)
+            {
+                foreach (var child in parent.Children)
+                {
+                    BaseTreeEditorPage<T>.CollectChildIdsRecursive(child, collectedIds);
+                }
+            }
         }
     }
 }

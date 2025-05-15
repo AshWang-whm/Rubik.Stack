@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using Rubik.Identity.Oidc.Core.Constants;
 using Rubik.Identity.Oidc.Core.Contants;
 using Rubik.Identity.Oidc.Core.Dtos;
@@ -8,7 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Web;
-using static IdentityModel.OidcConstants;
+using static Duende.IdentityModel.OidcConstants;
 
 namespace Rubik.Identity.Oidc.Core.Services
 {

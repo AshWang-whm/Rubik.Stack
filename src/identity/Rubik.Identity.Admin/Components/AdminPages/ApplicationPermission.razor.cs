@@ -68,7 +68,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
         {
             if(Editor.PermissionType== PermissionType.Page&&string.IsNullOrWhiteSpace(Editor.Url))
             {
-                await MessageService.Error("[Url] 不允许为空!");
+                await MessageService.ErrorAsync("[Url] 不允许为空!");
                 return false;
             }
             Editor.ApplicationID = ApplicationID;

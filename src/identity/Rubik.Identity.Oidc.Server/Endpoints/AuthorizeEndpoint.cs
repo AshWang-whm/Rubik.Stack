@@ -5,7 +5,7 @@ using Rubik.Identity.Oidc.Core.Extensions;
 using Rubik.Identity.Oidc.Core.Services;
 using Rubik.Identity.Oidc.Core.Stores;
 using System.Web;
-using static IdentityModel.OidcConstants;
+using static Duende.IdentityModel.OidcConstants;
 
 namespace Rubik.Identity.Oidc.Core.Endpoints
 {

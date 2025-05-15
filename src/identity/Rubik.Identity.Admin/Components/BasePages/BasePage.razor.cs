@@ -17,6 +17,8 @@ namespace Rubik.Identity.Admin.Components.BasePages
         [Inject]
         public required IMessageService MessageService { get; set; }
 
+        [Inject]
+        public required ModalService ModalService { get; set; }
 
 
         protected List<T> DataSource = [];
@@ -43,7 +45,7 @@ namespace Rubik.Identity.Admin.Components.BasePages
         {
             if (source.Length == 0)
             {
-                await MessageService.Warning("没有要删除的数据!");
+                await MessageService.WarningAsync("没有要删除的数据!");
                 return;
             }
 

@@ -1,6 +1,4 @@
-﻿using IdentityModel;
-
-namespace Rubik.Identity.Oidc.Core.Configs
+﻿namespace Rubik.Identity.Oidc.Core.Configs
 {
     public class DiscoveryConfig
     {

@@ -8,8 +8,6 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 {
     public partial class Role : BaseTreeEditorPage<TbRole>
     {
-        [Inject]
-        ModalService? ModalService { get; set; }
 
         public override async Task Query(QueryModel<TbRole> query)
         {

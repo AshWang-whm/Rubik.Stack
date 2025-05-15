@@ -103,13 +103,13 @@ namespace Rubik.Identity.Admin.Components.AdminPages
                     await uow.Orm.Insert(role_permissions)
                         .ExecuteAffrowsAsync();
                     uow.Commit();
-                    await MessageService.Info("保存成功!", 0.5);
+                    await MessageService.InfoAsync("保存成功!", 0.5);
 
                 }
                 catch (Exception ex)
                 {
                     uow.Rollback();
-                    await MessageService.Info($"保存失败:{ex.Message}", 1);
+                    await MessageService.InfoAsync($"保存失败:{ex.Message}", 1);
 
                 }
 

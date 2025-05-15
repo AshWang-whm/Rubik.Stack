@@ -1,5 +1,4 @@
-﻿using IdentityModel;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using Rubik.Identity.Oidc.Core.Configs;
 using Rubik.Identity.Oidc.Core.Constants;
 using Rubik.Identity.Oidc.Core.Contants;

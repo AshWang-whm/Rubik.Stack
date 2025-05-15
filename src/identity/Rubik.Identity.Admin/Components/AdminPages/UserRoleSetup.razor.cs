@@ -69,7 +69,7 @@ namespace Rubik.Identity.Admin.Components.AdminPages
             if (AreListsEqual(CheckedKeys, CopyCheckedKeys))
             {
                 await ModalRef!.CloseAsync();
-                await MessageService.Success("没有要保存的数据", 1);
+                await MessageService.SuccessAsync("没有要保存的数据", 1);
                 return;
             }
 
@@ -96,11 +96,11 @@ namespace Rubik.Identity.Admin.Components.AdminPages
 
                 uow.Commit();
                 await ModalRef!.CloseAsync();
-                await MessageService.Success("保存成功",1);
+                await MessageService.SuccessAsync("保存成功",1);
             }
             catch (Exception ex)
             {
-                await MessageService!.Error(ex.Message, 2);
+                await MessageService!.ErrorAsync(ex.Message, 2);
                 uow.Rollback();
             }
         }
