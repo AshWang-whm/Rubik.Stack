@@ -86,10 +86,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "files", "files", "{E0802B0A
 		files\admin.identity.sql = files\admin.identity.sql
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plms", "plms", "{479E04EB-C19D-4D05-9AA7-AA14923EFD96}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubik.PLMS.Host", "src\plms\Rubik.PLMS.Host\Rubik.PLMS.Host.csproj", "{A47E0781-AD33-A7D2-95C4-D3985E711AEE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -214,10 +210,6 @@ Global
 		{E7874924-1730-8C34-1924-183D6D171137}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7874924-1730-8C34-1924-183D6D171137}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E7874924-1730-8C34-1924-183D6D171137}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{A47E0781-AD33-A7D2-95C4-D3985E711AEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A47E0781-AD33-A7D2-95C4-D3985E711AEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A47E0781-AD33-A7D2-95C4-D3985E711AEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A47E0781-AD33-A7D2-95C4-D3985E711AEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -260,8 +252,6 @@ Global
 		{7159D563-B88B-4607-A97E-4341B8EB0A13} = {E8E558F9-169C-474F-8277-910C003CE8BA}
 		{0A0A705E-6CCD-406C-8DAF-0BBDBCA5B8F1} = {E7C61496-0D12-4AF8-9BAB-ED588D4A5F63}
 		{E7874924-1730-8C34-1924-183D6D171137} = {E8E558F9-169C-474F-8277-910C003CE8BA}
-		{479E04EB-C19D-4D05-9AA7-AA14923EFD96} = {3A3AF48F-66CF-4234-9737-7E075AC97854}
-		{A47E0781-AD33-A7D2-95C4-D3985E711AEE} = {479E04EB-C19D-4D05-9AA7-AA14923EFD96}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {013ABA53-F0DF-4706-8106-0FA069C82488}
